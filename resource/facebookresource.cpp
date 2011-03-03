@@ -537,4 +537,10 @@ void FacebookResource::itemRemoved( const Akonadi::Item &item)
   }
 }
 
+void FacebookResource::deleteJobFinished(KJob *job)
+{
+  Item item = job->property( "Item" ).value<Item>(); 
+  changeCommitted( item );
+}
+
 AKONADI_RESOURCE_MAIN( FacebookResource )
