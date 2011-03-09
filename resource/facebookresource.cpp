@@ -44,6 +44,7 @@ using namespace Akonadi;
 static const char * friendsRID = "friends";
 static const char * eventsRID = "events";
 static const char * notesRID = "notes";
+static const char * eventMimeType = "application/x-vnd.akonadi.calendar.event";
 
 FacebookResource::FacebookResource( const QString &id )
     : ResourceBase( id )
@@ -86,7 +87,7 @@ void FacebookResource::abort()
   cancelTask();
 }
 
-void FacebookResource::abortWithError( const QString errorMessage, bool authFailure )
+void FacebookResource::abortWithError( const QString& errorMessage, bool authFailure )
 {
   resetState();
   cancelTask( errorMessage );
@@ -316,6 +317,7 @@ void FacebookResource::detailedEventListJobFinished( KJob* job )
   EventJob * const eventJob = dynamic_cast<EventJob*>( job );
   Q_ASSERT( eventJob );
   if ( job->error() ) {
+    abortWithError( i18n( "Unable to get list of events from server: %1", eventJob->errorText() ) );
   } else {
     setItemStreamingEnabled( true );
 
@@ -323,8 +325,8 @@ void FacebookResource::detailedEventListJobFinished( KJob* job )
     foreach ( const EventInfoPtr &eventInfo, eventJob->eventInfo() ) {
       Item event;
       event.setRemoteId( eventInfo->id() );
-      event.setPayload<KCalCore::Incidence::Ptr>( eventInfo->asEvent() );
-      event.setMimeType( eventInfo->asEvent()->mimeType() );
+      event.setPayload<IncidencePtr>( eventInfo->asEvent() );
+      event.setMimeType( eventMimeType );
       eventItems.append( event );
     }
     itemsRetrieved( eventItems );
@@ -503,7 +505,7 @@ void FacebookResource::retrieveCollections()
   events.setRemoteId( eventsRID );
   events.setName( i18n( "Events" ) );
   events.setParentCollection( Akonadi::Collection::root() );
-  events.setContentMimeTypes( QStringList() << "text/calendar" << KCalCore::Event::eventMimeType() );
+  events.setContentMimeTypes( QStringList() << "text/calendar" << eventMimeType );
   events.setRights( Collection::ReadOnly );
   EntityDisplayAttribute * const evendDisplayAttribute = new EntityDisplayAttribute();
   evendDisplayAttribute->setIconName( "facebookresource" );

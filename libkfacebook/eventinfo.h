@@ -19,11 +19,24 @@
 #ifndef EVENTINFO_H
 #define EVENTINFO_H
 
+#include <config.h>
 #include "libkfacebook_export.h"
 
 #include <KDateTime>
-#include <KCalCore/Event>
 #include <QObject>
+
+#ifndef KDEPIM_44_COMPAT
+#include <KCalCore/Event>
+typedef KCalCore::Event Event;
+typedef KCalCore::Event::Ptr EventPtr;
+typedef KCalCore::Incidence::Ptr IncidencePtr;
+#else
+#include <boost/shared_ptr.hpp>
+#include <KCal/Event>
+typedef KCal::Event Event;
+typedef boost::shared_ptr<KCal::Event> EventPtr;
+typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
+#endif
 
 class LIBKFACEBOOK_EXPORT EventInfo : public QObject
 {
@@ -34,6 +47,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
   Q_PROPERTY(QString location WRITE setLocation READ location)
   Q_PROPERTY(QString id WRITE setId READ id)
   Q_PROPERTY(QString description WRITE setDescription READ description)
+  Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
   public:
     void setName( const QString &name );
     QString name() const;
@@ -58,7 +72,11 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
     void setOrganizer( const QString &organizer );
     QString organizer() const;
 
-    KCalCore::Event::Ptr asEvent() const;
+    void setUpdatedTimeString( const QString & updatedTime );
+    QString updatedTimeString() const;
+    KDateTime updatedTime() const;
+
+    EventPtr asEvent() const;
 
   private:
     QString mName;
@@ -68,6 +86,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
     QString mId;
     QString mDescription;
     QString mOrganizer;
+    QString mUpdatedTime;
 };
 
 typedef QSharedPointer<EventInfo> EventInfoPtr;

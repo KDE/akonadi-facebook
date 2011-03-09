@@ -24,9 +24,9 @@
 #include <KLocalizedString>
 #include <KPIMUtils/LinkLocator>
 
-KCalCore::Event::Ptr EventInfo::asEvent() const
+EventPtr EventInfo::asEvent() const
 {
-  KCalCore::Event::Ptr event( new KCalCore::Event );
+  EventPtr event( new Event );
   QString desc = description();
   desc = KPIMUtils::LinkLocator::convertToHtml( desc, KPIMUtils::LinkLocator::ReplaceSmileys );
   if ( !desc.isEmpty() ) {
@@ -36,6 +36,8 @@ KCalCore::Event::Ptr EventInfo::asEvent() const
           "\">" + i18n( "View Event on Facebook" ) + "</a>";
 
   event->setSummary( name() );
+  event->setLastModified( updatedTime() );
+  event->setCreated( updatedTime() ); // That's a lie, but Facebook doesn't give us the created time
   event->setDescription( desc, true );
   event->setLocation( location() );
   event->setHasEndDate( endTime().isValid() );
@@ -149,3 +151,17 @@ void EventInfo::setOrganizer(const QString& organizer)
   mOrganizer = organizer;
 }
 
+void EventInfo::setUpdatedTimeString(const QString& updatedTime)
+{
+  mUpdatedTime = updatedTime;
+}
+
+KDateTime EventInfo::updatedTime() const
+{
+  return facebookTimeToKDateTime(mUpdatedTime);
+}
+
+QString EventInfo::updatedTimeString() const
+{
+  return mUpdatedTime;
+}
