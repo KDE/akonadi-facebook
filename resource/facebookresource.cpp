@@ -522,10 +522,7 @@ void FacebookResource::retrieveCollections()
   notesDisplayAttribute->setIconName( "facebookresource" );
   notes.addAttribute( notesDisplayAttribute );
 
-//  collectionsRetrieved( Collection::List() << friends << events << notes );
-  collectionsRetrieved( Collection::List() << notes );
-
-
+  collectionsRetrieved( Collection::List() << friends << events << notes );
 }
 
 void FacebookResource::itemRemoved( const Akonadi::Item &item)
