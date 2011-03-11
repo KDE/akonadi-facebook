@@ -135,8 +135,6 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
 {
   Q_ASSERT(mIdle);
 
-  kDebug() << collection.remoteId();
-
   if ( collection.remoteId() == friendsRID ) {
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of friends list." ) );
@@ -175,7 +173,7 @@ void FacebookResource::noteListFetched( KJob* job )
   AllNotesListJob * const listJob = dynamic_cast<AllNotesListJob*>( job );
   Q_ASSERT( listJob );
   if ( listJob->error() ) {
-    abortWithError( i18n( "Unable to get events from server: %1", listJob->errorString() ),
+    abortWithError( i18n( "Unable to get notes from server: %1", listJob->errorString() ),
                     listJob->error() == FacebookJob::AuthenticationProblem );
   } else {
     setItemStreamingEnabled( true );
@@ -348,18 +346,16 @@ void FacebookResource::detailedFriendListJobFinished( KJob* job )
     mNumFriends = mPendingFriends.size();
     emit status( Running, i18n( "Retrieving friends' photos." ) );
     emit percent( 10 );
-    fetchNextPhoto();
+    fetchPhotos();
   }
 }
 
-void FacebookResource::fetchNextPhoto()
+void FacebookResource::fetchPhotos()
 {
-  if (mPendingFriends.isEmpty()) {
-    itemsRetrievalDone();
-    finishFriendFetching();
-  } else {
-    PhotoJob * const photoJob = new PhotoJob( mPendingFriends.first()->id(), Settings::self()->accessToken() );
-    mCurrentJob = photoJob;
+  mNumPhotosFetched = 0;
+  foreach(const UserInfoPtr f, mPendingFriends) {
+    PhotoJob * const photoJob = new PhotoJob(f->id(), Settings::self()->accessToken() );
+    photoJob->setProperty("friend", QVariant::fromValue( f ));
     connect(photoJob, SIGNAL(result(KJob*)), this, SLOT(photoJobFinished(KJob*)));
     photoJob->start();
   }
@@ -382,8 +378,7 @@ void FacebookResource::finishEventsFetching()
 
 void FacebookResource::finishFriendFetching()
 {
-  Q_ASSERT( mPendingFriends.isEmpty() );
-
+  mPendingFriends.clear();
   emit percent(100);
   if ( mNumFriends > 0 ) {
     emit status( Idle, i18np( "Updated one friend from the server.",
@@ -396,18 +391,13 @@ void FacebookResource::finishFriendFetching()
 
 void FacebookResource::photoJobFinished(KJob* job)
 {
-  Q_ASSERT(!mIdle);
   PhotoJob * const photoJob = dynamic_cast<PhotoJob*>( job );
   Q_ASSERT(photoJob);
-  Q_ASSERT(!mPendingFriends.isEmpty());
+  UserInfoPtr user = job->property("friend").value<UserInfoPtr>();
+
   if (photoJob->error()) {
     abortWithError( i18n( "Unable to retrieve friends' photo from server: %1", photoJob->errorText() ) );
   } else {
-
-    // Update lists
-    const UserInfoPtr user = mPendingFriends.first();
-    mPendingFriends.removeFirst();
-
     // Create Item
     KABC::Addressee addressee = user->toAddressee();
     addressee.setPhoto( KABC::Picture( photoJob->photo() ) );
@@ -419,14 +409,17 @@ void FacebookResource::photoJobFinished(KJob* job)
     timeStampAttribute->setTimeStamp( user->updatedTime() );
     newUser.addAttribute( timeStampAttribute );
 
-    // Done!
     itemsRetrievedIncremental( Item::List() << newUser, Item::List() );
-    if (!mPendingFriends.isEmpty()) {
+    mNumPhotosFetched++;
+    
+    if (mNumPhotosFetched != mNumFriends) {
       const int alreadyDownloadedFriends = mNumFriends - mPendingFriends.size();
       const float percentageDone = alreadyDownloadedFriends / (float)mNumFriends * 100.0f;
       emit percent(10 + percentageDone * 0.9f);
+    } else {
+      itemsRetrievalDone();
+      finishFriendFetching();
     }
-    fetchNextPhoto();
   }
 }
 
@@ -515,17 +508,14 @@ void FacebookResource::retrieveCollections()
   notes.setRemoteId( notesRID );
   notes.setName( i18n( "Notes" ) );
   notes.setParentCollection( Akonadi::Collection::root() );
-  notes.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.note" << "inode/directory" );
+  notes.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.note"  );
   notes.setRights( Collection::ReadOnly      | Collection::CanChangeItem | 
                    Collection::CanDeleteItem | Collection::CanCreateItem );
   EntityDisplayAttribute * const notesDisplayAttribute = new EntityDisplayAttribute();
   notesDisplayAttribute->setIconName( "facebookresource" );
   notes.addAttribute( notesDisplayAttribute );
 
-//  collectionsRetrieved( Collection::List() << friends << events << notes );
-  collectionsRetrieved( Collection::List() << events << notes );
-
-
+  collectionsRetrieved( Collection::List() << friends << events << notes );
 }
 
 void FacebookResource::itemRemoved( const Akonadi::Item &item)
@@ -557,10 +547,10 @@ void FacebookResource::itemAdded( const Akonadi::Item &item, const Akonadi::Coll
    * A note is added!
    */
   if (collection.remoteId() == notesRID) {
-    if (item.hasPayload<KMime::Message::Ptr>() == true) {
-      KMime::Message::Ptr note = item.payload<KMime::Message::Ptr>();
-      QString subject = note->subject()->asUnicodeString();
-      QString message = note->body();
+    if (item.hasPayload<KMime::Message::Ptr>()) {
+      const KMime::Message::Ptr note = item.payload<KMime::Message::Ptr>();
+      const QString subject = note->subject()->asUnicodeString();
+      const QString message = note->body();
 
       mIdle = false;
       NoteAddJob * const addJob = new NoteAddJob( subject, message, Settings::self()->accessToken() );
@@ -569,9 +559,7 @@ void FacebookResource::itemAdded( const Akonadi::Item &item, const Akonadi::Coll
       connect( addJob, SIGNAL(result(KJob *)), this, SLOT(noteAddJobFinished(KJob *)) );
       addJob->start();
     }
-  }
-
-  changeCommitted( item );
+  } 
 }
 
 void FacebookResource::noteAddJobFinished(KJob *job)
@@ -579,6 +567,9 @@ void FacebookResource::noteAddJobFinished(KJob *job)
   NoteAddJob * const addJob = dynamic_cast<NoteAddJob*>( job );
   Item note = addJob->property( "Item" ).value<Item>();
   note.setRemoteId(addJob->property( "id" ).value<QString>());
+
+  mIdle = true;
+  mCurrentJob = NULL;
 
   changeCommitted( note );
 }
