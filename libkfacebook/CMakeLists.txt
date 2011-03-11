@@ -13,6 +13,13 @@ set(libkfacebook_SRCS
   util.cpp
   alleventslistjob.cpp
   eventjob.cpp
+  noteinfo.cpp
+  noteslistjob.cpp
+  allnoteslistjob.cpp
+  notejob.cpp
+  facebookdeletejob.cpp
+  noteaddjob.cpp
+  facebookaddjob.cpp
 )
 
 kde4_add_library(libkfacebook SHARED ${libkfacebook_SRCS})
@@ -32,6 +39,7 @@ target_link_libraries(libkfacebook
   ${QJSON_LIBRARY}
   ${KDEPIMLIBS_KABC_LIBS}
   ${KDEPIMLIBS_KPIMUTILS_LIBS}
+  ${KDEPIMLIBS_KMIME_LIBS}
 )
 
 if(KDEPIM_44_COMPAT)

@@ -43,6 +43,9 @@ class FacebookResource : public Akonadi::ResourceBase,
     void retrieveItems( const Akonadi::Collection &col );
     bool retrieveItem( const Akonadi::Item &item, const QSet<QByteArray> &parts );
 
+    void itemRemoved( const Akonadi::Item &item);
+    void itemAdded( const Akonadi::Item &item, const Akonadi::Collection &collection );
+
   protected:
 
     virtual void aboutToQuit();
@@ -58,6 +61,12 @@ class FacebookResource : public Akonadi::ResourceBase,
     void initialItemFetchFinished( KJob *job );
     void eventListFetched( KJob *job );
     void detailedEventListJobFinished( KJob *job );
+    void noteListFetched( KJob *job );
+    void noteJobFinished( KJob *job );
+    void noteAddJobFinished( KJob *job );
+
+    void deleteJobFinished( KJob *job );
+
 
   private:
     void fetchPhotos();
@@ -68,6 +77,7 @@ class FacebookResource : public Akonadi::ResourceBase,
     void fetchNewOrChangedFriends();
     void finishFriendFetching();
     void finishEventsFetching();
+    void finishNotesFetching();
 
     // Friends that are already stored on the Akonadi server
     QMap<QString,KDateTime> mExistingFriends;
