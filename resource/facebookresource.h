@@ -66,6 +66,7 @@ class FacebookResource : public Akonadi::ResourceBase,
     void noteAddJobFinished( KJob *job );
 
     void deleteJobFinished( KJob *job );
+    void messageListFetched( KJob *job );
 
 
   private:

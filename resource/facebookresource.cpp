@@ -30,6 +30,7 @@
 #include <libkfacebook/allnoteslistjob.h>
 #include <libkfacebook/notejob.h>
 #include <libkfacebook/noteaddjob.h>
+#include <libkfacebook/allmessageslistjob.h>
 
 #include <libkfacebook/facebookjobs.h>
 
@@ -167,9 +168,33 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of message list." ) );
     emit percent( 0 );
+
+    AllMessagesListJob * const messagesJob = new AllMessagesListJob( Settings::self()->accessToken() );
+    messagesJob->setLowerLimit(KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ));
+    mCurrentJobs << messagesJob;
+    connect( messagesJob, SIGNAL(result(KJob*)), this, SLOT(messageListFetched(KJob*)) );
+    messagesJob->start();
   } else {
     cancelTask( i18n( "Unable to syncronize this collection." ) );
   }
+}
+
+void FacebookResource::messageListFetched(KJob *job)
+{
+  Q_ASSERT(!mIdle);
+  AllMessagesListJob * const messagesJob = dynamic_cast<AllMessagesListJob*>( job );
+  Q_ASSERT( messagesJob );
+  mCurrentJobs.removeAll(job);
+
+  kDebug() << "Fetched the messages";
+
+  foreach(const MessageInfoPtr msg, messagesJob->allMessages())
+  {
+    kDebug() << msg->id();
+  }
+
+  itemsRetrievalDone();
+
 }
 
 void FacebookResource::noteListFetched( KJob* job )
