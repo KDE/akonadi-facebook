@@ -36,6 +36,9 @@ void MessageJob::handleData( const QVariant &data)
   MessageInfoPtr msgInfo( new MessageInfo() );
   QJson::QObjectHelper::qvariant2qobject( data.toMap(), msgInfo.data() );
 
+  const QVariantMap from = data.toMap()["from"].toMap();
+  msgInfo->setFrom(from["name"].toString(), from["id"].toString());
+
   if (data.toMap().contains("comments")) {
     const QVariantList comments = data.toMap()["comments"].toMap()["data"].toList();
     foreach(const QVariant comment, comments) {

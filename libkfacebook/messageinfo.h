@@ -32,7 +32,7 @@ class LIBKFACEBOOK_EXPORT MessageReplyInfo : public QObject
 
   Q_PROPERTY(QString id WRITE setId READ id)
   Q_PROPERTY(QString message WRITE setMessage READ message)
-  Q_PROPERTY(QString created_times WRITE setCreatedTime READ createdTimeAsString)
+  Q_PROPERTY(QString created_time WRITE setCreatedTime READ createdTimeAsString)
 
   public:
     void setId(const QString &id);

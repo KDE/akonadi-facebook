@@ -85,8 +85,10 @@ KMime::Message::Ptr MessageInfo::asMessage() const
   msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
   msg->contentType()->fromUnicodeString( "text/plain", "utf-8" );
   msg->subject()->fromUnicodeString( subject(), "utf-8" );
-  msg->from()->fromUnicodeString( "you@facebook", "utf-8" );
-kDebug() << updatedTime().toString(KDateTime::RFCDateDay);
+
+  msg->from()->addAddress(fromId().toAscii() + "@facebook.invalid",
+                          from());
+
   msg->assemble();
 
   return KMime::Message::Ptr(msg);
