@@ -571,11 +571,18 @@ void FacebookResource::messageJobFinished(KJob *job)
     newMessage.setRemoteId( msg->id() );
     newMessage.setMimeType( "message/rfc822" );
     newMessage.setPayload<KMime::Message::Ptr>( msg->asMessage() );
+    itemsRetrievedIncremental( Item::List() << newMessage, Item::List() );
 
     /*
-     * TODO: Add the replies
+     * replies
      */
-    itemsRetrievedIncremental( Item::List() << newMessage, Item::List() );
+    foreach(const MessageReplyInfoPtr reply, msg->replies()) {
+      Item newReply;
+      newReply.setRemoteId( reply->id() );
+      newReply.setMimeType( "message/rfc822" );
+      newReply.setPayload<KMime::Message::Ptr>( reply->asMessage() );
+      itemsRetrievedIncremental( Item::List() << newReply, Item::List() );
+    }
 
     if(!mCurrentJobs.isEmpty()) {
       /*

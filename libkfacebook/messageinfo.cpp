@@ -24,6 +24,51 @@
 #include <KLocalizedString>
 #include <KPIMUtils/LinkLocator>
 
+KMime::Message::Ptr MessageReplyInfo::asMessage() const
+{
+  KMime::Message *msg = new KMime::Message();
+
+  msg->setBody( message().toAscii() );
+  msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
+  msg->contentType()->fromUnicodeString( "text/plain", "utf-8" );
+  msg->subject()->fromUnicodeString( "RE:" + mParentMessage->subject(), "utf-8" );
+
+  msg->from()->addAddress(fromId().toAscii() + "@facebook.invalid",
+                          from());
+
+  // Set all the recpients
+  foreach(const RecipientPtr to, mParentMessage->recipients()) {
+    msg->to()->addAddress(to->id.toAscii() + "@facebook.invalid",
+                          to->name);
+  }
+
+  //Set the message ID
+  msg->messageID()->setIdentifier(id().toAscii() + "@facebook.msgid");
+
+  //Reference
+  QString rId = id().split("_")[0];
+  int rRef = id().split("_")[1].toInt() - 1;
+
+  if (rRef == 0) {
+    msg->references()->appendIdentifier(rId.toAscii() + "@facebook.msgid");
+    msg->inReplyTo()->appendIdentifier( rId.toAscii() + "@facebook.msgid");
+  } else {
+    msg->references()->appendIdentifier(rId.toAscii() + "_" +
+                                        QByteArray::number(rRef) + "@facebook.msgid");
+    msg->inReplyTo()->appendIdentifier( rId.toAscii() + "_" +
+                                        QByteArray::number(rRef) + "@facebook.msgid");
+  }
+
+  msg->assemble();
+
+  return KMime::Message::Ptr(msg);
+}
+
+MessageReplyInfo::MessageReplyInfo(const MessageInfoPtr parent)
+  : mParentMessage(parent)
+{
+}
+
 void MessageReplyInfo::setId(const QString &id)
 {
   mId = id;
@@ -89,10 +134,14 @@ KMime::Message::Ptr MessageInfo::asMessage() const
   msg->from()->addAddress(fromId().toAscii() + "@facebook.invalid",
                           from());
 
+  // Set all the recpients
   foreach(const RecipientPtr to, recipients()) {
     msg->to()->addAddress(to->id.toAscii() + "@facebook.invalid",
                           to->name);
   }
+
+  //Set the message ID
+  msg->messageID()->setIdentifier(id().toAscii() + "@facebook.msgid");
 
   msg->assemble();
 

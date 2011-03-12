@@ -52,8 +52,13 @@ void MessageJob::handleData( const QVariant &data)
   if (data.toMap().contains("comments")) {
     const QVariantList comments = data.toMap()["comments"].toMap()["data"].toList();
     foreach(const QVariant comment, comments) {
-      MessageReplyInfoPtr reply( new MessageReplyInfo() );
+      MessageReplyInfoPtr reply( new MessageReplyInfo( msgInfo ) );
       QJson::QObjectHelper::qvariant2qobject( comment.toMap(), reply.data() );
+
+      // From
+      const QVariantMap replyFrom = comment.toMap()["from"].toMap();
+      reply->setFrom(replyFrom["name"].toString(), replyFrom["id"].toString());
+
       msgInfo->addReply(reply);
     }
   }

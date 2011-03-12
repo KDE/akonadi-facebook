@@ -26,6 +26,9 @@
 #include <KDateTime>
 #include <QObject>
 
+class MessageInfo;
+typedef QSharedPointer<MessageInfo> MessageInfoPtr;
+
 struct Recipient {
   QString name;
   QString id;
@@ -41,6 +44,10 @@ class LIBKFACEBOOK_EXPORT MessageReplyInfo : public QObject
   Q_PROPERTY(QString created_time WRITE setCreatedTime READ createdTimeAsString)
 
   public:
+    KMime::Message::Ptr asMessage() const;
+
+    MessageReplyInfo(const MessageInfoPtr parent);
+
     void setId(const QString &id);
     QString id() const;
 
@@ -61,6 +68,8 @@ class LIBKFACEBOOK_EXPORT MessageReplyInfo : public QObject
     QString mFromId;
     QString mMessage;
     KDateTime mCreatedTime;
+
+    MessageInfoPtr mParentMessage;
 };
 
 typedef QSharedPointer< MessageReplyInfo > MessageReplyInfoPtr;
@@ -114,7 +123,5 @@ class LIBKFACEBOOK_EXPORT MessageInfo : public QObject
     QList<RecipientPtr> mRecipients;
 
 };
-
-typedef QSharedPointer<MessageInfo> MessageInfoPtr;
 
 #endif
