@@ -89,6 +89,11 @@ KMime::Message::Ptr MessageInfo::asMessage() const
   msg->from()->addAddress(fromId().toAscii() + "@facebook.invalid",
                           from());
 
+  foreach(const RecipientPtr to, recipients()) {
+    msg->to()->addAddress(to->id.toAscii() + "@facebook.invalid",
+                          to->name);
+  }
+
   msg->assemble();
 
   return KMime::Message::Ptr(msg);
@@ -181,5 +186,13 @@ QList<MessageReplyInfoPtr> MessageInfo::replies() const
   return mReplies;
 }
 
+void MessageInfo::addRecipient(const RecipientPtr to)
+{
+  mRecipients << to;
+}
 
+QList<RecipientPtr> MessageInfo::recipients() const
+{
+  return mRecipients;
+}
 

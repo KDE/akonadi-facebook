@@ -26,6 +26,12 @@
 #include <KDateTime>
 #include <QObject>
 
+struct Recipient {
+  QString name;
+  QString id;
+};
+typedef QSharedPointer<Recipient> RecipientPtr;
+
 class LIBKFACEBOOK_EXPORT MessageReplyInfo : public QObject
 {
   Q_OBJECT
@@ -92,6 +98,9 @@ class LIBKFACEBOOK_EXPORT MessageInfo : public QObject
     void addReply(const MessageReplyInfoPtr reply);
     QList<MessageReplyInfoPtr> replies() const;
 
+    void addRecipient(const RecipientPtr to);
+    QList<RecipientPtr> recipients() const;
+
   private:
     QString mId;
     QString mSubject;
@@ -102,6 +111,7 @@ class LIBKFACEBOOK_EXPORT MessageInfo : public QObject
     QString mFromId;
 
     QList<MessageReplyInfoPtr> mReplies;
+    QList<RecipientPtr> mRecipients;
 
 };
 

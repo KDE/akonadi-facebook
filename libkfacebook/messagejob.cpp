@@ -36,8 +36,18 @@ void MessageJob::handleData( const QVariant &data)
   MessageInfoPtr msgInfo( new MessageInfo() );
   QJson::QObjectHelper::qvariant2qobject( data.toMap(), msgInfo.data() );
 
+  // From
   const QVariantMap from = data.toMap()["from"].toMap();
   msgInfo->setFrom(from["name"].toString(), from["id"].toString());
+
+  // To
+  const QVariantList recipients = data.toMap()["to"].toMap()["data"].toList();
+  foreach(const QVariant recipient, recipients) {
+    RecipientPtr to (new Recipient);
+    to->name = recipient.toMap()["name"].toString();
+    to->id = recipient.toMap()["id"].toString();
+    msgInfo->addRecipient(to);
+  }
 
   if (data.toMap().contains("comments")) {
     const QVariantList comments = data.toMap()["comments"].toMap()["data"].toList();
@@ -49,16 +59,6 @@ void MessageJob::handleData( const QVariant &data)
   }
 
   mMessageInfo = msgInfo;
-/*
-  UserInfoPtr friendInfo( new UserInfo() );
-  QJson::QObjectHelper::qvariant2qobject( data.toMap(), friendInfo.data() );
-  const QVariant location = data.toMap()["location"];
-  handleLocation(friendInfo, location);
-  const QVariant work = data.toMap()["work"];
-  handleWork(friendInfo, work);
-  const QVariant partner = data.toMap()["significant_other"];
-  handlePartner(friendInfo, partner);
-  return friendInfo; */
 }
 
 #include "messagejob.moc"
