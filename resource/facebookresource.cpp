@@ -44,6 +44,7 @@ using namespace Akonadi;
 static const char * friendsRID = "friends";
 static const char * eventsRID = "events";
 static const char * notesRID = "notes";
+static const char * messagesRID = "messages";
 static const char * eventMimeType = "application/x-vnd.akonadi.calendar.event";
 
 FacebookResource::FacebookResource( const QString &id )
@@ -162,6 +163,10 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mCurrentJobs << notesJob;
     connect( notesJob, SIGNAL(result(KJob*)), this, SLOT(noteListFetched(KJob*)) );
     notesJob->start();
+  } else if ( collection.remoteId() == messagesRID ) {
+    mIdle = false;
+    emit status( Running, i18n( "Preparing sync of message list." ) );
+    emit percent( 0 );
   } else {
     cancelTask( i18n( "Unable to syncronize this collection." ) );
   }
@@ -543,7 +548,19 @@ void FacebookResource::retrieveCollections()
   notesDisplayAttribute->setIconName( "facebookresource" );
   notes.addAttribute( notesDisplayAttribute );
 
-  collectionsRetrieved( Collection::List() << friends << events << notes );
+  Collection messages;
+  messages.setRemoteId( messagesRID );
+  messages.setName( i18n( "Messages" ) );
+  messages.setParentCollection( Akonadi::Collection::root() );
+  messages.setContentMimeTypes( QStringList() << "message/rfc822" );
+  messages.setRights( Collection::ReadOnly );
+  EntityDisplayAttribute * const messageDisplayAttribute = new EntityDisplayAttribute();
+  messageDisplayAttribute->setIconName( "facebookresource" );
+  messages.addAttribute( messageDisplayAttribute );
+
+//  collectionsRetrieved( Collection::List() << friends << events << notes << messages );
+  collectionsRetrieved( Collection::List() << messages );
+
 }
 
 void FacebookResource::itemRemoved( const Akonadi::Item &item)
