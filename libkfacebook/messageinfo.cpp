@@ -62,7 +62,8 @@ QString MessageReplyInfo::message() const
 
 void MessageReplyInfo::setCreatedTime(const QString &created_time)
 {
-  mCreatedTime = KDateTime::fromString(created_time, KDateTime::ISODate);
+  mCreatedTime = facebookTimeToKDateTime(created_time);
+  Q_ASSERT(mCreatedTime.isValid());
 }
 
 QString MessageReplyInfo::createdTimeAsString() const
@@ -81,11 +82,11 @@ KMime::Message::Ptr MessageInfo::asMessage() const
   KMime::Message *msg = new KMime::Message();
 
   msg->setBody( message().toAscii() );
-  msg->date()->fromUnicodeString( updatedTime().toString(KDateTime::RFCDateDay), "utf-8" );
+  msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
   msg->contentType()->fromUnicodeString( "text/plain", "utf-8" );
   msg->subject()->fromUnicodeString( subject(), "utf-8" );
   msg->from()->fromUnicodeString( "you@facebook", "utf-8" );
-
+kDebug() << updatedTime().toString(KDateTime::RFCDateDay);
   msg->assemble();
 
   return KMime::Message::Ptr(msg);
@@ -123,7 +124,14 @@ QString MessageInfo::message() const
 
 void MessageInfo::setUpdatedTime(const QString &date)
 {
-  mUpdatedTime = KDateTime::fromString(date, KDateTime::ISODate);
+  
+  mUpdatedTime = facebookTimeToKDateTime(date);
+  Q_ASSERT(mUpdatedTime.isValid());
+
+  if (!mCreatedTime.isValid() ||
+      mCreatedTime > mUpdatedTime) {
+    mCreatedTime = mUpdatedTime;
+  }
 }
 
 QString MessageInfo::updatedTimeAsString() const
@@ -134,6 +142,11 @@ QString MessageInfo::updatedTimeAsString() const
 KDateTime MessageInfo::updatedTime() const
 {
   return mUpdatedTime;
+}
+
+KDateTime MessageInfo::createdTime() const
+{
+  return mCreatedTime;
 }
 
 void MessageInfo::setFrom(const QString &name, const QString &id)
@@ -155,6 +168,10 @@ QString MessageInfo::fromId() const
 void MessageInfo::addReply(const MessageReplyInfoPtr reply)
 {
   mReplies << reply;
+
+  if (mCreatedTime > reply->createdTime()) {
+    mCreatedTime = reply->createdTime();
+  }
 }
 
 QList<MessageReplyInfoPtr> MessageInfo::replies() const

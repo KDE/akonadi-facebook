@@ -83,6 +83,8 @@ class LIBKFACEBOOK_EXPORT MessageInfo : public QObject
     QString updatedTimeAsString() const;
     KDateTime updatedTime() const;
 
+    KDateTime createdTime() const;
+
     void setFrom(const QString &name, const QString &id);
     QString from() const;
     QString fromId() const;
@@ -95,6 +97,7 @@ class LIBKFACEBOOK_EXPORT MessageInfo : public QObject
     QString mSubject;
     QString mMessage;
     KDateTime mUpdatedTime;
+    KDateTime mCreatedTime;
     QString mFrom;
     QString mFromId;
 

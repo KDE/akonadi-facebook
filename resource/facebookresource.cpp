@@ -556,7 +556,6 @@ void FacebookResource::noteJobFinished(KJob* job)
 
 void FacebookResource::messageJobFinished(KJob *job)
 {
-  kDebug() << "A MESSAGE JOB IS FINISHED!";
   Q_ASSERT( !mIdle );
   Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
   MessageJob * const messageJob = dynamic_cast<MessageJob *>( job );
