@@ -658,9 +658,7 @@ void FacebookResource::retrieveCollections()
   messageDisplayAttribute->setIconName( "facebookresource" );
   messages.addAttribute( messageDisplayAttribute );
 
-//  collectionsRetrieved( Collection::List() << friends << events << notes << messages );
-  collectionsRetrieved( Collection::List() << messages );
-
+  collectionsRetrieved( Collection::List() << friends << events << notes << messages );
 }
 
 void FacebookResource::itemRemoved( const Akonadi::Item &item)
