@@ -21,6 +21,7 @@ set(libkfacebook_SRCS
   allmessageslistjob.cpp
   messageinfo.cpp
   messageslistjob.cpp
+  messagejob.cpp
 )
 
 kde4_add_library(libkfacebook SHARED ${libkfacebook_SRCS})

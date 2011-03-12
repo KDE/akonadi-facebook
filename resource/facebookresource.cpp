@@ -31,6 +31,7 @@
 #include <libkfacebook/notejob.h>
 #include <libkfacebook/noteaddjob.h>
 #include <libkfacebook/allmessageslistjob.h>
+#include <libkfacebook/messagejob.h>
 
 #include <libkfacebook/facebookjobs.h>
 
@@ -188,13 +189,23 @@ void FacebookResource::messageListFetched(KJob *job)
 
   kDebug() << "Fetched the messages";
 
+  /*
+   * TODO: do real updating instead of parsing everything here
+   */
   foreach(const MessageInfoPtr msg, messagesJob->allMessages())
   {
-    kDebug() << msg->id();
+    mNewOrChangedMessages << msg;
   }
 
-  itemsRetrievalDone();
 
+  if (mNewOrChangedMessages.isEmpty()) {
+    itemsRetrievalDone();
+    finishMessageFetching();
+  } else {
+    emit percent(5);
+    emit status( Running, i18n("Retrieving message threads"));
+    fetchNewOrChangedMessages();
+  }
 }
 
 void FacebookResource::noteListFetched( KJob* job )
@@ -337,6 +348,19 @@ void FacebookResource::friendListJobFinished( KJob* job )
   }
 }
 
+void FacebookResource::fetchNewOrChangedMessages()
+{
+  /*
+   * Fetch all message threads in parallel
+   */
+  foreach(const MessageInfoPtr msg, mNewOrChangedMessages) {
+    MessageJob * const messageJob = new MessageJob( msg->id(), Settings::self()->accessToken() );
+    mCurrentJobs << messageJob;
+    connect(messageJob, SIGNAL(result(KJob*)), this, SLOT(messageJobFinished(KJob *)));
+    messageJob->start();
+  }
+}
+
 void FacebookResource::fetchNewOrChangedFriends()
 {
   QStringList mewOrChangedFriendIds;
@@ -420,6 +444,16 @@ void FacebookResource::finishEventsFetching()
   emit percent(100);
   // TODO: Use an actual number here
   emit status( Idle, i18n( "All events fetched from server." ) );
+  resetState();
+}
+
+void FacebookResource::finishMessageFetching()
+{
+  Q_ASSERT(mCurrentJobs.size() == 0);
+
+  mNewOrChangedMessages.clear();
+
+  emit percent(100);
   resetState();
 }
 
@@ -517,6 +551,42 @@ void FacebookResource::noteJobFinished(KJob* job)
     note.setPayload( noteJob->noteInfo().first()->asNote() );
     itemRetrieved( note );
     resetState();
+  }
+}
+
+void FacebookResource::messageJobFinished(KJob *job)
+{
+  kDebug() << "A MESSAGE JOB IS FINISHED!";
+  Q_ASSERT( !mIdle );
+  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
+  MessageJob * const messageJob = dynamic_cast<MessageJob *>( job );
+  Q_ASSERT(messageJob);
+  mCurrentJobs.removeAll(job);
+
+  if (messageJob->error()) {
+     abortWithError( i18n( "Unable to fetch thread from server: %1", messageJob->errorText() ) );
+  } else {
+    const MessageInfoPtr msg = messageJob->messageInfo();
+
+    Item newMessage;
+    newMessage.setRemoteId( msg->id() );
+    newMessage.setMimeType( "message/rfc822" );
+    newMessage.setPayload<KMime::Message::Ptr>( msg->asMessage() );
+
+    /*
+     * TODO: Add the replies
+     */
+    itemsRetrievedIncremental( Item::List() << newMessage, Item::List() );
+
+    if(!mCurrentJobs.isEmpty()) {
+      /*
+       * TODO: status update
+       */
+    } else {
+      itemsRetrievalDone();
+      finishMessageFetching();
+    }
+
   }
 }
 

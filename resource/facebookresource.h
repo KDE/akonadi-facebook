@@ -20,6 +20,7 @@
 #define FACEBOOKRESOURCE_H
 
 #include <libkfacebook/userinfo.h>
+#include <libkfacebook/messageinfo.h>
 #include <Akonadi/ResourceBase>
 #include <QPointer>
 #include <QMutex>
@@ -67,6 +68,7 @@ class FacebookResource : public Akonadi::ResourceBase,
 
     void deleteJobFinished( KJob *job );
     void messageListFetched( KJob *job );
+    void messageJobFinished( KJob *job );
 
 
   private:
@@ -76,21 +78,26 @@ class FacebookResource : public Akonadi::ResourceBase,
     void abort();
 
     void fetchNewOrChangedFriends();
+    void fetchNewOrChangedMessages();
     void finishFriendFetching();
     void finishEventsFetching();
     void finishNotesFetching();
+    void finishMessageFetching();
 
     // Friends that are already stored on the Akonadi server
     QMap<QString,KDateTime> mExistingFriends;
 
     // Pending new/changed friends we still need to download
     QList<UserInfoPtr> mPendingFriends;
-
     QList<UserInfoPtr> mNewOrChangedFriends;
+
+    QList<MessageInfoPtr> mPendingMessages;
+    QList<MessageInfoPtr> mNewOrChangedMessages;
 
     // Total number of new & changed friends
     int mNumFriends;
     int mNumPhotosFetched;
+    int mNumMessagesFetched;
 
     bool mIdle;
     QList< QPointer<KJob> > mCurrentJobs;

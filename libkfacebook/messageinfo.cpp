@@ -76,6 +76,21 @@ KDateTime MessageReplyInfo::createdTime() const
 }
 
 
+KMime::Message::Ptr MessageInfo::asMessage() const
+{
+  KMime::Message *msg = new KMime::Message();
+
+  msg->setBody( message().toAscii() );
+  msg->date()->fromUnicodeString( updatedTime().toString(KDateTime::RFCDateDay), "utf-8" );
+  msg->contentType()->fromUnicodeString( "text/plain", "utf-8" );
+  msg->subject()->fromUnicodeString( subject(), "utf-8" );
+  msg->from()->fromUnicodeString( "you@facebook", "utf-8" );
+
+  msg->assemble();
+
+  return KMime::Message::Ptr(msg);
+}
+
 void MessageInfo::setId(const QString &id)
 {
   mId = id;
@@ -96,19 +111,29 @@ QString MessageInfo::subject() const
   return mSubject;
 }
 
-void MessageInfo::setDate(const QString &date)
+void MessageInfo::setMessage(const QString &message)
 {
-  mDate = KDateTime::fromString(date, KDateTime::ISODate);
+  mMessage = message;
 }
 
-QString MessageInfo::dateAsString() const
+QString MessageInfo::message() const
 {
-  return mDate.toString();
+  return mMessage;
 }
 
-KDateTime MessageInfo::date() const
+void MessageInfo::setUpdatedTime(const QString &date)
 {
-  return mDate;
+  mUpdatedTime = KDateTime::fromString(date, KDateTime::ISODate);
+}
+
+QString MessageInfo::updatedTimeAsString() const
+{
+  return mUpdatedTime.toString();
+}
+
+KDateTime MessageInfo::updatedTime() const
+{
+  return mUpdatedTime;
 }
 
 void MessageInfo::setFrom(const QString &name, const QString &id)

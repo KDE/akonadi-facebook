@@ -22,6 +22,7 @@
 #include <config.h>
 #include "libkfacebook_export.h"
 
+#include <KMime/Message>
 #include <KDateTime>
 #include <QObject>
 
@@ -63,17 +64,24 @@ class LIBKFACEBOOK_EXPORT MessageInfo : public QObject
   Q_OBJECT
   Q_PROPERTY(QString id WRITE setId READ id)
   Q_PROPERTY(QString subject WRITE setSubject READ subject)
+  Q_PROPERTY(QString message WRITE setMessage READ message)
+  Q_PROPERTY(QString updated_time WRITE setUpdatedTime READ updatedTimeAsString)
   
   public:
+    KMime::Message::Ptr asMessage() const;
+
     void setId(const QString &id);
     QString id() const;
 
     void setSubject(const QString &subject);
     QString subject() const;
 
-    void setDate(const QString &date);
-    QString dateAsString() const;
-    KDateTime date() const;
+    void setMessage(const QString &message);
+    QString message() const;
+
+    void setUpdatedTime(const QString &date);
+    QString updatedTimeAsString() const;
+    KDateTime updatedTime() const;
 
     void setFrom(const QString &name, const QString &id);
     QString from() const;
@@ -85,7 +93,8 @@ class LIBKFACEBOOK_EXPORT MessageInfo : public QObject
   private:
     QString mId;
     QString mSubject;
-    KDateTime mDate;
+    QString mMessage;
+    KDateTime mUpdatedTime;
     QString mFrom;
     QString mFromId;
 
