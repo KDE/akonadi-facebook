@@ -15,8 +15,7 @@ Todo
     - add "reply with facebook" button and blurb explaining that native replying will not work
       - in reply to: invalid@whatever
       - real reply would require resource-specific transport, like in openchange
-    - use recipients and dates
-    - group thread with one thread leader
+    - fix thread-started date
     - propagate unread/read status back to FB
     - make deletions work
     - x-face headers in the absence of photo linking via email addresses
