@@ -26,7 +26,7 @@
 
 KMime::Message::Ptr MessageReplyInfo::asMessage() const
 {
-  KMime::Message *msg = new KMime::Message();
+  KMime::Message::Ptr msg(new KMime::Message());
 
   msg->setBody( message().toAscii() );
   msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
@@ -37,7 +37,7 @@ KMime::Message::Ptr MessageReplyInfo::asMessage() const
                           from());
 
   // Set all the recpients
-  foreach(const RecipientPtr to, mParentMessage->recipients()) {
+  foreach(const RecipientPtr &to, mParentMessage->recipients()) {
     msg->to()->addAddress(to->id.toAscii() + "@facebook.invalid",
                           to->name);
   }
@@ -46,8 +46,8 @@ KMime::Message::Ptr MessageReplyInfo::asMessage() const
   msg->messageID()->setIdentifier(id().toAscii() + "@facebook.msgid");
 
   //Reference
-  QString rId = id().split("_")[0];
-  int rRef = id().split("_")[1].toInt() - 1;
+  const QString rId = id().split("_")[0];
+  const int rRef = id().split("_")[1].toInt() - 1;
 
   if (rRef == 0) {
     msg->references()->appendIdentifier(rId.toAscii() + "@facebook.msgid");
@@ -60,11 +60,10 @@ KMime::Message::Ptr MessageReplyInfo::asMessage() const
   }
 
   msg->assemble();
-
-  return KMime::Message::Ptr(msg);
+  return msg;
 }
 
-MessageReplyInfo::MessageReplyInfo(const MessageInfoPtr parent)
+MessageReplyInfo::MessageReplyInfo(const MessageInfoPtr &parent)
   : mParentMessage(parent)
 {
 }
@@ -108,6 +107,8 @@ QString MessageReplyInfo::message() const
 void MessageReplyInfo::setCreatedTime(const QString &created_time)
 {
   mCreatedTime = facebookTimeToKDateTime(created_time);
+
+  // TODO: Don't assert here, it will make the resource crash if Facebook changes the data format.
   Q_ASSERT(mCreatedTime.isValid());
 }
 
@@ -124,7 +125,7 @@ KDateTime MessageReplyInfo::createdTime() const
 
 KMime::Message::Ptr MessageInfo::asMessage() const
 {
-  KMime::Message *msg = new KMime::Message();
+  KMime::Message::Ptr msg(new KMime::Message());
 
   msg->setBody( message().toAscii() );
   msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
@@ -135,7 +136,7 @@ KMime::Message::Ptr MessageInfo::asMessage() const
                           from());
 
   // Set all the recpients
-  foreach(const RecipientPtr to, recipients()) {
+  foreach(const RecipientPtr &to, recipients()) {
     msg->to()->addAddress(to->id.toAscii() + "@facebook.invalid",
                           to->name);
   }
@@ -144,8 +145,7 @@ KMime::Message::Ptr MessageInfo::asMessage() const
   msg->messageID()->setIdentifier(id().toAscii() + "@facebook.msgid");
 
   msg->assemble();
-
-  return KMime::Message::Ptr(msg);
+  return msg;
 }
 
 void MessageInfo::setId(const QString &id)
@@ -180,9 +180,8 @@ QString MessageInfo::message() const
 
 void MessageInfo::setUpdatedTime(const QString &date)
 {
-  
   mUpdatedTime = facebookTimeToKDateTime(date);
-  Q_ASSERT(mUpdatedTime.isValid());
+  Q_ASSERT(mUpdatedTime.isValid()); // TODO: Don't assert here, same reason as above
 
   if (!mCreatedTime.isValid() ||
       mCreatedTime > mUpdatedTime) {
@@ -221,7 +220,7 @@ QString MessageInfo::fromId() const
   return mFromId;
 }
 
-void MessageInfo::addReply(const MessageReplyInfoPtr reply)
+void MessageInfo::addReply(const MessageReplyInfoPtr &reply)
 {
   mReplies << reply;
 
@@ -235,7 +234,7 @@ QList<MessageReplyInfoPtr> MessageInfo::replies() const
   return mReplies;
 }
 
-void MessageInfo::addRecipient(const RecipientPtr to)
+void MessageInfo::addRecipient(const RecipientPtr &to)
 {
   mRecipients << to;
 }

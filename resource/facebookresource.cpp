@@ -187,12 +187,14 @@ void FacebookResource::messageListFetched(KJob *job)
   Q_ASSERT( messagesJob );
   mCurrentJobs.removeAll(job);
 
+  // TODO: Error handling
+
   kDebug() << "Fetched the messages";
 
   /*
    * TODO: do real updating instead of parsing everything here
    */
-  foreach(const MessageInfoPtr msg, messagesJob->allMessages())
+  foreach(const MessageInfoPtr &msg, messagesJob->allMessages())
   {
     mNewOrChangedMessages << msg;
   }
@@ -203,7 +205,7 @@ void FacebookResource::messageListFetched(KJob *job)
     finishMessageFetching();
   } else {
     emit percent(5);
-    emit status( Running, i18n("Retrieving message threads"));
+    emit status( Running, i18n("Retrieving message threads."));
     fetchNewOrChangedMessages();
   }
 }
@@ -237,7 +239,6 @@ void FacebookResource::noteListFetched( KJob* job )
     
   }
 }
-
 
 void FacebookResource::eventListFetched( KJob* job )
 {
@@ -353,7 +354,7 @@ void FacebookResource::fetchNewOrChangedMessages()
   /*
    * Fetch all message threads in parallel
    */
-  foreach(const MessageInfoPtr msg, mNewOrChangedMessages) {
+  foreach(const MessageInfoPtr &msg, mNewOrChangedMessages) {
     MessageJob * const messageJob = new MessageJob( msg->id(), Settings::self()->accessToken() );
     mCurrentJobs << messageJob;
     connect(messageJob, SIGNAL(result(KJob*)), this, SLOT(messageJobFinished(KJob *)));
@@ -563,7 +564,7 @@ void FacebookResource::messageJobFinished(KJob *job)
   mCurrentJobs.removeAll(job);
 
   if (messageJob->error()) {
-     abortWithError( i18n( "Unable to fetch thread from server: %1", messageJob->errorText() ) );
+    abortWithError( i18n( "Unable to fetch thread from server: %1", messageJob->errorText() ) );
   } else {
     const MessageInfoPtr msg = messageJob->messageInfo();
 
@@ -576,7 +577,7 @@ void FacebookResource::messageJobFinished(KJob *job)
     /*
      * replies
      */
-    foreach(const MessageReplyInfoPtr reply, msg->replies()) {
+    foreach (const MessageReplyInfoPtr &reply, msg->replies()) {
       Item newReply;
       newReply.setRemoteId( reply->id() );
       newReply.setMimeType( "message/rfc822" );

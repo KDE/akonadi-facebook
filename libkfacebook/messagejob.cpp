@@ -42,7 +42,7 @@ void MessageJob::handleData( const QVariant &data)
 
   // To
   const QVariantList recipients = data.toMap()["to"].toMap()["data"].toList();
-  foreach(const QVariant recipient, recipients) {
+  foreach(const QVariant &recipient, recipients) {
     RecipientPtr to (new Recipient);
     to->name = recipient.toMap()["name"].toString();
     to->id = recipient.toMap()["id"].toString();
@@ -51,7 +51,7 @@ void MessageJob::handleData( const QVariant &data)
 
   if (data.toMap().contains("comments")) {
     const QVariantList comments = data.toMap()["comments"].toMap()["data"].toList();
-    foreach(const QVariant comment, comments) {
+    foreach(const QVariant &comment, comments) {
       MessageReplyInfoPtr reply( new MessageReplyInfo( msgInfo ) );
       QJson::QObjectHelper::qvariant2qobject( comment.toMap(), reply.data() );
 

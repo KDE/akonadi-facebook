@@ -46,7 +46,7 @@ class LIBKFACEBOOK_EXPORT MessageReplyInfo : public QObject
   public:
     KMime::Message::Ptr asMessage() const;
 
-    MessageReplyInfo(const MessageInfoPtr parent);
+    explicit MessageReplyInfo(const MessageInfoPtr &parent);
 
     void setId(const QString &id);
     QString id() const;
@@ -104,10 +104,10 @@ class LIBKFACEBOOK_EXPORT MessageInfo : public QObject
     QString from() const;
     QString fromId() const;
 
-    void addReply(const MessageReplyInfoPtr reply);
+    void addReply(const MessageReplyInfoPtr &reply);
     QList<MessageReplyInfoPtr> replies() const;
 
-    void addRecipient(const RecipientPtr to);
+    void addRecipient(const RecipientPtr &to);
     QList<RecipientPtr> recipients() const;
 
   private:
@@ -121,7 +121,6 @@ class LIBKFACEBOOK_EXPORT MessageInfo : public QObject
 
     QList<MessageReplyInfoPtr> mReplies;
     QList<RecipientPtr> mRecipients;
-
 };
 
 #endif
