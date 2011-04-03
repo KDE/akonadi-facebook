@@ -105,10 +105,13 @@ void FacebookResource::resetState()
   mIdle = true;
   mNumFriends = -1;
   mNumPhotosFetched = 0;
+  mNumMessagesFetched = 0;
   mCurrentJobs.clear();
   mExistingFriends.clear();
   mNewOrChangedFriends.clear();
   mPendingFriends.clear();
+  mNewOrChangedMessages.clear();
+  mPendingMessages.clear();
 }
 
 void FacebookResource::slotAbortRequested()
