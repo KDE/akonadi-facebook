@@ -1,4 +1,5 @@
-/* Copyright 2010 Thomas McGuire <mcguire@kde.org>
+/* Copyright 2010, 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -65,11 +66,9 @@ class FacebookResource : public Akonadi::ResourceBase,
     void noteListFetched( KJob *job );
     void noteJobFinished( KJob *job );
     void noteAddJobFinished( KJob *job );
-
     void deleteJobFinished( KJob *job );
     void messageListFetched( KJob *job );
     void messageJobFinished( KJob *job );
-
 
   private:
     void fetchPhotos();

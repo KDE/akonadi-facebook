@@ -1,4 +1,5 @@
-/* Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
+/* Copyright 2010, 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -24,6 +25,9 @@
 #include <KDebug>
 #include <KLocale>
 
+/*
+ * FacebookJobs base class
+ */
 FacebookJob::FacebookJob( const QString& path, const QString& accessToken )
   : mAccessToken( accessToken ),
     mPath( path )
@@ -53,6 +57,21 @@ bool FacebookJob::doKill()
   return KJob::doKill();
 }
 
+void FacebookJob::handleError( const QVariant& data )
+{
+  const QVariantMap errorMap = data.toMap();
+  const QString type = errorMap["type"].toString();
+  const QString message = errorMap["message"].toString();
+  kWarning() << "An error of type" << type << "occurred:" << message;
+  if ( type.toLower() != "oauthexception" ) {
+    setError( KJob::UserDefinedError );
+    setErrorText( i18n( "The Facebook server returned an error of type <i>%1</i>: <i>%2</i>" , type, message ) );
+  } else {
+    setError( AuthenticationProblem );
+    setErrorText( i18n( "Unable to login to the Facebook server, authentication failure.\nThe server said: <i>%1</i>", message ) );
+  }
+}
+
 /*
  * Facebook Add Job
  */
@@ -70,7 +89,7 @@ void FacebookAddJob::start()
 
   url.addQueryItem("access_token", mAccessToken);
 
-  foreach(const QueryItem item, mQueryItems) {
+  foreach(const QueryItem &item, mQueryItems) {
     url.addQueryItem(item.first, item.second);
   }
 
@@ -91,11 +110,23 @@ void FacebookAddJob::jobFinished(KJob *job)
     kWarning() << "Job error: " << addJob->errorString();
   } else {
     QJson::Parser parser;
-    QVariant result = parser.parse(addJob->data().data());
-    const QVariantMap dataMap = result.toMap();
-    if ( dataMap.contains("id") ) { 
-      setProperty("id", dataMap["id"]);
-    }   
+    bool ok;
+    const QVariant result = parser.parse(addJob->data(), &ok);
+    if (!ok) {
+      kWarning() << "Unable to parse JSON data: " << QString::fromAscii( addJob->data().data() );
+      setError( KJob::UserDefinedError );
+      setErrorText( i18n( "Unable to parse data returned by the Facebook server: %1", parser.errorString() ) );
+    } else {
+      const QVariant error = result.toMap()["error"];
+      if ( error.isValid() ) {
+        handleError( error );
+      } else {
+        const QVariantMap dataMap = result.toMap();
+        if ( dataMap.contains("id") ) {
+          setProperty("id", dataMap["id"]);
+        }
+      }
+    }
   }
 
   emitResult();
@@ -136,6 +167,7 @@ void FacebookDeleteJob::jobFinished( KJob *job )
     setErrorText( KIO::buildErrorString( error(), deleteJob->errorText() ) );
     kWarning() << "Job error: " << deleteJob->errorString();
   } else {
+    // TODO: error handling. Does the server return the error as a JSON string?
     kDebug() << "Got data: " << QString::fromAscii( deleteJob->data().data() );
   }
 
@@ -146,7 +178,6 @@ void FacebookDeleteJob::jobFinished( KJob *job )
 /*
  * Facebook get job
  */
-
 FacebookGetJob::FacebookGetJob( const QString &path, const QString &accessToken )
   : FacebookJob(path, accessToken)
 {
@@ -183,7 +214,7 @@ void FacebookGetJob::start()
   if ( !mFields.isEmpty() ) { 
     url.addQueryItem( "fields", mFields.join( "," ) );
   }
-  
+
   foreach( const QueryItem &item, mQueryItems ) {
     url.addQueryItem( item.first, item.second );
   }
@@ -225,21 +256,31 @@ void FacebookGetJob::jobFinished(KJob *job)
   mJob = 0;
 }
 
-void FacebookGetJob::handleError( const QVariant& data )
+/*
+ * FacebookGetIdJob
+ */
+FacebookGetIdJob::FacebookGetIdJob(const QStringList &ids, const QString &accessToken)
+  : FacebookGetJob(accessToken),
+    mMultiQuery(true)
 {
-  const QVariantMap errorMap = data.toMap();
-  const QString type = errorMap["type"].toString();
-  const QString message = errorMap["message"].toString();
-  kWarning() << "An error of type" << type << "occurred:" << message;
-  if ( type.toLower() != "oauthexception" ) {
-    setError( KJob::UserDefinedError );
-    setErrorText( i18n( "The Facebook server returned an error of type <i>%1</i>: <i>%2</i>" , type, message ) );
-  } else {
-    setError( AuthenticationProblem );
-    setErrorText( i18n( "Unable to login to the Facebook server, authentication failure.\nThe server said: <i>%1</i>", message ) );
-  }
+  setIds(ids);
 }
 
+FacebookGetIdJob::FacebookGetIdJob(const QString &id, const QString &accessToken)
+  : FacebookGetJob("/" + id, accessToken),
+    mMultiQuery(false)
+{
+}
 
+void FacebookGetIdJob::handleData(const QVariant &data)
+{
+  if (!mMultiQuery) {
+    handleSingleData(data);
+  } else {
+    foreach(const QVariant &item, data.toMap()) {
+      handleSingleData(item);
+    }
+  }
+}
 
 #include "facebookjobs.moc"

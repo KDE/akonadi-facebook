@@ -20,29 +20,38 @@
 #define PHOTOJOB_H
 
 #include "libkfacebook_export.h"
+#include "facebookjobs.h"
 #include <KJob>
 #include <QImage>
 #include <QPointer>
 
-class LIBKFACEBOOK_EXPORT PhotoJob : public KJob
+/**
+ * A FacebookGetJob to retrieve the profile picture of a person.
+ */
+class LIBKFACEBOOK_EXPORT PhotoJob : public FacebookGetJob
 {
   Q_OBJECT
   public:
+    /**
+    * @brief Create a PhotoJob that will retrieve the large pphoto of a person.
+    *
+    * @param friendId The id of the person of whom we want to retrive the
+    *                 profile picture.
+    * @param accessToken The facebook access token to retrieve this data.
+    */
     PhotoJob( const QString &friendId, const QString &accessToken );
-    QImage photo() const;
-    virtual void start();
 
-  protected:
-    virtual bool doKill();
+    /**
+    * @return The profile picture as a QImage.
+    */
+    QImage photo() const;
 
   private slots:
-    void getJobFinished( KJob *job );
+    void jobFinished( KJob *job );
 
   private:
+    void handleData( const QVariant& data );
     QImage mImage;
-    QString mAccessToken;
-    QString mUserId;
-    QPointer<KJob> mJob;
 };
 
 #endif

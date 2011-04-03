@@ -22,26 +22,43 @@
 #include "facebookjobs.h"
 #include "userinfo.h"
 
-class LIBKFACEBOOK_EXPORT FriendJob : public FacebookGetJob
+/**
+ * A job to retrieve the data about one or multiple friends from facebook.
+ */
+class LIBKFACEBOOK_EXPORT FriendJob : public FacebookGetIdJob
 {
   Q_OBJECT
   public:
+    /**
+    * @brief Constructor to retrieve multiple friends from facebook.
+    *
+    * @param friendIds A list of ids of the friends you want to retrieve from facebook.
+    * @param accessToken The access token to retrieve the data from facebook.
+    */
     FriendJob( const QStringList &friendIds, const QString &accessToken );
-    FriendJob( const QString &friendId, const QString &accessToken );
-    QList<UserInfoPtr> friendInfo() const;
 
-  protected:
-    virtual void handleData( const QVariant& data );
+    /**
+    * @brief Constructor to retrieve a single friend from facebook.
+    *
+    * @param friendId The id of the friend you want to retrieve data from.
+    * @param accessToken The access token to retrieve the data from facebook.
+    */
+    FriendJob( const QString &friendId, const QString &accessToken );
+    
+    /**
+    * @return A list of pointers to UserInfo objects of all the users (friends)
+    *         that have been retrieved by this job.
+    */
+    QList<UserInfoPtr> friendInfo() const;
 
   private:
     QStringList friendFields() const;
-    UserInfoPtr handleSingleUser( const QVariant& data );
+    void handleSingleData( const QVariant& data );
     void handlePartner(const UserInfoPtr &userInfo, const QVariant &partner);
     void handleLocation(const UserInfoPtr &userInfo, const QVariant &data);
     void handleWork(const UserInfoPtr &userInfo, const QVariant &data);
 
     QList<UserInfoPtr> mFriendInfo;
-    bool mMultiQuery;
 };
 
 #endif

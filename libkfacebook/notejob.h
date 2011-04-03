@@ -1,4 +1,4 @@
-/* Copyright 2011, 2011 Roeland Jago Douma <unix@rullzer.com>
+/* Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -22,22 +22,41 @@
 #include "facebookjobs.h"
 #include "noteinfo.h"
 
-class LIBKFACEBOOK_EXPORT NoteJob : public FacebookGetJob
+/**
+* A job to retrieve one or multiple notes from facebook and convert them into
+* noteInfo objects.
+*/
+class LIBKFACEBOOK_EXPORT NoteJob : public FacebookGetIdJob
 {
   Q_OBJECT
   public:
+    /**
+    * @brief Construct a notejob to retrieve multiple notes.
+    *
+    * @param noteIds A list of ids of notes to retrieve.
+    * @param accessToken The token to access data on facebook.
+    */
     NoteJob( const QStringList &noteIds, const QString &accessToken );
+    
+    /**
+    * @brief Contrust a notejob to retrieve a single note from facebook.
+    *
+    * @param noteId The id of the note to retrieve.
+    * @param accessToken The token to accesss data on facebook.
+    */
     NoteJob( const QString &noteId, const QString &accessToken );
+
+    /**
+    * @brief Return a list of all the notes that his job has retrieved
+    *
+    * @return List of pointers to noteinfo objects
+    */
     QList<NoteInfoPtr> noteInfo() const;
 
-  protected:
-    virtual void handleData( const QVariant& data );
-
   private:
-    NoteInfoPtr handleSingleNote( const QVariant& data );
-
+    void handleSingleData( const QVariant& data );
+    
     QList<NoteInfoPtr> mNoteInfo;
-    bool mMultiQuery;
 };
 
 #endif

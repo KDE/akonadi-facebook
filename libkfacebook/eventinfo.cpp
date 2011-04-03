@@ -25,27 +25,26 @@
 #include <KPIMUtils/LinkLocator>
 #include <KCal/Attendee>
 
-Attendee::Attendee(const QString &name, const QString &id, const KCal::Attendee::PartStat &status)
+AttendeeInfo::AttendeeInfo(const QString &name, const QString &id, const Attendee::PartStat &status)
   : mName(name), mId(id), mStatus(status)
 {
 
 }
 
-QString Attendee::name() const
+QString AttendeeInfo::name() const
 {
   return mName;
 }
 
-QString Attendee::id() const
+QString AttendeeInfo::id() const
 {
   return mId;
 }
 
-KCal::Attendee::PartStat Attendee::status() const
+Attendee::PartStat AttendeeInfo::status() const
 {
   return mStatus;
 }
-
 
 EventPtr EventInfo::asEvent() const
 {
@@ -89,15 +88,14 @@ EventPtr EventInfo::asEvent() const
   //       Public/Private -> freebusy!
   //       venue: add to location?
   //       picture?
-  
-  foreach(const AttendeePtr a, attendees()) {
-    KCal::Attendee *b = new KCal::Attendee(a->name(), 
-                                           "facebook@unkown.invalid", 
-                                           false, 
-                                           a->status(),
-                                           KCal::Attendee::OptParticipant,
-                                           a->id() );
-    event->addAttendee(b);
+  foreach(const AttendeeInfoPtr &attendeeInfo, attendees()) {
+    AttendeePtr attendee( new Attendee(attendeeInfo->name(),
+                                 "facebook@unkown.invalid", 
+                                 false, 
+                                 attendeeInfo->status(),
+                                 Attendee::OptParticipant,
+                                 attendeeInfo->id() ) );
+    event->addAttendee(attendee);
   }
 
   return event;
@@ -198,12 +196,12 @@ QString EventInfo::updatedTimeString() const
   return mUpdatedTime;
 }
 
-void EventInfo::addAttendee(AttendeePtr a )
+void EventInfo::addAttendees(const QList<AttendeeInfoPtr> &attendees)
 {
-  mAttendees << a;
+  mAttendees << attendees;
 }
 
-QList<AttendeePtr> EventInfo::attendees() const
+QList<AttendeeInfoPtr> EventInfo::attendees() const
 {
   return mAttendees;
 }

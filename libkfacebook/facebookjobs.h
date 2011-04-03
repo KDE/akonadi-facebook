@@ -1,4 +1,5 @@
-/* Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
+/* Copyright 2010, 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -26,32 +27,49 @@
 
 typedef QPair<QString, QString> QueryItem;
 
+/**
+ * FacebookJob base class
+ */
 class LIBKFACEBOOK_EXPORT FacebookJob : public KJob
 {
   Q_OBJECT
   public:
+    /** 
+     * Constructor that sets the path and the accesstoken 
+     *
+     * @param path The path after https://graphs.facebook.com
+     * @param accessToken The accessToken to access our data on facebook
+     * */
     FacebookJob( const QString &path, const QString &accessToken );
     explicit FacebookJob( const QString &accessToken );
 
+    /** Add a query item to the list */
     void addQueryItem( const QString &key, const QString &value );
 
     virtual void start() = 0;
 
     enum JobErrorType { AuthenticationProblem = KJob::UserDefinedError + 42 };
-
+  
   protected:
+    /** Kill the currentjobs and its subjobs */
     virtual bool doKill();
+
+    /** Check for a return error and set the appropiate error messags */
+    void handleError( const QVariant &data );
+
+    QString mAccessToken;         /** Facebook Access token */
+    QString mPath;                /** path after https://graph.facebook.com/ */
+    QList<QueryItem> mQueryItems; /** The query items */
+    QPointer<KJob> mJob;          /** Pointer to the running job */
 
   private slots:
     virtual void jobFinished( KJob *job ) = 0;
 
-  protected:
-    QString mAccessToken;
-    QString mPath;
-    QList<QueryItem> mQueryItems;
-    QPointer<KJob> mJob;
 };
 
+/**
+ * FacebookJob that adds data to facebook
+ */
 class LIBKFACEBOOK_EXPORT FacebookAddJob : public FacebookJob
 {
   Q_OBJECT
@@ -65,6 +83,9 @@ class LIBKFACEBOOK_EXPORT FacebookAddJob : public FacebookJob
     void jobFinished(KJob *job);
 };
 
+/**
+ * FacebookJob that deletes data from facebook
+ */
 class LIBKFACEBOOK_EXPORT FacebookDeleteJob : public FacebookJob
 {
   Q_OBJECT
@@ -78,6 +99,9 @@ class LIBKFACEBOOK_EXPORT FacebookDeleteJob : public FacebookJob
     void jobFinished(KJob *job);
 };
 
+/**
+ * FacebookJob that gets data from facebook
+ */
 class LIBKFACEBOOK_EXPORT FacebookGetJob : public FacebookJob
 {
   Q_OBJECT
@@ -86,9 +110,11 @@ class LIBKFACEBOOK_EXPORT FacebookGetJob : public FacebookJob
     FacebookGetJob( const QString &path, const QString &accessToken ); 
     explicit FacebookGetJob( const QString &accessToken ); 
 
+    /** Set the fields the job should retrieve from facebook */
     void setFields( const QStringList &fields ); 
 
-    // If ids are set, the path is ignored.
+    /** Set the Id's the job should retrieve from facebook.
+     * If this is set then the path is ignored */
     void setIds( const QStringList &ids ); 
 
     virtual void start();
@@ -96,14 +122,48 @@ class LIBKFACEBOOK_EXPORT FacebookGetJob : public FacebookJob
   protected:
     virtual void handleData( const QVariant &data ) = 0; 
 
-  private slots:
+  protected slots:
     void jobFinished( KJob *job ); 
 
   private:
-    void handleError( const QVariant &data ); 
-
-    QStringList mFields;
-    QStringList mIds;
+    QStringList mFields; /** The field to retrieve from facebook */
+    QStringList mIds;    /** The id's to retrieve from facebook */
 };
+
+/**
+ * A FacebookGetJob to retrieve a single or multiple elements from facebook
+ * based on their facebook id.
+ */
+class LIBKFACEBOOK_EXPORT FacebookGetIdJob : public FacebookGetJob
+{
+  Q_OBJECT
+  public:
+    /**
+     * @brief Constructor to retrieve a list of ids from facebook.
+     *
+     * @param ids A list of ids to retrieve from facebook.
+     * @param accessToken The access token to retrieve data from facebook.
+     */
+    FacebookGetIdJob(const QStringList &ids, const QString &accessToken);
+
+    /**
+     * @brief Constructor to retrieve a single item from facebook.
+     *
+     * @param id The id of the item to retrieve from facebook.
+     * @param accessToken The access token to retrieve the data from facebook.
+     */
+    FacebookGetIdJob(const QString &id, const QString &accessToken);
+
+  protected:
+    /**
+     * @brief Parse a single item that is returned by the FacebookGetJob and
+     *        add it to the interl list of elements.
+     */
+    virtual void handleSingleData(const QVariant &data) = 0;
+
+  private:
+    virtual void handleData(const QVariant &data);
+    bool mMultiQuery;
+};  
 
 #endif

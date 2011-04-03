@@ -1,4 +1,4 @@
-/* Copyright 2010, 2011 Roeland Jago Douma <unix@rullzer.com>
+/* Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -22,16 +22,13 @@
 #include <qjson/qobjecthelper.h>
 
 NoteJob::NoteJob( const QString& noteId, const QString& accessToken )
-  : FacebookGetJob( '/' + noteId, accessToken),
-    mMultiQuery( false )
+  : FacebookGetIdJob(noteId, accessToken)
 {
 }
 
 NoteJob::NoteJob( const QStringList& noteIds, const QString& accessToken )
-  : FacebookGetJob( accessToken ),
-    mMultiQuery( true )
+  : FacebookGetIdJob(noteIds, accessToken )
 {
-  setIds( noteIds );
 }
 
 QList<NoteInfoPtr> NoteJob::noteInfo() const
@@ -39,23 +36,12 @@ QList<NoteInfoPtr> NoteJob::noteInfo() const
   return mNoteInfo;
 }
 
-NoteInfoPtr NoteJob::handleSingleNote( const QVariant& data )
+void NoteJob::handleSingleData( const QVariant& data )
 {
   NoteInfoPtr noteInfo( new NoteInfo() );
   const QVariantMap dataMap = data.toMap();
   QJson::QObjectHelper::qvariant2qobject( dataMap, noteInfo.data() );
-  return noteInfo;
-}
-
-void NoteJob::handleData( const QVariant& data )
-{
-  if ( !mMultiQuery ) {
-    mNoteInfo.append( handleSingleNote( data ) );
-  } else {
-    foreach( const QVariant &note, data.toMap() ) {
-      mNoteInfo.append( handleSingleNote( note ) );
-    }
-  }
+  mNoteInfo.append(noteInfo);
 }
 
 #include "notejob.moc"

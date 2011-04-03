@@ -1,4 +1,4 @@
-/* Copyright 2010, 2011 Thomas McGuire <mcguire@kde.org>
+/* Copyright 2011 Thomas McGuire <mcguire@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -22,18 +22,15 @@
 #include <qjson/qobjecthelper.h>
 
 EventJob::EventJob( const QString& eventId, const QString& accessToken )
-  : FacebookGetJob( '/' + eventId, accessToken),
-    mMultiQuery( false )
+  : FacebookGetIdJob(eventId, accessToken)
 {
   setFields( eventFields() );
 }
 
 EventJob::EventJob( const QStringList& eventIds, const QString& accessToken )
-  : FacebookGetJob( accessToken ),
-    mMultiQuery( true )
+  : FacebookGetIdJob(eventIds, accessToken )
 {
   setFields( eventFields() );
-  setIds( eventIds );
 }
 
 QStringList EventJob::eventFields() const
@@ -60,7 +57,21 @@ QList<EventInfoPtr> EventJob::eventInfo() const
   return mEventInfo;
 }
 
-EventInfoPtr EventJob::handleSingleEvent( const QVariant& data )
+QList<AttendeeInfoPtr> attendees(const QVariantMap &dataMap, const QString &facebookKey,
+                                 Attendee::PartStat status)
+{
+  QList<AttendeeInfoPtr> retVal;
+  const QVariantList list = dataMap.value(facebookKey).toMap().value("data").toList();
+  foreach(const QVariant &attendee, list) {
+    const QVariantMap map = attendee.toMap();
+    AttendeeInfoPtr attendeeInfo( new AttendeeInfo(map["name"].toString(),
+                                                   map["id"].toString(), status) );
+    retVal << attendeeInfo;
+  }
+  return retVal;
+}
+
+void EventJob::handleSingleData( const QVariant& data )
 {
   EventInfoPtr eventInfo( new EventInfo() );
   const QVariantMap dataMap = data.toMap();
@@ -70,62 +81,12 @@ EventInfoPtr EventJob::handleSingleEvent( const QVariant& data )
     eventInfo->setOrganizer( owner.toMap().value( "name" ).toString() );
   }
 
-  QVariant attendee;
+  eventInfo->addAttendees(attendees(dataMap, "noreply", Attendee::NeedsAction));
+  eventInfo->addAttendees(attendees(dataMap, "maybe", Attendee::Tentative));
+  eventInfo->addAttendees(attendees(dataMap, "attending", Attendee::Accepted));
+  eventInfo->addAttendees(attendees(dataMap, "declined", Attendee::Declined));
 
-  /*
-   * People that have not yet responded
-   */
-  const QVariantList noreply = dataMap.value("noreply").toMap().value("data").toList();
-  foreach(attendee, noreply) {
-    const QVariantMap map= attendee.toMap();
-    AttendeePtr a( new Attendee(map["name"].toString(), map["id"].toString(), KCal::Attendee::NeedsAction) );
-    eventInfo->addAttendee(a);
-  }
-
-  /*
-   * People that maybe will attend
-   */
-  const QVariantList maybe = dataMap.value("maybe").toMap().value("data").toList();
-  foreach(attendee, maybe) {
-    const QVariantMap map= attendee.toMap();
-    AttendeePtr a( new Attendee(map["name"].toString(), map["id"].toString(), KCal::Attendee::Tentative) );
-    eventInfo->addAttendee(a);
-  }
-
-  /*
-   * People that will attend
-   */
-  const QVariantList attending = dataMap.value("attending").toMap().value("data").toList();
-  foreach(attendee, attending) {
-    const QVariantMap map= attendee.toMap();
-    AttendeePtr a( new Attendee(map["name"].toString(), map["id"].toString(), KCal::Attendee::Accepted) );
-    eventInfo->addAttendee(a);
-  }
-
-  /*
-   * People that have declined
-   */
-  const QVariantList declined = dataMap.value("declined").toMap().value("data").toList();
-  foreach(attendee, declined) {
-    const QVariantMap map= attendee.toMap();
-    AttendeePtr a( new Attendee(map["name"].toString(), map["id"].toString(), KCal::Attendee::Declined) );
-    eventInfo->addAttendee(a);
-  }
-
-
-
-  return eventInfo;
-}
-
-void EventJob::handleData( const QVariant& data )
-{
-  if ( !mMultiQuery ) {
-    mEventInfo.append( handleSingleEvent( data ) );
-  } else {
-    foreach( const QVariant &event, data.toMap() ) {
-      mEventInfo.append( handleSingleEvent( event ) );
-    }
-  }
+  mEventInfo.append(eventInfo);
 }
 
 #include "eventjob.moc"

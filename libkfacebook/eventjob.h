@@ -1,4 +1,4 @@
-/* Copyright 2011, 2011 Thomas McGuire <mcguire@kde.org>
+/* Copyright 2011 Thomas McGuire <mcguire@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -22,23 +22,44 @@
 #include "facebookjobs.h"
 #include "eventinfo.h"
 
-class LIBKFACEBOOK_EXPORT EventJob : public FacebookGetJob
+/**
+ * A job to retrieve one or multiple notes from facebook
+ */
+class LIBKFACEBOOK_EXPORT EventJob : public FacebookGetIdJob
 {
   Q_OBJECT
   public:
+    /**
+    * @brief Constructor to create a job that retrieves multiple notes
+    *        from facebook.
+    *
+    * @param eventIds The list of ids of the notes to retrieve.
+    * @param accessToken The access token to access the notes on facebook.
+    */
     EventJob( const QStringList &eventIds, const QString &accessToken );
-    EventJob( const QString &eventId, const QString &accessToken );
-    QList<EventInfoPtr> eventInfo() const;
 
-  protected:
-    virtual void handleData( const QVariant& data );
+    /**
+    * @brief Constructor to create a job that retrieves a single note from 
+    *        facebook.
+    *
+    * @param eventId The id of the note to retrieve.
+    * @param accessToken The access token to access the note on facebook.
+    */
+    EventJob( const QString &eventId, const QString &accessToken );
+
+    /**
+    * @brief Return a list of pointers to EventInfo objects that have been
+    *        retrieved by this job.
+    *
+    * @return 
+    */
+    QList<EventInfoPtr> eventInfo() const;
 
   private:
     QStringList eventFields() const;
-    EventInfoPtr handleSingleEvent( const QVariant& data );
+    void handleSingleData( const QVariant& data );
 
     QList<EventInfoPtr> mEventInfo;
-    bool mMultiQuery;
 };
 
 #endif
