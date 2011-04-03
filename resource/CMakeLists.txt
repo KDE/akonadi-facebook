@@ -25,6 +25,7 @@ set( facebookresource_SRCS
   facebookresource_events.cpp
   facebookresource_friends.cpp
   facebookresource_notes.cpp
+  facebookresource_messages.cpp
   settings.cpp
   settingsdialog.cpp
   timestampattribute.cpp

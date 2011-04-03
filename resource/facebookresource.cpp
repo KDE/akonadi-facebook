@@ -31,9 +31,8 @@
 #include <libkfacebook/allnoteslistjob.h>
 #include <libkfacebook/notejob.h>
 #include <libkfacebook/noteaddjob.h>
-#include <libkfacebook/allmessageslistjob.h>
-#include <libkfacebook/messagejob.h>
 #include <libkfacebook/facebookjobs.h>
+#include <libkfacebook/allmessageslistjob.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
@@ -184,36 +183,6 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
   }
 }
 
-void FacebookResource::messageListFetched(KJob *job)
-{
-  Q_ASSERT(!mIdle);
-  AllMessagesListJob * const messagesJob = dynamic_cast<AllMessagesListJob*>( job );
-  Q_ASSERT( messagesJob );
-  mCurrentJobs.removeAll(job);
-
-  // TODO: Error handling
-
-  kDebug() << "Fetched the messages";
-
-  /*
-   * TODO: do real updating instead of parsing everything here
-   */
-  foreach(const MessageInfoPtr &msg, messagesJob->allMessages())
-  {
-    mNewOrChangedMessages << msg;
-  }
-
-
-  if (mNewOrChangedMessages.isEmpty()) {
-    itemsRetrievalDone();
-    finishMessageFetching();
-  } else {
-    emit percent(5);
-    emit status( Running, i18n("Retrieving message threads."));
-    fetchNewOrChangedMessages();
-  }
-}
-
 bool FacebookResource::retrieveItem( const Akonadi::Item &item, const QSet<QByteArray> &parts )
 {
   Q_UNUSED( parts );
@@ -240,49 +209,6 @@ bool FacebookResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
   return true;
 }
 
-void FacebookResource::messageJobFinished(KJob *job)
-{
-  Q_ASSERT( !mIdle );
-  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  MessageJob * const messageJob = dynamic_cast<MessageJob *>( job );
-  Q_ASSERT(messageJob);
-  mCurrentJobs.removeAll(job);
-
-  if (messageJob->error()) {
-    abortWithError( i18n( "Unable to fetch thread from server: %1", messageJob->errorText() ) );
-  } else {
-    const MessageInfoPtr msg = messageJob->messageInfo();
-
-    Item newMessage;
-    newMessage.setRemoteId( msg->id() );
-    newMessage.setMimeType( "message/rfc822" );
-    newMessage.setPayload<KMime::Message::Ptr>( msg->asMessage() );
-    itemsRetrievedIncremental( Item::List() << newMessage, Item::List() );
-
-    /*
-     * replies
-     */
-    foreach (const MessageReplyInfoPtr &reply, msg->replies()) {
-      Item newReply;
-      newReply.setRemoteId( reply->id() );
-      newReply.setMimeType( "message/rfc822" );
-      newReply.setPayload<KMime::Message::Ptr>( reply->asMessage() );
-      itemsRetrievedIncremental( Item::List() << newReply, Item::List() );
-    }
-
-    if(!mCurrentJobs.isEmpty()) {
-      /*
-       * TODO: status update
-       */
-    } else {
-      itemsRetrievalDone();
-      finishMessageFetching();
-    }
-
-  }
-}
-
-  
 void FacebookResource::retrieveCollections()
 {
   Collection friends;
@@ -383,29 +309,6 @@ void FacebookResource::itemAdded( const Akonadi::Item &item, const Akonadi::Coll
   } else {
     Q_ASSERT(!"Can not add this type of item!");
     cancelTask();
-  }
-}
-
-void FacebookResource::finishMessageFetching()
-{
-  Q_ASSERT(mCurrentJobs.size() == 0);
-
-  mNewOrChangedMessages.clear();
-
-  emit percent(100);
-  resetState();
-}
-
-void FacebookResource::fetchNewOrChangedMessages()
-{
-  /*
-   * Fetch all message threads in parallel
-   */
-  foreach(const MessageInfoPtr &msg, mNewOrChangedMessages) {
-    MessageJob * const messageJob = new MessageJob( msg->id(), Settings::self()->accessToken() );
-    mCurrentJobs << messageJob;
-    connect(messageJob, SIGNAL(result(KJob*)), this, SLOT(messageJobFinished(KJob *)));
-    messageJob->start();
   }
 }
 

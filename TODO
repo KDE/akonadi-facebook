@@ -12,6 +12,7 @@ Todo
       - requires resource-specific incidence editor plugin (talk to openchange guys, they also need that)
   - messages
     - add mimetype to .desktop file
+    - make the message jobs use the standard job classes
     - inbox, outbox
     - add "reply with facebook" button and blurb explaining that native replying will not work
       - in reply to: invalid@whatever
