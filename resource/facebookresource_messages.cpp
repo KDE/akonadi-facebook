@@ -84,12 +84,9 @@ void FacebookResource::messageListFetched(KJob *job)
     kDebug() << "Fetched the messages";
 
     /*
-      * TODO: do real updating instead of parsing everything here
-      */
-    foreach (const MessageInfoPtr &msg, messagesJob->allMessages())
-    {
-      mNewOrChangedMessages << msg;
-    }
+     * TODO: do real updating instead of parsing everything here
+     */
+    mNewOrChangedMessages.append(messagesJob->allMessages());
 
     if (mNewOrChangedMessages.isEmpty()) {
       itemsRetrievalDone();
