@@ -113,6 +113,8 @@ void FacebookResource::fetchNewOrChangedMessages()
 {
   /*
    * Fetch all message threads in parallel
+   * TODO: Bad idea, Facebook limits mailbox_fql calls to 300 per 600 seconds, so we might even
+   *       need artifical delay here :(
    */
   foreach(const MessageInfoPtr &msg, mNewOrChangedMessages) {
     MessageJob * const messageJob = new MessageJob( msg->id(), Settings::self()->accessToken() );
