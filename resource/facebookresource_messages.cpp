@@ -77,26 +77,28 @@ void FacebookResource::messageListFetched(KJob *job)
   Q_ASSERT( messagesJob );
   mCurrentJobs.removeAll(job);
 
-  // TODO: Error handling
-
-  kDebug() << "Fetched the messages";
-
-  /*
-   * TODO: do real updating instead of parsing everything here
-   */
-  foreach(const MessageInfoPtr &msg, messagesJob->allMessages())
-  {
-    mNewOrChangedMessages << msg;
-  }
-
-
-  if (mNewOrChangedMessages.isEmpty()) {
-    itemsRetrievalDone();
-    finishMessageFetching();
+  if ( job->error() ) {
+    abortWithError( i18n( "Unable to get list of messages from server: %1", job->errorText() ),
+                    job->error() == FacebookJob::AuthenticationProblem );
   } else {
-    emit percent(5);
-    emit status( Running, i18n("Retrieving message threads."));
-    fetchNewOrChangedMessages();
+    kDebug() << "Fetched the messages";
+
+    /*
+      * TODO: do real updating instead of parsing everything here
+      */
+    foreach (const MessageInfoPtr &msg, messagesJob->allMessages())
+    {
+      mNewOrChangedMessages << msg;
+    }
+
+    if (mNewOrChangedMessages.isEmpty()) {
+      itemsRetrievalDone();
+      finishMessageFetching();
+    } else {
+      emit percent(5);
+      emit status( Running, i18n("Retrieving message threads."));
+      fetchNewOrChangedMessages();
+    }
   }
 }
 
