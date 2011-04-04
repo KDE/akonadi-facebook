@@ -96,6 +96,7 @@ class FacebookResource : public Akonadi::ResourceBase,
 
     // Total number of new & changed friends
     int mNumFriends;
+    int mNumMessages;
     int mNumPhotosFetched;
     int mNumMessagesFetched;
 

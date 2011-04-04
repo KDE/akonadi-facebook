@@ -105,6 +105,7 @@ void FacebookResource::resetState()
 {
   mIdle = true;
   mNumFriends = -1;
+  mNumMessages = -1;
   mNumPhotosFetched = 0;
   mNumMessagesFetched = 0;
   mCurrentJobs.clear();

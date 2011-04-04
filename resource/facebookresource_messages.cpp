@@ -39,6 +39,7 @@ void FacebookResource::messageJobFinished(KJob *job)
   if (messageJob->error()) {
     abortWithError( i18n( "Unable to fetch thread from server: %1", messageJob->errorText() ) );
   } else {
+    mNumMessagesFetched++;
     const MessageInfoPtr msg = messageJob->messageInfo();
 
     Item newMessage;
@@ -58,10 +59,9 @@ void FacebookResource::messageJobFinished(KJob *job)
       itemsRetrievedIncremental( Item::List() << newReply, Item::List() );
     }
 
-    if(!mCurrentJobs.isEmpty()) {
-      /*
-       * TODO: status update
-       */
+    if (mNumMessagesFetched < mNumMessages) {
+      const float percentageDone = mNumMessagesFetched / (float)mNumMessages * 100.0f;
+      emit percent(10 + percentageDone * 0.9f);
     } else {
       itemsRetrievalDone();
       finishMessageFetching();
@@ -81,7 +81,10 @@ void FacebookResource::messageListFetched(KJob *job)
     abortWithError( i18n( "Unable to get list of messages from server: %1", job->errorText() ),
                     job->error() == FacebookJob::AuthenticationProblem );
   } else {
-    kDebug() << "Fetched the messages";
+    setItemStreamingEnabled( true );
+    mNumMessagesFetched = 0;
+    mNumMessages = messagesJob->allMessages().size();
+    kDebug() << "Fetched " << mNumMessages << "messages";
 
     /*
      * TODO: do real updating instead of parsing everything here
@@ -92,7 +95,7 @@ void FacebookResource::messageListFetched(KJob *job)
       itemsRetrievalDone();
       finishMessageFetching();
     } else {
-      emit percent(5);
+      emit percent(10);
       emit status( Running, i18n("Retrieving message threads."));
       fetchNewOrChangedMessages();
     }
@@ -102,10 +105,15 @@ void FacebookResource::messageListFetched(KJob *job)
 void FacebookResource::finishMessageFetching()
 {
   Q_ASSERT(mCurrentJobs.size() == 0);
-
-  mNewOrChangedMessages.clear();
+  Q_ASSERT(mNumMessages == mNumMessagesFetched);
 
   emit percent(100);
+  if ( mNumMessages > 0 ) {
+    emit status( Idle, i18np( "Updated one message from the server.",
+                              "Updated %1 messages from the server.", mNumMessages ) );
+  } else {
+    emit status( Idle, i18n( "Finished, no messages needed to be updated." ) );
+  }
   resetState();
 }
 
