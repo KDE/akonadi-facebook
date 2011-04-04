@@ -24,21 +24,21 @@
 #include <KLocalizedString>
 #include <KPIMUtils/LinkLocator>
 
+// TODO: refactor, almost the same as MessageInfo::asMessage()
 KMime::Message::Ptr MessageReplyInfo::asMessage() const
 {
   KMime::Message::Ptr msg(new KMime::Message());
 
-  if (message().isEmpty()) {
-    kWarning() << "Message is empty.";
-  }
-
-  msg->setBody( message().toAscii() );
   msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
   msg->contentType()->fromUnicodeString( "text/plain", "utf-8" );
   msg->subject()->fromUnicodeString( "RE:" + mParentMessage->subject(), "utf-8" );
-
   msg->from()->addAddress(fromId().toAscii() + "@facebook.invalid",
                           from());
+  if (message().isEmpty()) {
+    msg->fromUnicodeString( i18n("(Empty Message)") );
+  } else {
+    msg->setBody( message().toAscii() );
+  }
 
   // Set all the recpients
   foreach(const RecipientPtr &to, mParentMessage->recipients()) {
@@ -135,13 +135,16 @@ KMime::Message::Ptr MessageInfo::asMessage() const
     kWarning() << "Message is empty.";
   }
 
-  msg->setBody( message().toAscii() );
   msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
   msg->contentType()->fromUnicodeString( "text/plain", "utf-8" );
   msg->subject()->fromUnicodeString( subject(), "utf-8" );
-
   msg->from()->addAddress(fromId().toAscii() + "@facebook.invalid",
                           from());
+  if (message().isEmpty()) {
+    msg->fromUnicodeString( i18n("(Empty Message)") );
+  } else {
+    msg->setBody( message().toAscii() );
+  }
 
   // Set all the recpients
   foreach(const RecipientPtr &to, recipients()) {
