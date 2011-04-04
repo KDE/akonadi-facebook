@@ -12,8 +12,7 @@ Todo
       - requires resource-specific incidence editor plugin (talk to openchange guys, they also need that)
   - messages
     - make the message jobs use the standard job classes
-    - implement rate limiting for messages
-        - An error of type "OAuthException" occurred: "(#613) Calls to mailbox_fql have exceeded the rate of 300 calls per 600 seconds."
+    - paging for comments
     - inbox, outbox
     - add "reply with facebook" button and blurb explaining that native replying will not work
       - in reply to: invalid@whatever
