@@ -13,5 +13,8 @@
     <entry name="LowerLimit" type="String">
       <default>2000-01-01</default>
     </entry>
+    <entry name="MessageRateLimitDelay" type="Int">
+      <default>2000</default>
+    </entry>
   </group>
 </kcfg>

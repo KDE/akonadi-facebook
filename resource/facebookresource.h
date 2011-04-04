@@ -69,6 +69,7 @@ class FacebookResource : public Akonadi::ResourceBase,
     void deleteJobFinished( KJob *job );
     void messageListFetched( KJob *job );
     void messageJobFinished( KJob *job );
+    void fetchNextPendingMessage();
 
   private:
     void fetchPhotos();
@@ -78,7 +79,6 @@ class FacebookResource : public Akonadi::ResourceBase,
     void killAllJobs();
 
     void fetchNewOrChangedFriends();
-    void fetchNewOrChangedMessages();
     void finishFriendFetching();
     void finishEventsFetching();
     void finishNotesFetching();
@@ -92,7 +92,6 @@ class FacebookResource : public Akonadi::ResourceBase,
     QList<UserInfoPtr> mNewOrChangedFriends;
 
     QList<MessageInfoPtr> mPendingMessages;
-    QList<MessageInfoPtr> mNewOrChangedMessages;
 
     // Total number of new & changed friends
     int mNumFriends;

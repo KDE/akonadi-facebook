@@ -26,6 +26,8 @@
 #include <Akonadi/Item>
 #include <KLocalizedString>
 
+#include <QTimer>
+
 using namespace Akonadi;
 
 void FacebookResource::messageJobFinished(KJob *job)
@@ -46,7 +48,7 @@ void FacebookResource::messageJobFinished(KJob *job)
     newMessage.setRemoteId( msg->id() );
     newMessage.setMimeType( "message/rfc822" );
     newMessage.setPayload<KMime::Message::Ptr>( msg->asMessage() );
-    itemsRetrievedIncremental( Item::List() << newMessage, Item::List() );
+    itemsRetrieved( Item::List() << newMessage );
 
     /*
      * replies
@@ -56,17 +58,18 @@ void FacebookResource::messageJobFinished(KJob *job)
       newReply.setRemoteId( reply->id() );
       newReply.setMimeType( "message/rfc822" );
       newReply.setPayload<KMime::Message::Ptr>( reply->asMessage() );
-      itemsRetrievedIncremental( Item::List() << newReply, Item::List() );
+      itemsRetrieved( Item::List() << newReply );
     }
 
     if (mNumMessagesFetched < mNumMessages) {
       const float percentageDone = mNumMessagesFetched / (float)mNumMessages * 100.0f;
       emit percent(10 + percentageDone * 0.9f);
+      QTimer::singleShot(Settings::self()->messageRateLimitDelay(),
+                         this, SLOT(fetchNextPendingMessage()));
     } else {
       itemsRetrievalDone();
       finishMessageFetching();
     }
-
   }
 }
 
@@ -87,20 +90,26 @@ void FacebookResource::messageListFetched(KJob *job)
     mNumMessages = messagesJob->allMessages().size();
     kDebug() << "Fetched " << mNumMessages << "messages";
 
-    /*
-     * TODO: do real updating instead of parsing everything here
-     */
-    mNewOrChangedMessages.append(messagesJob->allMessages());
+    mPendingMessages.append(messagesJob->allMessages());
 
-    if (mNewOrChangedMessages.isEmpty()) {
+    if (mPendingMessages.isEmpty()) {
       itemsRetrievalDone();
       finishMessageFetching();
     } else {
       emit percent(10);
       emit status( Running, i18n("Retrieving message threads."));
-      fetchNewOrChangedMessages();
+      fetchNextPendingMessage();
     }
   }
+}
+
+void FacebookResource::fetchNextPendingMessage()
+{
+  const MessageInfoPtr messageToFetch = mPendingMessages.takeFirst();
+  MessageJob * const messageJob = new MessageJob( messageToFetch->id(), Settings::self()->accessToken() );
+  mCurrentJobs << messageJob;
+  connect(messageJob, SIGNAL(result(KJob*)), this, SLOT(messageJobFinished(KJob *)));
+  messageJob->start();
 }
 
 void FacebookResource::finishMessageFetching()
@@ -116,19 +125,4 @@ void FacebookResource::finishMessageFetching()
     emit status( Idle, i18n( "Finished, no messages needed to be updated." ) );
   }
   resetState();
-}
-
-void FacebookResource::fetchNewOrChangedMessages()
-{
-  /*
-   * Fetch all message threads in parallel
-   * TODO: Bad idea, Facebook limits mailbox_fql calls to 300 per 600 seconds, so we might even
-   *       need artifical delay here :(
-   */
-  foreach(const MessageInfoPtr &msg, mNewOrChangedMessages) {
-    MessageJob * const messageJob = new MessageJob( msg->id(), Settings::self()->accessToken() );
-    mCurrentJobs << messageJob;
-    connect(messageJob, SIGNAL(result(KJob*)), this, SLOT(messageJobFinished(KJob *)));
-    messageJob->start();
-  }
 }

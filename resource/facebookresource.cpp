@@ -112,7 +112,6 @@ void FacebookResource::resetState()
   mExistingFriends.clear();
   mNewOrChangedFriends.clear();
   mPendingFriends.clear();
-  mNewOrChangedMessages.clear();
   mPendingMessages.clear();
 }
 
