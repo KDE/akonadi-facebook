@@ -73,6 +73,7 @@ void FacebookResource::messageJobFinished(KJob *job)
 void FacebookResource::messageListFetched(KJob *job)
 {
   Q_ASSERT(!mIdle);
+  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
   AllMessagesListJob * const messagesJob = dynamic_cast<AllMessagesListJob*>( job );
   Q_ASSERT( messagesJob );
   mCurrentJobs.removeAll(job);
