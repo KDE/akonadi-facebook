@@ -10,6 +10,7 @@
       so
 - 0.1 QJSon not installed -> weird CMake error
 - 0.1 retrieveItem() for events not implemented
+- Paging for messages broken? I get exactly 100 messages, which means it is probably missing a page or two
 - switching to "broken" status after an authentication error does not work, something overwrites the status
 - If only the city is set in the address, KAddressbook shows a superflous comma
 - creates tons of debug areas in kdebugdialog. akonadi_facebook_resource_1 .. 2392 (general Akonadi problem, report)
