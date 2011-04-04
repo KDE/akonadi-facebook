@@ -31,7 +31,9 @@ KMime::Message::Ptr MessageReplyInfo::asMessage() const
 
   msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
   msg->contentType()->fromUnicodeString( "text/plain", "utf-8" );
-  msg->subject()->fromUnicodeString( "RE:" + mParentMessage->subject(), "utf-8" );
+  msg->subject()->fromUnicodeString(
+    i18nc("Reply prefix for the subject of a message", "Re: ") + mParentMessage->subject(),
+    "utf-8" );
   msg->from()->addAddress(fromId().toAscii() + "@facebook.invalid",
                           from());
   if (message().isEmpty()) {
