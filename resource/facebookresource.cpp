@@ -208,6 +208,9 @@ bool FacebookResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
     noteJob->setProperty( "Item", QVariant::fromValue( item ) );
     connect( noteJob, SIGNAL(result(KJob*)), this, SLOT(noteJobFinished(KJob*)) );
     noteJob->start();
+  } else {
+    // FIXME!! This seems to be actually called for messages.
+    abortWithError("Not yet implemented.");
   }
   return true;
 }

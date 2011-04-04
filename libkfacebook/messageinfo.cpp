@@ -28,6 +28,10 @@ KMime::Message::Ptr MessageReplyInfo::asMessage() const
 {
   KMime::Message::Ptr msg(new KMime::Message());
 
+  if (message().isEmpty()) {
+    kWarning() << "Message is empty.";
+  }
+
   msg->setBody( message().toAscii() );
   msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
   msg->contentType()->fromUnicodeString( "text/plain", "utf-8" );
@@ -126,6 +130,10 @@ KDateTime MessageReplyInfo::createdTime() const
 KMime::Message::Ptr MessageInfo::asMessage() const
 {
   KMime::Message::Ptr msg(new KMime::Message());
+
+  if (message().isEmpty()) {
+    kWarning() << "Message is empty.";
+  }
 
   msg->setBody( message().toAscii() );
   msg->date()->fromUnicodeString( createdTime().toString(KDateTime::RFCDateDay), "utf-8" );
