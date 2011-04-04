@@ -75,6 +75,7 @@ class FacebookResource : public Akonadi::ResourceBase,
     void resetState();
     void abortWithError( const QString& errorMessage, bool authFailure = false );
     void abort();
+    void killAllJobs();
 
     void fetchNewOrChangedFriends();
     void fetchNewOrChangedMessages();

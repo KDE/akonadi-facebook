@@ -91,6 +91,7 @@ void FacebookResource::abort()
 
 void FacebookResource::abortWithError( const QString& errorMessage, bool authFailure )
 {
+  killAllJobs();
   resetState();
   cancelTask( errorMessage );
 
@@ -114,13 +115,18 @@ void FacebookResource::resetState()
   mPendingMessages.clear();
 }
 
+void FacebookResource::killAllJobs()
+{
+  foreach(const QPointer<KJob> &job, mCurrentJobs) {
+    kDebug() << "Killing current job:" << job;
+    job->kill(KJob::Quietly);
+  }
+}
+
 void FacebookResource::slotAbortRequested()
 {
   if (!mIdle) {
-    foreach(const QPointer<KJob> &job, mCurrentJobs) {
-      kDebug() << "Killing current job:" << job;
-      job->kill(KJob::Quietly);
-    }
+    killAllJobs();
     abort();
   }
 }
