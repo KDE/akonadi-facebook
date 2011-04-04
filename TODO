@@ -12,6 +12,7 @@ Todo
       - requires resource-specific incidence editor plugin (talk to openchange guys, they also need that)
   - messages
     - make the message jobs use the standard job classes
+    - Make all replies children of the first message, to avoid deeply nested message trees in KMail.
     - paging for comments
     - inbox, outbox
     - add "reply with facebook" button and blurb explaining that native replying will not work
