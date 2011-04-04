@@ -92,7 +92,7 @@ void MessageReplyInfo::setFrom(const QString &name, const QString &id)
 
 QString MessageReplyInfo::from() const
 {
-  return mFrom;
+  return mFrom.isEmpty() ? i18nc("Unknown sender of a message", "Unknown") : mFrom;
 }
 
 QString MessageReplyInfo::fromId() const
@@ -178,7 +178,7 @@ void MessageInfo::setSubject(const QString &subject)
 
 QString MessageInfo::subject() const
 {
-  return mSubject;
+  return mSubject.isEmpty() ? i18n("(No Subject)") : mSubject;
 }
 
 void MessageInfo::setMessage(const QString &message)
@@ -225,7 +225,7 @@ void MessageInfo::setFrom(const QString &name, const QString &id)
 
 QString MessageInfo::from() const
 {
-  return mFrom;
+  return mFrom.isEmpty() ? i18nc("Unknown sender of a message", "Unknown") : mFrom;
 }
 
 QString MessageInfo::fromId() const
