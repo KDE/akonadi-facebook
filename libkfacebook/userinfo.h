@@ -44,7 +44,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     UserInfo();
 
     /**
-    * @breif Sets the facebook id of a person
+    * @brief Sets the facebook id of a person
     * @param id The Facebook id
     */
     void setId( const QString &id );
