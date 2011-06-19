@@ -33,7 +33,7 @@ KMime::Message::Ptr NoteInfo::asNote() const
 {
   KMime::Message * const note = new KMime::Message();
 
-  QString m = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd\">\n";
+  QString m = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n";
   m += "<html><head></head><body>\n";
   m += message();
   m += "</body>";
