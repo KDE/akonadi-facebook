@@ -38,11 +38,13 @@ KMime::Message::Ptr NoteInfo::asNote() const
   m += message();
   m += "</body>";
 
-  note->setBody( m.toAscii() );
+  note->contentType()->setMimeType( "text/html" );
+  note->contentType()->setCharset( "utf-8" );
+  note->fromUnicodeString(m);
   note->date()->fromUnicodeString( updatedTime().toString(KDateTime::RFCDateDay), "utf-8" );
-  note->contentType()->fromUnicodeString( "text/html", "utf-8" );
   note->subject()->fromUnicodeString( subject(), "utf-8" );
   note->from()->fromUnicodeString( "you@facebook", "utf-8" );
+  note->contentTransferEncoding()->setEncoding( KMime::Headers::CEquPr );
 
   note->assemble();
 
