@@ -103,7 +103,7 @@ class LIBKFACEBOOK_EXPORT PostInfo : public QObject
   private:
     QString mId;          /* Facebook id of the post. */
     QString mFrom;        /* Creator of the post. */
-    QString mSubject;     /* Subject of the post. */
+    
     QString mMessage;     /* Actual content of the post. */
     QString mCreatedTime; /* Creation time of the post. */
     QString mUpdatedTime; /* Last update time of the post. */

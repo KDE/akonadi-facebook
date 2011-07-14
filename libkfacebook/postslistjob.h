@@ -16,29 +16,30 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#include "postslistjob.h"
+#ifndef POSTSLISTJOB_H
+#define POSTSLISTJOB_H
 
-#include <KDebug>
-#include <qjson/qobjecthelper.h>
+#include "listjobbase.h"
+#include "postinfo.h"
 
-PostsListJob::PostsListJob( const QString& accessToken )
-  : ListJobBase( "/me/feed", accessToken )
+
+
+class LIBKFACEBOOK_EXPORT PostsListJob : public ListJobBase
 {
-}
+  Q_OBJECT
+  public:
+    PostsListJob( const QString &accessToken );
+    QList<PostInfoPtr> posts() const;
+    int numEntries() const;
+    
 
-QList< PostInfoPtr > PostsListJob::posts() const
-{
-  return mPosts;
-}
+  protected:
+    void handleItem( const QVariant& item );
 
-void PostsListJob::handleItem(const QVariant& item)
-{
-  PostInfoPtr postInfo( new PostInfo() );
-  QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
-  mPosts.append( postInfo );
-}
+  private:
+    QList<PostInfoPtr> mPosts;
+    
+    
+};
 
-int PostsListJob::numEntries() const
-{
-  return mPosts.size();
-}
+#endif

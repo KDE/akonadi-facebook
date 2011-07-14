@@ -20,6 +20,10 @@ set(libkfacebook_SRCS
   facebookjobs.cpp
   pagedlistjob.cpp
   listjobbase.cpp
+  postinfo.cpp
+  postjob.cpp
+  postaddjob.cpp
+  postslistjob.cpp
 )
 
 kde4_add_library(kfacebook SHARED ${libkfacebook_SRCS})
@@ -41,6 +45,7 @@ target_link_libraries(kfacebook
   ${KDEPIMLIBS_KPIMUTILS_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
 )
+
 
 if(KDEPIM_44_COMPAT)
   target_link_libraries(kfacebook ${KDEPIMLIBS_KCAL_LIBS})

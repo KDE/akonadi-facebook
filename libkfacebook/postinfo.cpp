@@ -44,15 +44,7 @@ QString PostInfo::from() const
   return mFrom;
 }
 
-void PostInfo::setSubject( const QString &subject)
-{
-  mSubject = subject;
-}
 
-QString PostInfo::subject() const
-{
-  return mSubject;
-}
 
 void PostInfo::setMessage( const QString &message)
 {

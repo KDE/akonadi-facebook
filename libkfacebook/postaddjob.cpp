@@ -18,10 +18,14 @@
 */
 #include "postaddjob.h"
 
-PostAddJob::PostAddJob( const QString &subject,const QString &message, const QString &accessToken )
+PostAddJob::PostAddJob( const QString &message, const QString &accessToken )
   : FacebookAddJob( "/me/feed", accessToken)
 {
   addQueryItem("message", message);
 }
 
+void PostAddJob::abort() 
+{
+  doKill();
+}
 #include "postaddjob.moc"
