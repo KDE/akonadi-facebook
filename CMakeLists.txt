@@ -27,6 +27,7 @@ macro_log_feature(QJSON_FOUND "QJSON" "Qt library for handling JSON data" "http:
 configure_file(config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
+add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}
