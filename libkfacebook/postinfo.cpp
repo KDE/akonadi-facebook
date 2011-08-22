@@ -34,17 +34,122 @@ QString PostInfo::id() const
   return mId;
 }
 
-void PostInfo::setFrom( const QString &from)
+
+void PostInfo::setName( const QString &name)
+{
+  mName = name;
+}
+
+QString PostInfo::name() const
+{
+  return mName;
+}
+
+void PostInfo::setType( const QString &type)
+{
+  mType = type;
+}
+
+QString PostInfo::type() const
+{
+  return mType;
+}
+
+
+void PostInfo::setLink( const QString &link)
+{
+  mLink = link;
+}
+
+QString PostInfo::link() const
+{
+  return mLink;
+}
+
+void PostInfo::setDescription( const QString &description)
+{
+  mDescription = description;
+}
+
+QString PostInfo::description() const
+{
+  return mDescription;
+}
+
+void PostInfo::setSenderId( const QString &senderId)
+{
+  mSenderId = senderId;
+}
+
+
+QString PostInfo::senderId() const
+{
+  return mSenderId;
+}
+
+void PostInfo::setSenderName( const QString &senderName)
+{
+  mSenderName = senderName;
+}
+
+
+QString PostInfo::senderName() const
+{
+  return mSenderName;
+}
+
+void PostInfo::setFrom( const QVariantMap &from)
 {
   mFrom = from;
 }
 
-QString PostInfo::from() const
+QVariantMap PostInfo::from() const
 {
   return mFrom;
 }
 
+void PostInfo::setAppId( const QString &appId)
+{
+  mAppId = appId;
+}
 
+
+QString PostInfo::appId() const
+{
+  return mAppId;
+}
+
+void PostInfo::setAppName( const QString &appName)
+{
+  mAppName = appName;
+}
+
+
+QString PostInfo::appName() const
+{
+  return mAppName;
+}
+
+void PostInfo::setApplication( const QVariantMap &application)
+{
+  mApplication = application;
+}
+
+QVariantMap PostInfo::application() const
+{
+  return mApplication;
+}
+
+
+QString PostInfo::pictureUrl() const
+{
+  return mPictureUrl;
+}
+
+void PostInfo::setPictureUrl( const QString &pictureUrl)
+{
+  mPictureUrl = pictureUrl;
+}
 
 void PostInfo::setMessage( const QString &message)
 {

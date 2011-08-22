@@ -1,6 +1,6 @@
-project(libkfacebook)
+project(kfacebook)
 
-set(libkfacebook_SRCS
+set(kfacebook_SRCS
   authenticationdialog.cpp
   userinfojob.cpp
   userinfo.cpp
@@ -26,7 +26,7 @@ set(libkfacebook_SRCS
   postslistjob.cpp
 )
 
-kde4_add_library(kfacebook SHARED ${libkfacebook_SRCS})
+kde4_add_library(kfacebook SHARED ${kfacebook_SRCS})
 
 set(CMAKE_INSTALL_NAME_DIR ${LIB_INSTALL_DIR})
 
@@ -55,3 +55,32 @@ endif(KDEPIM_44_COMPAT)
 
 set_target_properties(kfacebook PROPERTIES VERSION ${LIB_VERSION} SOVERSION ${LIB_SOVERSION})
 install(TARGETS kfacebook ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+install( FILES
+
+  libkfacebook_export.h
+  authenticationdialog.h
+  userinfojob.h
+  userinfo.h
+  friendlistjob.h
+  friendjob.h
+  photojob.h
+  eventslistjob.h
+  eventinfo.h
+  util.h
+  alleventslistjob.h
+  eventjob.h
+  noteinfo.h
+  noteslistjob.h
+  allnoteslistjob.h
+  notejob.h
+  noteaddjob.h
+  facebookjobs.h
+  pagedlistjob.h
+  listjobbase.h
+  postinfo.h
+  postjob.h
+  postaddjob.h
+  postslistjob.h
+ DESTINATION ${INCLUDE_INSTALL_DIR}/kfacebook COMPONENT Devel
+)

@@ -36,6 +36,12 @@ void PostsListJob::handleItem(const QVariant& item)
 {
   PostInfoPtr postInfo( new PostInfo() );
   QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
+  QVariantMap from = postInfo->from();		
+  QVariantMap application = postInfo->application();
+  postInfo->setSenderId (from["id"].toString());
+  postInfo->setSenderName (from["name"].toString());
+  postInfo->setAppId (application["id"].toString());
+  postInfo->setAppName (application["name"].toString());
   mPosts.append( postInfo );
 }
 
