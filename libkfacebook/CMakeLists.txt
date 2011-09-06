@@ -1,5 +1,13 @@
 project(kfacebook)
 
+include_directories(
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_BINARY_DIR}
+  ${Boost_INCLUDE_DIR}
+)
+
+
+
 set(kfacebook_SRCS
   authenticationdialog.cpp
   userinfojob.cpp
