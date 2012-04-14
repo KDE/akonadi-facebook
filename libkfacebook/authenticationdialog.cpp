@@ -26,6 +26,8 @@
 #include <QTimer>
 #include <QLabel>
 #include <QProgressBar>
+#include <QWebFrame>
+#include <QWebElement>
 
 AuthenticationDialog::AuthenticationDialog( QWidget* parent )
   : KDialog(parent)
@@ -56,6 +58,7 @@ AuthenticationDialog::AuthenticationDialog( QWidget* parent )
   connect( mWebView, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChanged(QUrl)) );
   connect( mWebView, SIGNAL(loadStarted()), progressWidget, SLOT(show()) );
   connect( mWebView, SIGNAL(loadFinished(bool)), progressWidget, SLOT(hide()) );
+  connect( mWebView, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
   connect( mWebView, SIGNAL(loadProgress(int)), mProgressBar, SLOT(setValue(int)) );
 }
 
@@ -84,6 +87,16 @@ void AuthenticationDialog::start()
   show();
 }
 
+void AuthenticationDialog::setUsername(const QString& username)
+{
+  mUsername = username;
+}
+
+void AuthenticationDialog::setPassword(const QString& password)
+{
+  mPassword = password;
+}
+
 void AuthenticationDialog::showErrorDialog()
 {
   hide();
@@ -96,9 +109,37 @@ void AuthenticationDialog::showErrorDialog()
   close();
 }
 
+void AuthenticationDialog::loadFinished()
+{
+  QUrl url = mWebView->url();
+
+  if ( url.host() == "www.facebook.com" && url.path() == "/login.php" ) {
+    if (mUsername.isEmpty() && mPassword.isEmpty()) {
+      return;
+    }
+
+    QWebFrame *frame = mWebView->page()->mainFrame();
+    if (!mUsername.isEmpty()) {
+        QWebElement email = frame->findFirstElement("input#email");
+        if (!email.isNull()) {
+            email.setAttribute("value", mUsername);
+        }
+    }
+
+    if (!mPassword.isEmpty()) {
+        QWebElement passd = frame->findFirstElement("input#pass");
+        if (!passd.isNull()) {
+            passd.setAttribute("value", mPassword);
+        }
+    }
+    return;
+  }
+}
+
 void AuthenticationDialog::urlChanged( const QUrl& url )
 {
   kDebug() << "Navigating to" << url;
+
   if ( url.host() == "www.facebook.com" && url.path() == "/connect/login_success.html" ) {
     mErrorReason = url.queryItemValue( "error_reason" );
     mError = url.queryItemValue( "error" );

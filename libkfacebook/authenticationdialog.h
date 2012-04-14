@@ -34,13 +34,15 @@ class LIBKFACEBOOK_EXPORT AuthenticationDialog : public KDialog
     void setAppId( const QString &appId );
     void setPermissions( const QStringList &permissions );
     void start();
+    void setUsername(const QString &username);
+    void setPassword(const QString &password);
 
   Q_SIGNALS:
     void authenticated( const QString &accessToken );
     void canceled();
 
   private Q_SLOTS:
-
+    void loadFinished();
     void urlChanged( const QUrl &url );
     void showErrorDialog();
 
@@ -52,6 +54,8 @@ class LIBKFACEBOOK_EXPORT AuthenticationDialog : public KDialog
     QString mError;
     QString mErrorReason;
     QString mErrorDescription;
+    QString mUsername;
+    QString mPassword;
 };
 
 #endif
