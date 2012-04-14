@@ -35,11 +35,11 @@ class LIBKFACEBOOK_EXPORT AuthenticationDialog : public KDialog
     void setPermissions( const QStringList &permissions );
     void start();
 
-  signals:
+  Q_SIGNALS:
     void authenticated( const QString &accessToken );
     void canceled();
 
-  private slots:
+  private Q_SLOTS:
 
     void urlChanged( const QUrl &url );
     void showErrorDialog();
