@@ -99,14 +99,14 @@ void AuthenticationDialog::setPassword(const QString& password)
 
 void AuthenticationDialog::showErrorDialog()
 {
-  hide();
-  const QString details = i18n( "<b>Facebook Error Description:</b> %1<br>"
-                                "<b>Facebook Error:</b> %2<br>"
-                                "<b>Facebook Error Reason:</b> %3", mErrorDescription, mError, mErrorReason );
-  KMessageBox::detailedSorry( this, i18n( "Authentication with Facebook was not successful." ),
-                              details, i18n( "Authentication Problem." ) );
-  emit canceled();
-  close();
+//   hide();
+//   const QString details = i18n( "<b>Facebook Error Description:</b> %1<br>"
+//                                 "<b>Facebook Error:</b> %2<br>"
+//                                 "<b>Facebook Error Reason:</b> %3", mErrorDescription, mError, mErrorReason );
+//   KMessageBox::detailedSorry( this, i18n( "Authentication with Facebook was not successful." ),
+//                               details, i18n( "Authentication Problem." ) );
+//   emit canceled();
+//   close();
 }
 
 void AuthenticationDialog::loadFinished()
@@ -155,7 +155,7 @@ void AuthenticationDialog::urlChanged( const QUrl& url )
     const QString accessToken = fixedURL.queryItemValue( "access_token" );
     if ( !accessToken.isEmpty() ) {
       emit authenticated( accessToken );
-      QTimer::singleShot( 0, this, SLOT( close() ) );
+      accept();
     }
   }
 }
