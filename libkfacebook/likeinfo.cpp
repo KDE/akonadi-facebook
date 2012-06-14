@@ -1,4 +1,4 @@
-/* Copyright 2011 Pankaj Bhambhani <pankajb64@gmail.com>
+ /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -16,37 +16,55 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#include "postslistjob.h"
 
-#include <KDebug>
-#include <qjson/qobjecthelper.h>
-
-
-PostsListJob::PostsListJob( const QString& accessToken )
-  : ListJobBase( "/me/home", accessToken )
+#include "likeinfo.h"
+/*
+void LikeData::setId( const QString &id)
 {
+  mId = id;
 }
 
-QList<PostInfoPtr> PostsListJob::posts() const
+QString LikeData::id() const
 {
-  return mPosts;
+  return mId;
 }
 
-void PostsListJob::handleItem(const QVariant& item)
+void LikeData::setName( const QString &name)
 {
-  PostInfoPtr postInfo( new PostInfo() );
-  QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
-  /*QVariantMap from = postInfo->from();		
-  QVariantMap application = postInfo->application();
-  postInfo->setSenderId (from["id"].toString());
-  postInfo->setSenderName (from["name"].toString());
-  postInfo->setAppId (application["id"].toString());
-  postInfo->setAppName (application["name"].toString());*/
-  mPosts.append( postInfo );
+  mName = name;
 }
 
-int PostsListJob::numEntries() const
+QString LikeData::name() const
 {
-  return mPosts.size();
+  return mName;
+}
+*/
+
+void LikeInfo::setData( const QVariantList &data)
+{
+  mData = new QList<UserInfoPtr>();
+  
+  foreach (QVariant	v, data)
+  {
+	QVariantMap vMap = v.toMap();
+	UserInfoPtr userInfo ( new UserInfo());
+	QJson::QObjectHelper::qvariant2qobject(vMap, userInfo.data());
+	mData << userInfo;
+  }
+  
 }
 
+QList<UserInfoPtr> LikeInfo::data() const
+{
+  return mData;
+}
+
+void LikeInfo::setCount( const int &count)
+{
+  mcount = count;
+}
+
+int LikeInfo::count() const
+{
+  return mCount;
+}

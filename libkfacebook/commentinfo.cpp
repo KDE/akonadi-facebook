@@ -1,0 +1,105 @@
+ /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
+
+   This library is free software; you can redistribute it and/or modify
+   it under the terms of the GNU Library General Public License as published
+   by the Free Software Foundation; either version 2 of the License or
+   ( at your option ) version 3 or, at the discretion of KDE e.V.
+   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public License
+   along with this library; see the file COPYING.LIB.  If not, write to
+   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.
+*/
+
+#include "commentinfo.h"
+
+void CommentData::setId( const QString &id)
+{
+  mId = id;
+}
+
+QString CommentData::id() const
+{
+  return mId;
+}
+
+void CommentData::setFrom( const QVariantMap &from)
+{
+  mFrom ( new UserInfo());	
+  QJson::QObjectHelper::qvariant2qobject(from, mFrom.data());
+}
+
+UserInfoPtr CommentData::from() const
+{
+  return mFrom;
+}
+
+void CommentData::setMessage( const QString &message)
+{
+  mMessage = message;
+}
+
+QString CommentData::message() const
+{
+  return mMessage;
+}
+
+void CommentInfo::setCreatedTimeString( const QString &createdTime )
+{
+  mCreatedTime = createdTime;
+}
+
+QString CommentInfo::createdTimeString() const
+{
+  return mCreatedTime;
+}
+
+KDateTime CommentInfo::createdTime() const
+{
+  return facebookTimeToKDateTime(mCreatedTime);
+}
+
+void CommentData::setLikes( const int &likes)
+{
+  mLikes = likes;
+}
+
+int CommentData::likes() const
+{
+  return mLikes;
+}
+
+void CommentInfo::setData( const QVariantList &data)
+{
+  mData = new QList<CommentDataPtr>();
+  
+  foreach (QVariant	v, data)
+  {
+	QVariantMap vMap = v.toMap();
+	CommentDataPtr commentData ( new CommentData());
+	QJson::QObjectHelper::qvariant2qobject(vMap, commentData.data());
+	mData << commentData;
+  }	
+  mData = data;
+}
+
+QList<CommentDataPtr> CommentInfo::data() const
+{
+  return mData;
+}
+
+void CommentInfo::setCount( const int &count)
+{
+  mcount = count;
+}
+
+int CommentInfo::count() const
+{
+  return mCount;
+}

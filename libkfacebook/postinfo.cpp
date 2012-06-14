@@ -28,31 +28,40 @@ void PostInfo::setId( const QString &id)
   mId = id;
 }
 
-
 QString PostInfo::id() const
 {
   return mId;
 }
 
-
-void PostInfo::setName( const QString &name)
+void PostInfo::setFrom( const QVariantMap &from)
 {
-  mName = name;
+  mFrom ( new UserInfo());	
+  QJson::QObjectHelper::qvariant2qobject(from, mFrom.data());
 }
 
-QString PostInfo::name() const
+UserInfoPtr PostInfo::from() const
 {
-  return mName;
+  return mFrom;
 }
 
-void PostInfo::setType( const QString &type)
+void PostInfo::setMessage( const QString &message)
 {
-  mType = type;
+  mMessage = message;
 }
 
-QString PostInfo::type() const
+QString PostInfo::message() const
 {
-  return mType;
+  return mMessage;
+}
+
+QString PostInfo::pictureUrl() const
+{
+  return mPictureUrl;
+}
+
+void PostInfo::setPictureUrl( const QString &pictureUrl)
+{
+  mPictureUrl = pictureUrl;
 }
 
 
@@ -66,6 +75,28 @@ QString PostInfo::link() const
   return mLink;
 }
 
+
+void PostInfo::setName( const QString &name)
+{
+  mName = name;
+}
+
+QString PostInfo::name() const
+{
+  return mName;
+}
+
+
+void PostInfo::setCaption( const QString &caption)
+{
+  mCaption = caption;
+}
+
+QString PostInfo::caption() const
+{
+  return mCaption;
+}
+
 void PostInfo::setDescription( const QString &description)
 {
   mDescription = description;
@@ -76,89 +107,99 @@ QString PostInfo::description() const
   return mDescription;
 }
 
-void PostInfo::setSenderId( const QString &senderId)
+void PostInfo::setSource( const QString &source)
 {
-  mSenderId = senderId;
+  mSource = source;
 }
 
-
-QString PostInfo::senderId() const
+QString PostInfo::source() const
 {
-  return mSenderId;
+  return mSource;
 }
 
-void PostInfo::setSenderName( const QString &senderName)
+void PostInfo::setProperties( const QVariantList &properties)
 {
-  mSenderName = senderName;
+  mProperties = new QList<PropertyInfoPtr>();
+  
+  foreach (QVariant	v, data)
+  {
+	QVariantMap vMap = v.toMap();
+	PropertyInfoPtr propertyInfo ( new PropertyInfo());
+	QJson::QObjectHelper::qvariant2qobject(vMap, propertyInfo.data());
+	mProperties << propertyInfo;
+  }
+  //mProperties = properties;
 }
 
-
-QString PostInfo::senderName() const
+QList<PropertyInfoPtr> PostInfo::properties() const
 {
-  return mSenderName;
+  return mProperties;
 }
 
-void PostInfo::setFrom( const QVariantMap &from)
+void PostInfo::setIcon( const QString &icon)
 {
-  mFrom = from;
+  mIcon = icon;
 }
 
-QVariantMap PostInfo::from() const
+QString PostInfo::icon() const
 {
-  return mFrom;
+  return mIcon;
 }
 
-void PostInfo::setAppId( const QString &appId)
+void PostInfo::setType( const QString &type)
 {
-  mAppId = appId;
+  mType = type;
 }
 
-
-QString PostInfo::appId() const
+QString PostInfo::type() const
 {
-  return mAppId;
+  return mType;
 }
 
-void PostInfo::setAppName( const QString &appName)
+void PostInfo::setLikes( const QVariantMap &likes)
 {
-  mAppName = appName;
+  mLikes ( new LikeInfo());	
+  QJson::QObjectHelper::qvariant2qobject(likes, mLikes.data());
+  //mLikes = likes;
 }
 
-
-QString PostInfo::appName() const
+LikeInfoPtr PostInfo::likes() const
 {
-  return mAppName;
+  return mLikes;
 }
 
-void PostInfo::setApplication( const QVariantMap &application)
+void PostInfo::setStory( const QString &story)
 {
-  mApplication = application;
+  mStory = story;
 }
 
-QVariantMap PostInfo::application() const
+QString PostInfo::story() const
+{
+  return mStory;
+}
+
+void PostInfo::setComments( const QVariantMap &comments)
+{
+  mComments ( new CommentInfo());	
+  QJson::QObjectHelper::qvariant2qobject(comments, mComments.data());
+  //mComments = comments;
+}
+
+CommentInfoPtr PostInfo::comments() const
+{
+  return mComments;
+}
+
+void PostInfo::setApplication( const QVariantMap &mApplication)
+{
+  mApplication ( new AppInfo());	
+  QJson::QObjectHelper::qvariant2qobject(mApplication, mApplication.data());
+  //mApplication = application;
+}
+
+AppInfoPtr PostInfo::application() const
 {
   return mApplication;
-}
-
-
-QString PostInfo::pictureUrl() const
-{
-  return mPictureUrl;
-}
-
-void PostInfo::setPictureUrl( const QString &pictureUrl)
-{
-  mPictureUrl = pictureUrl;
-}
-
-void PostInfo::setMessage( const QString &message)
-{
-  mMessage = message;
-}
-
-QString PostInfo::message() const
-{
-  return mMessage;
 }
 
 void PostInfo::setCreatedTimeString( const QString &createdTime )
@@ -190,3 +231,50 @@ KDateTime PostInfo::updatedTime() const
 {
   return facebookTimeToKDateTime(mUpdatedTime);
 }
+
+/*
+void PostInfo::setSenderId( const QString &senderId)
+{
+  mSenderId = senderId;
+}
+
+QString PostInfo::senderId() const
+{
+  return mSenderId;
+}
+
+void PostInfo::setSenderName( const QString &senderName)
+{
+  mSenderName = senderName;
+}
+
+
+QString PostInfo::senderName() const
+{
+  return mSenderName;
+}
+
+
+
+void PostInfo::setAppId( const QString &appId)
+{
+  mAppId = appId;
+}
+
+
+QString PostInfo::appId() const
+{
+  return mAppId;
+}
+
+void PostInfo::setAppName( const QString &appName)
+{
+  mAppName = appName;
+}
+
+
+QString PostInfo::appName() const
+{
+  return mAppName;
+}
+*/

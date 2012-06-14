@@ -21,29 +21,42 @@
 
 #include "libkfacebook_export.h"
 #include <qjson/qobjecthelper.h>
+#include "userinfo.h"
+#include "propertyinfo.h"
+#include "appinfo.h"
+#include "commentinfo.h"
+#include "likeinfo.h"
 
 #include <KDateTime>
 #include <QObject>
 
 /**
- * Class to represent a facebook post
+ * Class to represent a facebook post. See https://developers.facebook.com/docs/reference/api/post/
  */
 class LIBKFACEBOOK_EXPORT PostInfo : public QObject
 {
   Q_OBJECT
   Q_PROPERTY(QString id WRITE setId READ id)
-  Q_PROPERTY(QVariantMap from WRITE setFrom READ from)
-  Q_PROPERTY(QVariantMap application WRITE setApplication READ application)
+  Q_PROPERTY(QVariantMap from WRITE setFrom )
+  //Q_PROPERTY(UserInfoPtr fromObj READ from)
   Q_PROPERTY(QString message WRITE setMessage READ message)
   Q_PROPERTY(QString picture WRITE setPictureUrl READ pictureUrl)
+  Q_PROPERTY(QString link WRITE setLink READ link)
+  Q_PROPERTY(QString name WRITE setName READ name)
+  Q_PROPERTY(QString caption WRITE setCaption READ caption)
+  Q_PROPERTY(QString description WRITE setDescription READ description)
+  Q_PROPERTY(QString source WRITE setSource READ source)
+  Q_PROPERTY(QVariantList properties WRITE setProperties )
+  Q_PROPERTY(QString icon WRITE setIcon READ icon)
+  Q_PROPERTY(QString type WRITE setType READ type)
+  Q_PROPERTY(QVariantMap likes WRITE setLikes )
+  Q_PROPERTY(QString story WRITE setStory READ story)
+  Q_PROPERTY(QVariantMap comments WRITE setComments )
+  Q_PROPERTY(QVariantMap application WRITE setApplication )
   Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
   Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
-  Q_PROPERTY(QString name WRITE setName READ name)
-  Q_PROPERTY(QString type WRITE setType READ type)
-  Q_PROPERTY(QString description WRITE setDescription READ description)
-  Q_PROPERTY(QString link WRITE setLink READ link)
-
-
+  
+ 
   public:
     /**
      * Set the facebook id of this post
@@ -56,116 +69,16 @@ class LIBKFACEBOOK_EXPORT PostInfo : public QObject
     QString id() const;
 
     /**
-     * Set who wrote the post
+     * Set the user who wrote the post as a QVariantMap
      * @param from the creator of the post
      */
     void setFrom( const QVariantMap &from);
     /**
-     * Returns the creator of the post
+     * Returns the creator of the post as a User Info Object Pointer
      */
-    QVariantMap from() const;
-
-    /**
-     * Set the app who wrote the post
-     * @param app the app that created the post
-     */
-    void setApplication( const QVariantMap &app);
-    /**
-     * Returns the creator app of the post
-     */
-    QVariantMap application() const;
-    /**
-     * Set the id of app used to write the post
-     * @param appId id of the creator app of the post
-     */
-    void setAppId( const QString &appId);
-    /**
-     * Returns the app id of creator app of the post
-     */
-    QString appId() const;
-
-    /**
-     * Set name of app who wrote the post
-     * @param AppName of the creator app of the post
-     */
-    void setAppName( const QString &AppName);
-    /**
-     * Returns appName of the creator app of the post
-     */
-    QString appName() const;
-
-   
+    UserInfoPtr from() const;
 	
-    /**
-     * Set who wrote the post
-     * @param senderId the creator of the post
-     */
-    void setSenderId( const QString &senderId);
-    /**
-     * Returns the creator of the post
-     */
-    QString senderId() const;
-
-    /**
-     * Set who wrote the post
-     * @param sendrName the creator of the post
-     */
-    void setSenderName( const QString &senderName);
-    /**
-     * Returns the creator of the post
-     */
-    QString senderName() const;
-
-    /**
-     * Set name of post
-     * @param name  of the post
-     */
-    void setName( const QString &name);
-    /**
-     * Returns name of the post
-     */
-    QString name() const;
-
-    /**
-     * Set type of post
-     * @param type  of the post
-     */
-    void setType( const QString &type);
-    /**
-     * Returns type of the post
-     */
-    QString type() const;
-
-    /**
-     * Set picture url of  author of the post
-     * @param picture url - url of  author of the post
-     */
-    void setPictureUrl( const QString &pictureUrl);
-    /**
-     * Returns the picture url of  author of the post
-     */
-    QString pictureUrl() const;
-    	
-    /**
-     * Set description of the post
-     * @param description the description of the post
-     */
-    void setDescription( const QString &description);
-    /**
-     * Returns the description of the post
-     */
-    QString description() const;
-
-    /**
-     * Set link associated the post
-     * @param link the link of the post
-     */
-    void setLink( const QString &link);
-    /**
-     * Returns the Link of the post
-     */
-    QString link() const;
-    /**
+	/**
      * Set the actual content of the post
      * @param message The actual content of the post
      */
@@ -174,8 +87,137 @@ class LIBKFACEBOOK_EXPORT PostInfo : public QObject
      * Returns the content of the post.
      */
     QString message() const;
-
+	
+	/**
+     * Set picture url of  author of the post
+     * @param picture url - url of  author of the post
+     */
+    void setPictureUrl( const QString &pictureUrl);
     /**
+     * Returns the picture url of  author of the post
+     */
+    QString pictureUrl() const;
+	
+	/**
+     * Set link associated the post
+     * @param link the link of the post
+     */
+    void setLink( const QString &link);
+    /**
+     * Returns the Link of the post
+     */
+    QString link() const;
+	
+	/**
+     * Set name of link
+     * @param name  of the link
+     */
+    void setName( const QString &name);
+    /**
+     * Returns name of the link
+     */
+    QString name() const;
+	
+	/**
+     * Set caption of link
+     * @param caption  of the link
+     */
+    void setCaption( const QString &caption);
+    /**
+     * Returns caption of the link
+     */
+    QString caption() const;
+	
+	/**
+     * Set description of the post
+     * @param description the description of the post
+     */
+    void setDescription( const QString &description);
+    /**
+     * Returns the description of the post
+     */
+    QString description() const;
+	
+	/**
+     * Set source of link ( url of video for e.g.)
+     * @param source  of the link
+     */
+    void setSource( const QString &source);
+    /**
+     * Returns source of the link
+     */
+    QString source() const;
+	
+	/**
+     * Set properties aoosicated with the link ( length of video for e.g )
+     * @param properties  of the link
+     */
+    void setProperties( const QVariantList &properties);
+    /**
+     * Returns properties of the link
+     */
+    QList<PropertyInfoPtr> properties() const;
+	
+	/**
+     * Set icon of post ( represents type of post)
+     * @param icon  of post
+     */
+    void setIcon( const QString &icon);
+    /**
+     * Returns icon of post
+     */
+    QString icon() const;
+	
+	/**
+     * Set type of post
+     * @param type  of the post
+     */
+    void setType( const QString &type);
+    /**
+     * Returns type of the post
+     */
+    QString type() const;
+	
+	/**
+     * Set likes of post
+     * @param likes  of the post
+     */
+    void setLikes( const QVariantMap &likes);
+    /**
+     * Returns likes of the post
+     */
+    LikeInfoPtr likes() const;
+	/**
+     * Set story of post ( generated by app)
+     * @param story  of the post
+     */
+    void setStory( const QString &story);
+    /**
+     * Returns story of the post
+     */
+    QString story() const;
+	
+	/**
+     * Set comments of post
+     * @param comments  of the post
+     */
+    void setComments( const QVariantMap &comments);
+    /**
+     * Returns comments of the post
+     */
+    CommentInfoPtr comments() const;
+	
+	 /**
+     * Set the app that created the post
+     * @param app the app that created the post
+     */
+    void setApplication( const QVariantMap &app);
+    /**
+     * Returns the creator app of the post
+     */
+    AppInfoPtr application() const;
+	
+	/**
      * Set the creation time of the post
      * @param createdTime Time in "facebook format"
      */
@@ -203,25 +245,77 @@ class LIBKFACEBOOK_EXPORT PostInfo : public QObject
      * Returns the time of the last update of the post as a KDateTime
      */
     KDateTime updatedTime() const;
+	
+    /*/**
+     * Set the id of app used to write the post
+     * @param appId id of the creator app of the post
+     *
+    void setAppId( const QString &appId);
+    /**
+     * Returns the app id of creator app of the post
+     *
+    QString appId() const;
 
-    
+    /**
+     * Set name of app who wrote the post
+     * @param AppName of the creator app of the post
+     *
+    void setAppName( const QString &AppName);
+    /**
+     * Returns appName of the creator app of the post
+     *
+    QString appName() const;
+
+   
+	
+    /**
+     * Set who wrote the post
+     * @param senderId the creator of the post
+     *
+    void setSenderId( const QString &senderId);
+    /**
+     * Returns the creator of the post
+     *
+    QString senderId() const;
+
+    /**
+     * Set who wrote the post
+     * @param sendrName the creator of the post
+     *
+    void setSenderName( const QString &senderName);
+    /**
+     * Returns the creator of the post
+     *
+    QString senderName() const;
+    */
+ 
 
   private:
     QString mId;          /* Facebook id of the post. */
-    QString mSenderId;          /* Facebook id of the post. */
-    QString mSenderName;          /* Facebook id of the post. */
-    QVariantMap mFrom;        /* Creator of the post. */
-    QString mLink;     /* Link associated with the post */
-    QString mType;     /* Type of  post */	
-    QString mName; /* Name of the Link */
-    QString mDescription; /* Description of the Link. */
+	UserInfoPtr mFrom;        /* Creator of the post. */
+	QString mMessage;     /* Actual content of the post. */
     QString mPictureUrl; /* Picture assocauted with the Post. */
-    QVariantMap mApplication; /*App associated with the post*/
-    QString mAppName; /* App Name*/
-    QString mAppId; /*App id*/		    
-    QString mMessage;     /* Actual content of the post. */
+    QString mLink;     /* Link associated with the post */
+    QString mName; /* Name of the Link */
+	QString mCaption; /* Caption of the Link */
+    QString mDescription; /* Description of the Link. */
+    QString mSource; /* Source of the Link */	
+	QList<PropertyInfoPtr> mProperties; /* Properties of the Link */
+	QString mIcon; /* Icon of the post */
+    QString mType;     /* Type of  post */	
+    LikeInfoPtr mLikes;     /* Likes of  post */
+    QString mStory;     /* Story of  post */	
+    CommentInfoPtr mComments;     /* Comments on  post */	
+    AppInfoPtr mApplication; /*App associated with the post*/
     QString mCreatedTime; /* Creation time of the post. */
     QString mUpdatedTime; /* Last update time of the post. */
+	
+    //QString mSenderId;          /* Facebook id of the post. */
+    //QString mSenderName;          /* Facebook id of the post. */
+    //QString mAppName; /* App Name*/
+    //QString mAppId; /*App id*/		    
+
+
 };
 
 typedef QSharedPointer<PostInfo> PostInfoPtr;

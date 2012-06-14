@@ -32,6 +32,10 @@ set(kfacebook_SRCS
   postjob.cpp
   postaddjob.cpp
   postslistjob.cpp
+  propertyinfo.cpp
+  appinfo.cpp
+  commentinfo.cpp
+  likeinfo.cpp
 )
 
 kde4_add_library(kfacebook SHARED ${kfacebook_SRCS})
@@ -90,5 +94,9 @@ install( FILES
   postjob.h
   postaddjob.h
   postslistjob.h
+  propertyinfo.h
+  appinfo.h
+  commentinfo.h
+  likeinfo.h
  DESTINATION ${INCLUDE_INSTALL_DIR}/kfacebook COMPONENT Devel
 )

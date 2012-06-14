@@ -1,4 +1,4 @@
-/* Copyright 2011 Pankaj Bhambhani <pankajb64@gmail.com>
+/* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -16,37 +16,35 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#include "postslistjob.h"
 
-#include <KDebug>
-#include <qjson/qobjecthelper.h>
+#include "propertyinfo.h"
 
-
-PostsListJob::PostsListJob( const QString& accessToken )
-  : ListJobBase( "/me/home", accessToken )
+void PropertyInfo::setName( const QString &name)
 {
+  mName = name;
 }
 
-QList<PostInfoPtr> PostsListJob::posts() const
+QString PropertyInfo::name() const
 {
-  return mPosts;
+  return mName;
 }
 
-void PostsListJob::handleItem(const QVariant& item)
+void PropertyInfo::setText( const QString &text)
 {
-  PostInfoPtr postInfo( new PostInfo() );
-  QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
-  /*QVariantMap from = postInfo->from();		
-  QVariantMap application = postInfo->application();
-  postInfo->setSenderId (from["id"].toString());
-  postInfo->setSenderName (from["name"].toString());
-  postInfo->setAppId (application["id"].toString());
-  postInfo->setAppName (application["name"].toString());*/
-  mPosts.append( postInfo );
+  mText = text;
 }
 
-int PostsListJob::numEntries() const
+QString PropertyInfo::text() const
 {
-  return mPosts.size();
+  return mText;
 }
 
+void PropertyInfo::setHref( const QString &href)
+{
+  mHref = href;
+}
+
+QString PropertyInfo::href() const
+{
+  return mHref;
+}
