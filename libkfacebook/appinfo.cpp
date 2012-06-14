@@ -79,14 +79,14 @@ QString AppInfo::iconUrl() const
   return mIconUrl;
 }
 
-void AppInfo::setSubCategory( const QString &subCategory)
+void AppInfo::setSubcategory( const QString &subCategory)
 {
-  mSubCategory = subCategory;
+  mSubcategory = subCategory;
 }
 
-QString AppInfo::subCategory() const
+QString AppInfo::subcategory() const
 {
-  return mSubCategory;
+  return mSubcategory;
 }
 
 void AppInfo::setLink( const QString &link)

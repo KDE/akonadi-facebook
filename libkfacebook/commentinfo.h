@@ -28,9 +28,8 @@
 #include <QObject>
 
 /**
- * Class that will hold the data for the comment
+ * Class that represents data to be held by comment
  */
- 
 class CommentData : public QObject
 {
 	Q_OBJECT
@@ -56,7 +55,7 @@ class CommentData : public QObject
 		 * Set the person who commented the post
 		 * @param from the person
 		 */
-		void setFrom( const QvariantMap &from);
+		void setFrom(const QVariantMap &from);
 		/**
 		 * Returns the person who commented the post
 		 */
@@ -104,13 +103,12 @@ class CommentData : public QObject
 		QString mMessage;     /* Actual content of the comment. */
 		QString mCreatedTime; /* Creation time of the comment. */
 		int mLikes; /* No. of likes on  the comment. */
-}
+};
 
 typedef QSharedPointer<CommentData> CommentDataPtr;
 
 /**
- * Class to represent facebook comments. See https://developers.facebook.com/docs/reference/api/Comment/
- */ 
+ * Class to represent a facebook comment . See https://developers.facebook.com/docs/reference/api/Comment/
 class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
 {
 	Q_OBJECT
@@ -143,8 +141,8 @@ class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
 	private:
 	
 		QList<CommentDataPtr> mData;          /*  Data of comment. */
-		QString mCount;          /* Count  of comment. */	
-}
+		int mCount;          /* Count  of comment. */	
+};
 
 typedef QSharedPointer<CommentInfo> CommentInfoPtr;
 

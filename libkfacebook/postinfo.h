@@ -31,14 +31,15 @@
 #include <QObject>
 
 /**
- * Class to represent a facebook post. See https://developers.facebook.com/docs/reference/api/post/
+ * Class to represent a facebook post. 
+ * See https://developers.facebook.com/docs/reference/api/post/
  */
+ 
 class LIBKFACEBOOK_EXPORT PostInfo : public QObject
 {
   Q_OBJECT
   Q_PROPERTY(QString id WRITE setId READ id)
   Q_PROPERTY(QVariantMap from WRITE setFrom )
-  //Q_PROPERTY(UserInfoPtr fromObj READ from)
   Q_PROPERTY(QString message WRITE setMessage READ message)
   Q_PROPERTY(QString picture WRITE setPictureUrl READ pictureUrl)
   Q_PROPERTY(QString link WRITE setLink READ link)
@@ -319,5 +320,7 @@ class LIBKFACEBOOK_EXPORT PostInfo : public QObject
 };
 
 typedef QSharedPointer<PostInfo> PostInfoPtr;
+
+typedef QList<PostInfoPtr> PostInfoList;
 
 #endif

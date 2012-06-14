@@ -18,6 +18,7 @@
 */
 
 #include "commentinfo.h"
+#include "util.h"
 
 void CommentData::setId( const QString &id)
 {
@@ -31,7 +32,7 @@ QString CommentData::id() const
 
 void CommentData::setFrom( const QVariantMap &from)
 {
-  mFrom ( new UserInfo());	
+  mFrom = UserInfoPtr( new UserInfo());	
   QJson::QObjectHelper::qvariant2qobject(from, mFrom.data());
 }
 
@@ -50,17 +51,17 @@ QString CommentData::message() const
   return mMessage;
 }
 
-void CommentInfo::setCreatedTimeString( const QString &createdTime )
+void CommentData::setCreatedTimeString( const QString &createdTime )
 {
   mCreatedTime = createdTime;
 }
 
-QString CommentInfo::createdTimeString() const
+QString CommentData::createdTimeString() const
 {
   return mCreatedTime;
 }
 
-KDateTime CommentInfo::createdTime() const
+KDateTime CommentData::createdTime() const
 {
   return facebookTimeToKDateTime(mCreatedTime);
 }
@@ -77,7 +78,7 @@ int CommentData::likes() const
 
 void CommentInfo::setData( const QVariantList &data)
 {
-  mData = new QList<CommentDataPtr>();
+  mData = QList<CommentDataPtr>();
   
   foreach (QVariant	v, data)
   {
@@ -86,7 +87,7 @@ void CommentInfo::setData( const QVariantList &data)
 	QJson::QObjectHelper::qvariant2qobject(vMap, commentData.data());
 	mData << commentData;
   }	
-  mData = data;
+  //mData = data;
 }
 
 QList<CommentDataPtr> CommentInfo::data() const
@@ -96,7 +97,7 @@ QList<CommentDataPtr> CommentInfo::data() const
 
 void CommentInfo::setCount( const int &count)
 {
-  mcount = count;
+  mCount = count;
 }
 
 int CommentInfo::count() const

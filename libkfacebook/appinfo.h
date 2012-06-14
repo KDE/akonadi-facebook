@@ -23,6 +23,7 @@
 #include "libkfacebook_export.h"
 #include <qjson/qobjecthelper.h>
 #include <QObject>
+#include <QSharedPointer>
 
 /**
  *	Class to represent a facebook application. See https://developers.facebook.com/docs/reference/api/application/
@@ -101,13 +102,13 @@
 		/**
 		 * Returns the Icon Url
 		 */
-		QString IconUrl() const;
+		QString iconUrl() const;
 		
 		/**
 		 * Set the subcategory of this application
 		 * @param  the subcategory
 		 */
-		void setSubCategory( const QString &subcategory);
+		void setSubcategory( const QString &subcategory);
 		/**
 		 * Returns the subcategory
 		 */
@@ -144,10 +145,10 @@
 		QString mSubcategory; /* Subcategory of the Application */
 		QString mLink; /* Link of the Application */
 		QString mLogoUrl; /* LogoUrl of the Application */
-		QString mName; /* Name of the Application */
+		/*QString mName; /* Name of the Application *
 		QString mName; /* Name of the Application */
 	
- }
+ };
  
 typedef QSharedPointer<AppInfo> AppInfoPtr;
 

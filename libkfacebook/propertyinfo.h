@@ -23,9 +23,10 @@
 #include "libkfacebook_export.h"
 #include <qjson/qobjecthelper.h>
 #include <QObject>
+#include <QSharedPointer>
 
 /**
- *	Class to represent a property associated with a facebook post. See https://developers.facebook.com/docs/reference/api/post/
+ *	Class to represent a property associated with a facebook post
  */
  
  class LIBKFACEBOOK_EXPORT PropertyInfo : public QObject
@@ -72,7 +73,7 @@
 		QString mName;          /* Name of the property. */
 		QString mText;          /* Text of the property. */
 		QString mHref;          /* Href Link of the property. */		
- }
+ };
  
 typedef QSharedPointer<PropertyInfo> PropertyInfoPtr;
 

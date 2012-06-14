@@ -64,7 +64,7 @@ typedef QSharedPointer<LikeData> LikeDataPtr;
 */
 
 /**
- *	Class to represent likes on a facebook post. See https://developers.facebook.com/docs/reference/api/post/
+ *	Class to represent likes on a facebook post
  */
  
  class LIBKFACEBOOK_EXPORT LikeInfo : public QObject
@@ -102,7 +102,7 @@ typedef QSharedPointer<LikeData> LikeDataPtr;
 		QList<UserInfoPtr> mData;          /*  Data of like. */
 		int mCount;          /* Count  of like. */
 	
- }
+ };
  
 typedef QSharedPointer<LikeInfo> LikeInfoPtr;
 

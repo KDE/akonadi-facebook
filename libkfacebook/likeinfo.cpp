@@ -42,7 +42,7 @@ QString LikeData::name() const
 
 void LikeInfo::setData( const QVariantList &data)
 {
-  mData = new QList<UserInfoPtr>();
+  mData =  QList<UserInfoPtr>();
   
   foreach (QVariant	v, data)
   {
@@ -61,7 +61,7 @@ QList<UserInfoPtr> LikeInfo::data() const
 
 void LikeInfo::setCount( const int &count)
 {
-  mcount = count;
+  mCount = count;
 }
 
 int LikeInfo::count() const

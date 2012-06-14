@@ -27,7 +27,7 @@ PostsListJob::PostsListJob( const QString& accessToken )
 {
 }
 
-QList<PostInfoPtr> PostsListJob::posts() const
+PostInfoList PostsListJob::posts() const
 {
   return mPosts;
 }
