@@ -109,6 +109,7 @@ typedef QSharedPointer<CommentData> CommentDataPtr;
 
 /**
  * Class to represent a facebook comment . See https://developers.facebook.com/docs/reference/api/Comment/
+ */
 class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
 {
 	Q_OBJECT
