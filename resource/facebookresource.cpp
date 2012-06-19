@@ -32,6 +32,9 @@
 #include <libkfacebook/notejob.h>
 #include <libkfacebook/noteaddjob.h>
 #include <libkfacebook/facebookjobs.h>
+#include <libkfacebook/postslistjob.h>
+#include <libkfacebook/postjob.h>
+#include <libkfacebook/notificationslistjob.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
@@ -45,6 +48,8 @@ static const char * friendsRID = "friends";
 static const char * eventsRID = "events";
 static const char * eventMimeType = "application/x-vnd.akonadi.calendar.event";
 static const char * notesRID = "notes";
+static const char * postsRID = "posts";
+static const char * notificationsRID = "notifications";
 
 FacebookResource::FacebookResource( const QString &id )
     : ResourceBase( id )
@@ -164,6 +169,25 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mCurrentJobs << notesJob;
     connect( notesJob, SIGNAL(result(KJob*)), this, SLOT(noteListFetched(KJob*)) );
     notesJob->start();
+
+  } else if ( collection.remoteId() == postsRID ) {
+      kDebug() << collection.remoteId();
+    mIdle = false;
+    emit status( Running, i18n( "Preparing sync of posts." ) );
+    emit percent( 0 );
+    PostsListJob * const postsJob = new PostsListJob( Settings::self()->accessToken() );
+//     postsJob->setLowerLimit(KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ));
+    mCurrentJobs << postsJob;
+    connect( postsJob, SIGNAL(result(KJob*)), this, SLOT(postsListFetched(KJob*)) );
+    postsJob->start();
+  } else if ( collection.remoteId() == notificationsRID ) {
+    mIdle = false;
+    emit status( Running, i18n( "Preparing sync of notifications." ) );
+    emit percent( 0 );
+    NotificationsListJob * const notificationsJob = new NotificationsListJob( Settings::self()->accessToken() );
+    mCurrentJobs << notificationsJob;
+    connect( notificationsJob, SIGNAL(result(KJob*)), this, SLOT(notificationsListFetched(KJob*)) );
+    notificationsJob->start();
   } else {
     // This can not happen
     Q_ASSERT(!"Unknown Collection");
@@ -193,6 +217,17 @@ bool FacebookResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
     noteJob->setProperty( "Item", QVariant::fromValue( item ) );
     connect( noteJob, SIGNAL(result(KJob*)), this, SLOT(noteJobFinished(KJob*)) );
     noteJob->start();
+  } else if(item.mimeType() == "text/x-vnd.akonadi.statusitem") {
+    kDebug() << item.hasPayload() << item.hasPayload<PostInfoPtr>();
+    mIdle = false;
+    PostJob * const postJob = new PostJob( item.remoteId(), Settings::self()->accessToken());
+    mCurrentJobs << postJob;
+    postJob->setProperty( "Item", QVariant::fromValue( item ));
+    connect (postJob, SIGNAL(result(KJob*)), this, SLOT(postJobFinished(KJob*)) );
+    postJob->start();
+  } else if (item.mimeType() == "text/x-vnd.akonadi.socialnotification") {
+    //FIXME: Need to figure out how to fetch single notification
+    kDebug() << "Notifications listjob";
   }
   return true;
 }
@@ -229,7 +264,27 @@ void FacebookResource::retrieveCollections()
   notesDisplayAttribute->setIconName( "facebookresource" );
   notes.addAttribute( notesDisplayAttribute );
 
-  collectionsRetrieved( Collection::List() << friends << events << notes );
+  Collection posts;
+  posts.setRemoteId( postsRID );
+  posts.setName( i18n( "Posts" ) );
+  posts.setParentCollection( Akonadi::Collection::root() );
+  posts.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.statusitem" );
+  posts.setRights(Collection::ReadOnly);
+  EntityDisplayAttribute * const postsDisplayAttribute = new EntityDisplayAttribute();
+  postsDisplayAttribute->setIconName( "facebookresource" );
+  posts.addAttribute( postsDisplayAttribute );
+
+  Collection notifications;
+  notifications.setRemoteId( notificationsRID );
+  notifications.setName( i18n( "Notifications" ) );
+  notifications.setParentCollection( Akonadi::Collection::root() );
+  notifications.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.socialnotification" );
+  notifications.setRights(Collection::ReadOnly);
+  EntityDisplayAttribute * const notificationsDisplayAttribute = new EntityDisplayAttribute();
+  notificationsDisplayAttribute->setIconName( "facebookresource" );
+  notifications.addAttribute( notificationsDisplayAttribute );
+
+  collectionsRetrieved( Collection::List() << friends << events << notes << posts << notifications);
 }
 
 void FacebookResource::itemRemoved(const Akonadi::Item &item)
@@ -257,7 +312,7 @@ void FacebookResource::deleteJobFinished(KJob *job)
   if ( job->error() ) {
     abortWithError( i18n( "Unable to delete note from server: %1", job->errorText() ) );
   } else {
-    const Item item = job->property( "Item" ).value<Item>(); 
+    const Item item = job->property( "Item" ).value<Item>();
     changeCommitted( item );
     resetState();
   }

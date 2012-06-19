@@ -65,6 +65,10 @@ class FacebookResource : public Akonadi::ResourceBase,
     void noteListFetched( KJob *job );
     void noteJobFinished( KJob *job );
     void noteAddJobFinished( KJob *job );
+    void postJobFinished( KJob *job );
+    void postsListFetched( KJob *job );
+    void notificationsListFetched( KJob *job );
+
     void deleteJobFinished( KJob *job );
 
   private:
@@ -77,6 +81,8 @@ class FacebookResource : public Akonadi::ResourceBase,
     void finishFriendFetching();
     void finishEventsFetching();
     void finishNotesFetching();
+    void finishPostsFetching();
+    void finishNotificationsFetching();
 
     // Friends that are already stored on the Akonadi server
     QMap<QString,KDateTime> mExistingFriends;

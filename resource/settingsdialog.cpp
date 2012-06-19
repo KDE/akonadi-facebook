@@ -71,6 +71,8 @@ void SettingsDialog::showAuthenticationDialog()
               << "friends_location"
               << "friends_work_history"
               << "friends_relationships"
+              << "manage_notifications"
+              << "read_stream"
               << "user_events"
               << "user_notes";
   AuthenticationDialog * const authDialog = new AuthenticationDialog( this );
