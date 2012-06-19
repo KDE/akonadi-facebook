@@ -31,15 +31,12 @@ class LIBKFACEBOOK_EXPORT PostsListJob : public ListJobBase
     PostsListJob( const QString &accessToken );
     QList<PostInfoPtr> posts() const;
     int numEntries() const;
-    
 
   protected:
     void handleItem( const QVariant& item );
 
   private:
     QList<PostInfoPtr> mPosts;
-    
-    
 };
 
 #endif
