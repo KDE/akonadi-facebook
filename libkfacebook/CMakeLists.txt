@@ -36,6 +36,8 @@ set(kfacebook_SRCS
   appinfo.cpp
   commentinfo.cpp
   likeinfo.cpp
+  notificationinfo.cpp
+  notificationslistjob.cpp
 )
 
 kde4_add_library(kfacebook SHARED ${kfacebook_SRCS})
