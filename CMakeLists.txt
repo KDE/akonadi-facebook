@@ -39,6 +39,7 @@ include_directories(
 )
 
 add_subdirectory(libkfacebook)
+add_subdirectory(serializer)
 add_subdirectory(resource)
 
 macro_display_feature_log()
