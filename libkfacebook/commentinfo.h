@@ -30,7 +30,7 @@
 /**
  * Class that represents data to be held by comment
  */
-class CommentData : public QObject
+class LIBKFACEBOOK_EXPORT CommentData : public QObject
 {
 	Q_OBJECT
 	Q_PROPERTY(QString id WRITE setId READ id)
