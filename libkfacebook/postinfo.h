@@ -323,4 +323,6 @@ typedef QSharedPointer<PostInfo> PostInfoPtr;
 
 typedef QList<PostInfoPtr> PostInfoList;
 
+Q_DECLARE_METATYPE(PostInfo *);
+
 #endif
