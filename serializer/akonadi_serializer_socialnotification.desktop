@@ -1,0 +1,9 @@
+[Misc]
+Name=Facebook Notification Serializer
+Comment=An Akonadi serializer plugin for Facebook notifications
+
+[Plugin]
+Type=text/x-vnd.akonadi.socialnotification
+X-Akonadi-Class=NotificationInfo*;
+X-KDE-Library=akonadi_serializer_socialnotification
+X-KDE-ClassName=Akonadi::SerializerPluginSocialNotification
