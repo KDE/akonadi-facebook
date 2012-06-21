@@ -1,6 +1,16 @@
 [Misc]
 Name=Facebook Notification Serializer
+Name[pt]=Serialização das Notificações do Facebook
+Name[pt_BR]=Serialização das notificações do Facebook
+Name[sv]=Serialisering av underrättelser från Facebook
+Name[uk]=Серіалізатор сповіщень Facebook
+Name[x-test]=xxFacebook Notification Serializerxx
 Comment=An Akonadi serializer plugin for Facebook notifications
+Comment[pt]=Um 'plugin' de serialização do Akonadi para as notificações do Facebook
+Comment[pt_BR]=Um plugin de serialização do Akonadi para as notificações do Facebook
+Comment[sv]=Ett Akonadi serialiseringsinsticksprogram för underrättelser från Facebook
+Comment[uk]=Додаток серіалізації даних Akonadi для сповіщень Facebook
+Comment[x-test]=xxAn Akonadi serializer plugin for Facebook notificationsxx
 
 [Plugin]
 Type=text/x-vnd.akonadi.socialnotification

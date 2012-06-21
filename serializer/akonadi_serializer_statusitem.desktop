@@ -1,6 +1,16 @@
 [Misc]
 Name=Facebook Serializer
+Name[pt]=Serialização do Facebook
+Name[pt_BR]=Serialização do Facebook
+Name[sv]=Serialisering för Facebook
+Name[uk]=Серіалізатор Facebook
+Name[x-test]=xxFacebook Serializerxx
 Comment=An Akonadi serializer plugin for Facebook
+Comment[pt]=Um 'plugin' de serialização do Akonadi para o Facebook
+Comment[pt_BR]=Um plugin de serialização do Akonadi para o Facebook
+Comment[sv]=Ett Akonadi serialiseringsinsticksprogram för Facebook
+Comment[uk]=Додаток серіалізації даних Akonadi для Facebook
+Comment[x-test]=xxAn Akonadi serializer plugin for Facebookxx
 
 [Plugin]
 Type=text/x-vnd.akonadi.statusitem
