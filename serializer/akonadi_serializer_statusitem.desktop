@@ -1,11 +1,13 @@
 [Misc]
 Name=Facebook Serializer
+Name[nl]=Serialisator van Facebook
 Name[pt]=Serialização do Facebook
 Name[pt_BR]=Serialização do Facebook
 Name[sv]=Serialisering för Facebook
 Name[uk]=Серіалізатор Facebook
 Name[x-test]=xxFacebook Serializerxx
 Comment=An Akonadi serializer plugin for Facebook
+Comment[nl]=Een Akonadi serialisatorplug-in voor Facebook
 Comment[pt]=Um 'plugin' de serialização do Akonadi para o Facebook
 Comment[pt_BR]=Um plugin de serialização do Akonadi para o Facebook
 Comment[sv]=Ett Akonadi serialiseringsinsticksprogram för Facebook
