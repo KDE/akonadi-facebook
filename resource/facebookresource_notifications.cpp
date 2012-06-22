@@ -60,7 +60,7 @@ void FacebookResource::notificationsListFetched( KJob *job ) {
 
         itemsRetrieved( notificationItems );
         itemsRetrievalDone();
-        finishPostsFetching();
+        finishNotificationsFetching();
     }
 
 }
