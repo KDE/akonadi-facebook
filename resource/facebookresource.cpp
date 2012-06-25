@@ -169,9 +169,7 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mCurrentJobs << notesJob;
     connect( notesJob, SIGNAL(result(KJob*)), this, SLOT(noteListFetched(KJob*)) );
     notesJob->start();
-
   } else if ( collection.remoteId() == postsRID ) {
-      kDebug() << collection.remoteId();
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of posts." ) );
     emit percent( 0 );
