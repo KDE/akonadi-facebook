@@ -25,7 +25,8 @@ target_link_libraries(akonadi_serializer_statusitem
               ${KDE4_KDECORE_LIBS}
               kfacebook
               ${qjson_LIBRARIES}    # for Debian
-              ${QJSON_LIBRARIES})
+              ${QJSON_LIBRARIES}
+              ${QJSON_LIBRARY})
 
 install(TARGETS akonadi_serializer_statusitem DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES akonadi_serializer_statusitem.desktop DESTINATION ${DATA_INSTALL_DIR}/akonadi/plugins/serializer)
@@ -45,7 +46,8 @@ target_link_libraries(akonadi_serializer_socialnotification
               ${KDE4_KDECORE_LIBS}
               kfacebook
               ${qjson_LIBRARIES}    # for Debian
-              ${QJSON_LIBRARIES})
+              ${QJSON_LIBRARIES}
+              ${QJSON_LIBRARY})
 
 install(TARGETS akonadi_serializer_socialnotification DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES akonadi_serializer_socialnotification.desktop DESTINATION ${DATA_INSTALL_DIR}/akonadi/plugins/serializer)
