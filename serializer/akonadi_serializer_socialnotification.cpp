@@ -22,7 +22,7 @@
 #include "akonadi_serializer_statusitem.h"
 #include "libkfacebook/postinfo.h"
 #include <libkfacebook/notificationinfo.h>
-#include <../akonadi-facebook/libkfacebook/userinfo.h>
+#include <libkfacebook/userinfo.h>
 
 #include <QtCore/qplugin.h>
 
