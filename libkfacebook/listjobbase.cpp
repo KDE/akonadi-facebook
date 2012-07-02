@@ -20,6 +20,8 @@
 
 #include <QVariant>
 
+using namespace KFacebook;
+
 ListJobBase::ListJobBase( const QString &path, const QString& accessToken )
   : FacebookGetJob( path, accessToken )
 {

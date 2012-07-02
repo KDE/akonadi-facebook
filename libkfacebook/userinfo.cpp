@@ -22,6 +22,8 @@
 
 #include <KDebug>
 
+using namespace KFacebook;
+
 static const int invalidTimezone = 42;
 
 UserInfo::UserInfo()

@@ -52,7 +52,7 @@ void FacebookResource::initialItemFetchFinished( KJob* job )
     }
 
     setItemStreamingEnabled( true );
-    FriendListJob * const friendListJob = new FriendListJob( Settings::self()->accessToken() );
+    KFacebook::FriendListJob * const friendListJob = new KFacebook::FriendListJob( Settings::self()->accessToken() );
     mCurrentJobs << friendListJob;
     connect( friendListJob, SIGNAL(result(KJob*)), this, SLOT(friendListJobFinished(KJob*)) );
     emit status( Running, i18n( "Retrieving friends list." ) );
@@ -65,17 +65,17 @@ void FacebookResource::friendListJobFinished( KJob* job )
 {
   Q_ASSERT(!mIdle);
   Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  FriendListJob * const friendListJob = dynamic_cast<FriendListJob*>( job );
+  KFacebook::FriendListJob * const friendListJob = dynamic_cast<KFacebook::FriendListJob*>( job );
   Q_ASSERT( friendListJob );
   mCurrentJobs.removeAll(job);
 
   if ( friendListJob->error() ) {
     abortWithError( i18n( "Unable to get list of friends from server: %1", friendListJob->errorText() ),
-                    friendListJob->error() == FacebookJob::AuthenticationProblem );
+                    friendListJob->error() == KFacebook::FacebookJob::AuthenticationProblem );
   } else {
 
     // Figure out which items are new or changed
-    foreach( const UserInfoPtr &user, friendListJob->friends() ) {
+    foreach( const KFacebook::UserInfoPtr &user, friendListJob->friends() ) {
 #if 0 // Bah, Facebook's timestamp doesn't seem to get updated when a user's profile changes :(
       // See http://bugs.developers.facebook.net/show_bug.cgi?id=15475
       const KDateTime stampOfExisting = mExistingFriends.value( user->id(), KDateTime() );
@@ -97,7 +97,7 @@ void FacebookResource::friendListJobFinished( KJob* job )
     Item::List removedItems;
     foreach( const QString &friendId, mExistingFriends.keys() ) {
       bool found = false;
-      foreach( const UserInfoPtr &user, friendListJob->friends() ) {
+      foreach( const KFacebook::UserInfoPtr &user, friendListJob->friends() ) {
         if ( user->id() == friendId ) {
           found = true;
           break;
@@ -125,10 +125,10 @@ void FacebookResource::friendListJobFinished( KJob* job )
 void FacebookResource::fetchNewOrChangedFriends()
 {
   QStringList mewOrChangedFriendIds;
-  foreach( const UserInfoPtr &user, mNewOrChangedFriends ) {
+  foreach( const KFacebook::UserInfoPtr &user, mNewOrChangedFriends ) {
     mewOrChangedFriendIds.append( user->id() );
   }
-  FriendJob * const friendJob = new FriendJob( mewOrChangedFriendIds, Settings::self()->accessToken() );
+  KFacebook::FriendJob * const friendJob = new KFacebook::FriendJob( mewOrChangedFriendIds, Settings::self()->accessToken() );
   mCurrentJobs << friendJob;
   connect( friendJob, SIGNAL(result(KJob*)), this, SLOT(detailedFriendListJobFinished(KJob*)) );
   friendJob->start();
@@ -138,7 +138,7 @@ void FacebookResource::detailedFriendListJobFinished( KJob* job )
 {
   Q_ASSERT(!mIdle);
   Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  FriendJob * const friendJob = dynamic_cast<FriendJob*>( job );
+  KFacebook::FriendJob * const friendJob = dynamic_cast<KFacebook::FriendJob*>( job );
   Q_ASSERT( friendJob );
   mCurrentJobs.removeAll(job);
 
@@ -157,8 +157,8 @@ void FacebookResource::fetchPhotos()
 {
   mIdle = false;
   mNumPhotosFetched = 0;
-  foreach(const UserInfoPtr &f, mPendingFriends) {
-    PhotoJob * const photoJob = new PhotoJob(f->id(), Settings::self()->accessToken() );
+  foreach(const KFacebook::UserInfoPtr &f, mPendingFriends) {
+    KFacebook::PhotoJob * const photoJob = new KFacebook::PhotoJob(f->id(), Settings::self()->accessToken() );
     mCurrentJobs << photoJob;
     photoJob->setProperty("friend", QVariant::fromValue( f ));
     connect(photoJob, SIGNAL(result(KJob*)), this, SLOT(photoJobFinished(KJob*)));
@@ -185,9 +185,9 @@ void FacebookResource::photoJobFinished(KJob* job)
 {
   Q_ASSERT(!mIdle);
   Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  PhotoJob * const photoJob = dynamic_cast<PhotoJob*>( job );
+  KFacebook::PhotoJob * const photoJob = dynamic_cast<KFacebook::PhotoJob*>( job );
   Q_ASSERT(photoJob);
-  const UserInfoPtr user = job->property("friend").value<UserInfoPtr>();
+  const KFacebook::UserInfoPtr user = job->property("friend").value<KFacebook::UserInfoPtr>();
   mCurrentJobs.removeOne(job);
 
   if (photoJob->error()) {
@@ -222,7 +222,7 @@ void FacebookResource::friendJobFinished(KJob* job)
 {
   Q_ASSERT(!mIdle);
   Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  FriendJob * const friendJob = dynamic_cast<FriendJob*>( job );
+  KFacebook::FriendJob * const friendJob = dynamic_cast<KFacebook::FriendJob*>( job );
   Q_ASSERT( friendJob );
   Q_ASSERT( friendJob->friendInfo().size() == 1 );
   mCurrentJobs.removeAll(job);

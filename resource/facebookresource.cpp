@@ -155,7 +155,7 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of events list." ) );
     emit percent( 0 );
-    AllEventsListJob * const listJob = new AllEventsListJob( Settings::self()->accessToken() );
+    KFacebook::AllEventsListJob * const listJob = new KFacebook::AllEventsListJob( Settings::self()->accessToken() );
     listJob->setLowerLimit(KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ));
     mCurrentJobs << listJob;
     connect( listJob, SIGNAL(result(KJob*)), this, SLOT(eventListFetched(KJob*)) );
@@ -164,7 +164,7 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of notes list." ) );
     emit percent( 0 );
-    AllNotesListJob * const notesJob = new AllNotesListJob( Settings::self()->accessToken() );
+    KFacebook::AllNotesListJob * const notesJob = new KFacebook::AllNotesListJob( Settings::self()->accessToken() );
     notesJob->setLowerLimit(KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ));
     mCurrentJobs << notesJob;
     connect( notesJob, SIGNAL(result(KJob*)), this, SLOT(noteListFetched(KJob*)) );
@@ -173,7 +173,7 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of posts." ) );
     emit percent( 0 );
-    PostsListJob * const postsJob = new PostsListJob( Settings::self()->accessToken() );
+    KFacebook::PostsListJob * const postsJob = new KFacebook::PostsListJob( Settings::self()->accessToken() );
 //     postsJob->setLowerLimit(KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ));
     mCurrentJobs << postsJob;
     connect( postsJob, SIGNAL(result(KJob*)), this, SLOT(postsListFetched(KJob*)) );
@@ -182,7 +182,7 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of notifications." ) );
     emit percent( 0 );
-    NotificationsListJob * const notificationsJob = new NotificationsListJob( Settings::self()->accessToken() );
+    KFacebook::NotificationsListJob * const notificationsJob = new KFacebook::NotificationsListJob( Settings::self()->accessToken() );
     mCurrentJobs << notificationsJob;
     connect( notificationsJob, SIGNAL(result(KJob*)), this, SLOT(notificationsListFetched(KJob*)) );
     notificationsJob->start();
@@ -202,7 +202,7 @@ bool FacebookResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
   if (item.mimeType() == "text/directory") {
     // TODO: Is this ever called??
     mIdle = false;
-    FriendJob * const friendJob = new FriendJob( item.remoteId(),
+    KFacebook::FriendJob * const friendJob = new KFacebook::FriendJob( item.remoteId(),
                                                Settings::self()->accessToken() );
     mCurrentJobs << friendJob;
     friendJob->setProperty( "Item", QVariant::fromValue( item ) );
@@ -210,15 +210,14 @@ bool FacebookResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
     friendJob->start();
   } else if (item.mimeType() == "text/x-vnd.akonadi.note") {
     mIdle = false;
-    NoteJob * const noteJob = new NoteJob( item.remoteId(), Settings::self()->accessToken());
+    KFacebook::NoteJob * const noteJob = new KFacebook::NoteJob( item.remoteId(), Settings::self()->accessToken());
     mCurrentJobs << noteJob;
     noteJob->setProperty( "Item", QVariant::fromValue( item ) );
     connect( noteJob, SIGNAL(result(KJob*)), this, SLOT(noteJobFinished(KJob*)) );
     noteJob->start();
   } else if(item.mimeType() == "text/x-vnd.akonadi.statusitem") {
-    kDebug() << item.hasPayload() << item.hasPayload<PostInfoPtr>();
     mIdle = false;
-    PostJob * const postJob = new PostJob( item.remoteId(), Settings::self()->accessToken());
+    KFacebook::PostJob * const postJob = new KFacebook::PostJob( item.remoteId(), Settings::self()->accessToken());
     mCurrentJobs << postJob;
     postJob->setProperty( "Item", QVariant::fromValue( item ));
     connect (postJob, SIGNAL(result(KJob*)), this, SLOT(postJobFinished(KJob*)) );
@@ -289,7 +288,7 @@ void FacebookResource::itemRemoved(const Akonadi::Item &item)
 {
   if (item.mimeType() == "text/x-vnd.akonadi.note") {
     mIdle = false;
-    FacebookDeleteJob * const deleteJob = new FacebookDeleteJob( item.remoteId(),
+    KFacebook::FacebookDeleteJob * const deleteJob = new KFacebook::FacebookDeleteJob( item.remoteId(),
                                                Settings::self()->accessToken() );
     mCurrentJobs << deleteJob;
     deleteJob->setProperty( "Item", QVariant::fromValue( item ) );
@@ -325,7 +324,7 @@ void FacebookResource::itemAdded( const Akonadi::Item &item, const Akonadi::Coll
       const QString message = note->body();
 
       mIdle = false;
-      NoteAddJob * const addJob = new NoteAddJob( subject, message, Settings::self()->accessToken() );
+      KFacebook::NoteAddJob * const addJob = new KFacebook::NoteAddJob( subject, message, Settings::self()->accessToken() );
       mCurrentJobs << addJob;
       addJob->setProperty( "Item", QVariant::fromValue( item ) );
       connect( addJob, SIGNAL(result(KJob *)), this, SLOT(noteAddJobFinished(KJob *)) );

@@ -30,31 +30,31 @@
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
-#include <KLocalizedString>
-#include <akonadi/changerecorder.h>
+#include <Akonadi/ChangeRecorder>
 
+#include <KLocalizedString>
 
 using namespace Akonadi;
 
 void FacebookResource::notificationsListFetched( KJob *job ) {
     Q_ASSERT( !mIdle );
-    NotificationsListJob * const listJob = dynamic_cast<NotificationsListJob*>( job );
+    KFacebook::NotificationsListJob * const listJob = dynamic_cast<KFacebook::NotificationsListJob*>( job );
     Q_ASSERT( listJob );
     mCurrentJobs.removeAll(job);
 
     if ( listJob->error() ) {
         abortWithError( i18n( "Unable to get notifications from server: %1", listJob->errorString() ),
-                        listJob->error() == FacebookJob::AuthenticationProblem );
+                        listJob->error() == KFacebook::FacebookJob::AuthenticationProblem );
     } else {
         setItemStreamingEnabled( true );
 
         Item::List notificationItems;
         kDebug() << "Going into foreach";
-        foreach( const NotificationInfoPtr &notificationInfo, listJob->notifications() ) {
+        foreach( const KFacebook::NotificationInfoPtr &notificationInfo, listJob->notifications() ) {
           Item notification;
           notification.setRemoteId( notificationInfo.data()->id() );
           notification.setMimeType( "text/x-vnd.akonadi.socialnotification" );
-          notification.setPayload<NotificationInfoPtr>( notificationInfo );
+          notification.setPayload<KFacebook::NotificationInfoPtr>( notificationInfo );
           notificationItems.append(notification);;
         }
 

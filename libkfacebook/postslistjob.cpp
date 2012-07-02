@@ -18,9 +18,9 @@
 */
 #include "postslistjob.h"
 
-#include <KDebug>
 #include <qjson/qobjecthelper.h>
 
+using namespace KFacebook;
 
 PostsListJob::PostsListJob( const QString& accessToken )
   : ListJobBase( "/me/home", accessToken )
@@ -36,7 +36,7 @@ void PostsListJob::handleItem(const QVariant& item)
 {
   PostInfoPtr postInfo( new PostInfo() );
   QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
-  /*QVariantMap from = postInfo->from();		
+  /*QVariantMap from = postInfo->from();
   QVariantMap application = postInfo->application();
   postInfo->setSenderId (from["id"].toString());
   postInfo->setSenderName (from["name"].toString());

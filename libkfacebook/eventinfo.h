@@ -16,8 +16,8 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef EVENTINFO_H
-#define EVENTINFO_H
+#ifndef KFACEBOOK_EVENTINFO_H
+#define KFACEBOOK_EVENTINFO_H
 
 #include <config.h>
 #include "libkfacebook_export.h"
@@ -43,6 +43,8 @@ typedef boost::shared_ptr<KCal::Event> EventPtr;
 typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 typedef KCal::Attendee* AttendeePtr;
 #endif
+
+namespace KFacebook {
 
 /**
 * An attendee to an event
@@ -213,5 +215,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
 };
 
 typedef QSharedPointer<EventInfo> EventInfoPtr;
+
+}
 
 #endif

@@ -19,6 +19,8 @@
 
 #include "propertyinfo.h"
 
+using namespace KFacebook;
+
 void PropertyInfo::setName( const QString &name)
 {
   mName = name;

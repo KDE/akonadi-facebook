@@ -16,11 +16,13 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef FRIENDJOB_H
-#define FRIENDJOB_H
+#ifndef KFACEBOOK_FRIENDJOB_H
+#define KFACEBOOK_FRIENDJOB_H
 
 #include "facebookjobs.h"
 #include "userinfo.h"
+
+namespace KFacebook {
 
 /**
  * A job to retrieve the data about one or multiple friends from facebook.
@@ -44,7 +46,7 @@ class LIBKFACEBOOK_EXPORT FriendJob : public FacebookGetIdJob
     * @param accessToken The access token to retrieve the data from facebook.
     */
     FriendJob( const QString &friendId, const QString &accessToken );
-    
+
     /**
     * @return A list of pointers to UserInfo objects of all the users (friends)
     *         that have been retrieved by this job.
@@ -60,5 +62,7 @@ class LIBKFACEBOOK_EXPORT FriendJob : public FacebookGetIdJob
 
     QList<UserInfoPtr> mFriendInfo;
 };
+
+}
 
 #endif

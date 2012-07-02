@@ -21,6 +21,8 @@
 #include <KDebug>
 #include <qjson/qobjecthelper.h>
 
+using namespace KFacebook;
+
 EventsListJob::EventsListJob( const QString& accessToken )
   : ListJobBase( "/me/events", accessToken )
 {

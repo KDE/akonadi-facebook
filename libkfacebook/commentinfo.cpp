@@ -20,6 +20,8 @@
 #include "commentinfo.h"
 #include "util.h"
 
+using namespace KFacebook;
+
 void CommentData::setId( const QString &id)
 {
   mId = id;
@@ -32,7 +34,7 @@ QString CommentData::id() const
 
 void CommentData::setFrom( const QVariantMap &from)
 {
-  mFrom = UserInfoPtr( new UserInfo());	
+  mFrom = UserInfoPtr( new UserInfo());
   QJson::QObjectHelper::qvariant2qobject(from, mFrom.data());
 }
 
@@ -79,14 +81,14 @@ int CommentData::likes() const
 void CommentInfo::setData( const QVariantList &data)
 {
   mData = QList<CommentDataPtr>();
-  
+
   foreach (QVariant	v, data)
   {
 	QVariantMap vMap = v.toMap();
 	CommentDataPtr commentData ( new CommentData());
 	QJson::QObjectHelper::qvariant2qobject(vMap, commentData.data());
 	mData << commentData;
-  }	
+  }
   //mData = data;
 }
 

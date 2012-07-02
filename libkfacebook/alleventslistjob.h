@@ -16,12 +16,14 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef ALLEVENTSLISTJOB_H
-#define ALLEVENTSLISTJOB_H
+#ifndef KFACEBOOK_ALLEVENTSLISTJOB_H
+#define KFACEBOOK_ALLEVENTSLISTJOB_H
 
 #include "pagedlistjob.h"
 #include "eventinfo.h"
 #include "libkfacebook_export.h"
+
+namespace KFacebook {
 
 class LIBKFACEBOOK_EXPORT AllEventsListJob : public PagedListJob
 {
@@ -38,5 +40,7 @@ class LIBKFACEBOOK_EXPORT AllEventsListJob : public PagedListJob
   private:
     QList<EventInfoPtr> mEvents;
 };
+
+}
 
 #endif

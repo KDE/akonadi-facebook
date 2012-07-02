@@ -16,15 +16,18 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef USERINFO_H
-#define USERINFO_H
+#ifndef KFACEBOOK_USERINFO_H
+#define KFACEBOOK_USERINFO_H
 
 #include "libkfacebook_export.h"
 
 #include <KABC/Addressee>
 #include <KDateTime>
+
 #include <QSharedPointer>
 #include <QDate>
+
+namespace KFacebook {
 
 /**
 * Class that describes a person on facebook
@@ -180,7 +183,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     * @brief Created a KABC::Addressee for all the information we have about
     *        this person.
     *
-    * @return A KABC::Addressee of this person. 
+    * @return A KABC::Addressee of this person.
     */
     KABC::Addressee toAddressee() const;
 
@@ -201,6 +204,9 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
 };
 
 typedef QSharedPointer<UserInfo> UserInfoPtr;
-Q_DECLARE_METATYPE(UserInfoPtr)
+
+}
+
+Q_DECLARE_METATYPE(KFacebook::UserInfoPtr)
 
 #endif

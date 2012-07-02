@@ -25,6 +25,8 @@
 #include <KDebug>
 #include <KLocale>
 
+namespace KFacebook {
+
 /*
  * FacebookJobs base class
  */
@@ -104,7 +106,7 @@ void FacebookAddJob::jobFinished(KJob *job)
 {
   KIO::StoredTransferJob *addJob = dynamic_cast<KIO::StoredTransferJob *>( job );
   Q_ASSERT( addJob );
-  if ( addJob->error() ) { 
+  if ( addJob->error() ) {
     setError( addJob->error() );
     setErrorText( KIO::buildErrorString( error(), addJob->errorText() ) );
     kWarning() << "Job error: " << addJob->errorString();
@@ -152,7 +154,7 @@ void FacebookDeleteJob::start()
   url.addQueryItem("method", "delete");
 
   kDebug() << "Starting delete: " << url;
-  KIO::StoredTransferJob * const job = KIO::storedHttpPost( QByteArray(), url, KIO::HideProgressInfo ); 
+  KIO::StoredTransferJob * const job = KIO::storedHttpPost( QByteArray(), url, KIO::HideProgressInfo );
   mJob = job;
   connect( job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)) );
   job->start();
@@ -168,7 +170,7 @@ void FacebookDeleteJob::jobFinished( KJob *job )
     kWarning() << "Job error: " << deleteJob->errorString();
   } else {
     // TODO: error handling. Does the server return the error as a JSON string?
-    kDebug() << "Got data: " << QString::fromAscii( deleteJob->data().data() );
+//     kDebug() << "Got data: " << QString::fromAscii( deleteJob->data().data() );
   }
 
   emitResult();
@@ -204,14 +206,14 @@ void FacebookGetJob::start()
   KUrl url;
   url.setProtocol( "https" );
   url.setHost( "graph.facebook.com" );
-  if ( !mPath.isEmpty() ) { 
+  if ( !mPath.isEmpty() ) {
     url.setPath( mPath );
   } else {
     url.setPath( "/" );
     url.addQueryItem( "ids", mIds.join( "," ) );
   }
   url.addQueryItem( "access_token", mAccessToken );
-  if ( !mFields.isEmpty() ) { 
+  if ( !mFields.isEmpty() ) {
     url.addQueryItem( "fields", mFields.join( "," ) );
   }
 
@@ -235,7 +237,7 @@ void FacebookGetJob::jobFinished(KJob *job)
     setErrorText( KIO::buildErrorString( error(), transferJob->errorText() ) );
     kWarning() << "Job error: " << transferJob->errorString();
   } else {
-    kDebug() << "Got data: " << QString::fromAscii( transferJob->data().data() );
+//     kDebug() << "Got data: " << QString::fromAscii( transferJob->data().data() );
     QJson::Parser parser;
     bool ok;
     const QVariant data = parser.parse( transferJob->data(), &ok );
@@ -281,6 +283,8 @@ void FacebookGetIdJob::handleData(const QVariant &data)
       handleSingleData(item);
     }
   }
+}
+
 }
 
 #include "facebookjobs.moc"

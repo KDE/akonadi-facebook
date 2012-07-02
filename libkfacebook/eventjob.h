@@ -16,11 +16,13 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef EVENTJOB_H
-#define EVENTJOB_H
+#ifndef KFACEBOOK_EVENTJOB_H
+#define KFACEBOOK_EVENTJOB_H
 
 #include "facebookjobs.h"
 #include "eventinfo.h"
+
+namespace KFacebook {
 
 /**
  * A job to retrieve one or multiple notes from facebook
@@ -39,7 +41,7 @@ class LIBKFACEBOOK_EXPORT EventJob : public FacebookGetIdJob
     EventJob( const QStringList &eventIds, const QString &accessToken );
 
     /**
-    * @brief Constructor to create a job that retrieves a single note from 
+    * @brief Constructor to create a job that retrieves a single note from
     *        facebook.
     *
     * @param eventId The id of the note to retrieve.
@@ -51,7 +53,7 @@ class LIBKFACEBOOK_EXPORT EventJob : public FacebookGetIdJob
     * @brief Return a list of pointers to EventInfo objects that have been
     *        retrieved by this job.
     *
-    * @return 
+    * @return
     */
     QList<EventInfoPtr> eventInfo() const;
 
@@ -61,5 +63,7 @@ class LIBKFACEBOOK_EXPORT EventJob : public FacebookGetIdJob
 
     QList<EventInfoPtr> mEventInfo;
 };
+
+}
 
 #endif

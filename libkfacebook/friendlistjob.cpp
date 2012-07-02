@@ -20,6 +20,8 @@
 
 #include <qjson/qobjecthelper.h>
 
+using namespace KFacebook;
+
 FriendListJob::FriendListJob( const QString& accessToken )
   : FacebookGetJob( "/me/friends", accessToken )
 {

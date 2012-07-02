@@ -38,7 +38,7 @@ bool SerializerPluginStatusItem::deserialize(Item& item, const QByteArray& label
     if (label != Item::FullPayload)
         return false;
 
-    PostInfo *object = new PostInfo();
+    KFacebook::PostInfo *object = new KFacebook::PostInfo();
 
     //FIXME: Use   QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
     QJson::Parser parser;
@@ -63,9 +63,9 @@ bool SerializerPluginStatusItem::deserialize(Item& item, const QByteArray& label
     object->setCreatedTimeString(map["created_time"].toString());
     object->setUpdatedTimeString(map["updated_time"].toString());
 
-    PostInfoPtr postItem(object);
+    KFacebook::PostInfoPtr postItem(object);
     item.setMimeType( "text/x-vnd.akonadi.statusitem" );
-    item.setPayload< PostInfoPtr >(postItem);
+    item.setPayload< KFacebook::PostInfoPtr >(postItem);
 
     return true;
 }
@@ -76,10 +76,10 @@ void SerializerPluginStatusItem::serialize(const Item& item, const QByteArray& l
     Q_UNUSED(label)
     Q_UNUSED(version)
 
-    if (!item.hasPayload< PostInfoPtr >())
+    if (!item.hasPayload< KFacebook::PostInfoPtr >())
         return;
 
-    PostInfoPtr postinfo = item.payload< PostInfoPtr >();
+    KFacebook::PostInfoPtr postinfo = item.payload< KFacebook::PostInfoPtr >();
 
     QVariantMap map;
 
@@ -112,7 +112,7 @@ void SerializerPluginStatusItem::serialize(const Item& item, const QByteArray& l
     QVariantMap likesMap;
     if (!postinfo->likes().isNull()) {
         QVariantList likesData;
-        foreach(const UserInfoPtr &userinfo, postinfo->likes().data()->data()) {
+        foreach(const KFacebook::UserInfoPtr &userinfo, postinfo->likes().data()->data()) {
             QVariantMap likesDataMap;
             likesDataMap["id"] = userinfo.data()->id();
             likesDataMap["name"] = userinfo.data()->name();
@@ -134,7 +134,7 @@ void SerializerPluginStatusItem::serialize(const Item& item, const QByteArray& l
     QVariantMap commentsMap;
     if (!postinfo->comments().isNull()) {
         QVariantList commentsData;
-        foreach(const CommentDataPtr &comment, postinfo->comments().data()->data()) {
+        foreach(const KFacebook::CommentDataPtr &comment, postinfo->comments().data()->data()) {
             QVariantMap commentsDataMap;
             commentsDataMap["id"] = comment.data()->id();
 
@@ -173,63 +173,6 @@ void SerializerPluginStatusItem::serialize(const Item& item, const QByteArray& l
     map["application"] = appMap;
     map["created_time"] = postinfo->createdTimeString();
     map["updated_time"] = postinfo->updatedTimeString();
-
-    //     QVariantList comments;
-//     Q_FOREACH(const StatusItemCommentPtr &comment, postinfo->comments()) {
-//         QVariantMap commentMap;
-// //         commentMap["post_id"] = comment.data()->postId();
-//         commentMap["created_time"] = comment.data()->createdTime();
-//         commentMap["id"] = comment.data()->commentId();
-//         commentMap["message"] = comment.data()->message();
-//
-//         QVariantMap fromMap;
-//         fromMap["id"] = comment.data()->fromId();
-//         fromMap["name"] = comment.data()->fromName();
-//
-//         commentMap["from"] = fromMap;
-//
-//         comments.append(commentMap);
-//     }
-
-//     map["comments"] = comments;
-//     map["comment_count"] = postinfo->commentCount();
-
-//     kDebug() << map["comments"];
-//     map["likes"] = postinfo->likes();
-//     map["
-//     QVariantMap origin;
-//     origin["streamId"] = postinfo->streamId();
-//     map["origin"] = origin;
-/*
-    map["title"] = postinfo->title();
-    map["published"] = postinfo->published().toTime_t();
-    map["updated"] = postinfo->updated().toTime_t();
-
-    QVariantMap summary;
-    summary["content"] = postinfo->summary();;
-    map["summary"] = summary;
-
-    QVariantMap content;
-    content["content"] = postinfo->content();
-    map["content"] = content;
-    map["author"] = postinfo->author();
-
-    QMap< QString, QString > alternatives = postinfo->alternatives();
-    QVariantList list;
-    foreach (QString key, alternatives.keys()) {
-        QVariantMap alternative;
-        alternative["type"] = key;
-        alternative["href"] = alternatives[key];
-        list.append(alternative);
-    }
-    map["alternate"] = list;
-
-    QStringList categories = postinfo->tags();
-    QVariantList cat_list;
-    foreach (QString category, categories) {
-        cat_list.append(category);
-    }
-    map["categories"] = cat_list;*/
 
     QJson::Serializer serializer;
 

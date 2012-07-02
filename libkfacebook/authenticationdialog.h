@@ -16,8 +16,8 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef AUTHENTICATIONWIDGET_H
-#define AUTHENTICATIONWIDGET_H
+#ifndef KFACEBOOK_AUTHENTICATIONWIDGET_H
+#define KFACEBOOK_AUTHENTICATIONWIDGET_H
 
 #include "libkfacebook_export.h"
 
@@ -25,6 +25,8 @@
 
 class KWebView;
 class QProgressBar;
+
+namespace KFacebook {
 
 class LIBKFACEBOOK_EXPORT AuthenticationDialog : public KDialog
 {
@@ -57,5 +59,7 @@ class LIBKFACEBOOK_EXPORT AuthenticationDialog : public KDialog
     QString mUsername;
     QString mPassword;
 };
+
+}
 
 #endif

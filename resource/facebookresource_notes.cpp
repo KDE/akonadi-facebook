@@ -38,18 +38,18 @@ using namespace Akonadi;
 void FacebookResource::noteListFetched( KJob* job )
 {
   Q_ASSERT( !mIdle );
-  AllNotesListJob * const listJob = dynamic_cast<AllNotesListJob*>( job );
+  KFacebook::AllNotesListJob * const listJob = dynamic_cast<KFacebook::AllNotesListJob*>( job );
   Q_ASSERT( listJob );
   mCurrentJobs.removeAll(job);
 
   if ( listJob->error() ) {
     abortWithError( i18n( "Unable to get notes from server: %1", listJob->errorString() ),
-                    listJob->error() == FacebookJob::AuthenticationProblem );
+                    listJob->error() == KFacebook::FacebookJob::AuthenticationProblem );
   } else {
     setItemStreamingEnabled( true );
 
     Item::List noteItems;
-    foreach( const NoteInfoPtr &noteInfo, listJob->allNotes() ) {
+    foreach( const KFacebook::NoteInfoPtr &noteInfo, listJob->allNotes() ) {
       Item note;
       note.setRemoteId( noteInfo->id() );
       note.setPayload<KMime::Message::Ptr>( noteInfo->asNote() );
@@ -75,7 +75,7 @@ void FacebookResource::noteJobFinished(KJob* job)
 {
   Q_ASSERT(!mIdle);
   Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  NoteJob * const noteJob = dynamic_cast<NoteJob*>( job );
+  KFacebook::NoteJob * const noteJob = dynamic_cast<KFacebook::NoteJob*>( job );
   Q_ASSERT( noteJob );
   Q_ASSERT( noteJob->noteInfo().size() == 1 );
   mCurrentJobs.removeAll(job);
@@ -94,7 +94,7 @@ void FacebookResource::noteAddJobFinished(KJob *job)
 {
   Q_ASSERT( !mIdle );
   Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  NoteAddJob * const addJob = dynamic_cast<NoteAddJob*>( job );
+  KFacebook::NoteAddJob * const addJob = dynamic_cast<KFacebook::NoteAddJob*>( job );
   Q_ASSERT( addJob );
   mCurrentJobs.removeAll(job);
 

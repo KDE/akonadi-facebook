@@ -17,10 +17,9 @@
    Boston, MA 02110-1301, USA.
 */
 #include "postinfo.h"
-
 #include "util.h"
 
-#include <KDebug>
+using namespace KFacebook;
 
 
 void PostInfo::setId( const QString &id)
@@ -35,7 +34,7 @@ QString PostInfo::id() const
 
 void PostInfo::setFrom( const QVariantMap &from)
 {
-  mFrom = UserInfoPtr (new UserInfo());	
+  mFrom = UserInfoPtr (new UserInfo());
   QJson::QObjectHelper::qvariant2qobject(from, mFrom.data());
 }
 
@@ -120,7 +119,7 @@ QString PostInfo::source() const
 void PostInfo::setProperties( const QVariantList &properties)
 {
   mProperties = ( QList<PropertyInfoPtr>() );
-  
+
   foreach (QVariant	v, properties)
   {
 	QVariantMap vMap = v.toMap();
@@ -158,7 +157,7 @@ QString PostInfo::type() const
 
 void PostInfo::setLikes( const QVariantMap &likes)
 {
-  mLikes = LikeInfoPtr( new LikeInfo());	
+  mLikes = LikeInfoPtr( new LikeInfo());
   QJson::QObjectHelper::qvariant2qobject(likes, mLikes.data());
   //mLikes = likes;
 }
@@ -180,7 +179,7 @@ QString PostInfo::story() const
 
 void PostInfo::setComments( const QVariantMap &comments)
 {
-  mComments  = CommentInfoPtr ( new CommentInfo());	
+  mComments  = CommentInfoPtr ( new CommentInfo());
   QJson::QObjectHelper::qvariant2qobject(comments, mComments.data());
   //mComments = comments;
 }
@@ -192,7 +191,7 @@ CommentInfoPtr PostInfo::comments() const
 
 void PostInfo::setApplication( const QVariantMap &application)
 {
-  mApplication = AppInfoPtr( new AppInfo());	
+  mApplication = AppInfoPtr( new AppInfo());
   QJson::QObjectHelper::qvariant2qobject(application, mApplication.data());
   //mApplication = application;
 }

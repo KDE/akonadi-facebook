@@ -18,6 +18,9 @@
 */
 
 #include "likeinfo.h"
+
+using namespace KFacebook;
+
 /*
 void LikeData::setId( const QString &id)
 {
@@ -43,7 +46,7 @@ QString LikeData::name() const
 void LikeInfo::setData( const QVariantList &data)
 {
   mData =  QList<UserInfoPtr>();
-  
+
   foreach (QVariant	v, data)
   {
 	QVariantMap vMap = v.toMap();
@@ -51,7 +54,7 @@ void LikeInfo::setData( const QVariantList &data)
 	QJson::QObjectHelper::qvariant2qobject(vMap, userInfo.data());
 	mData << userInfo;
   }
-  
+
 }
 
 QList<UserInfoPtr> LikeInfo::data() const

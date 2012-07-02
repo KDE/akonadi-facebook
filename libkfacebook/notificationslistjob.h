@@ -18,11 +18,13 @@
 */
 
 
-#ifndef NOTIFICATIONSLISTJOB_H
-#define NOTIFICATIONSLISTJOB_H
+#ifndef KFACEBOOK_NOTIFICATIONSLISTJOB_H
+#define KFACEBOOK_NOTIFICATIONSLISTJOB_H
 
 #include "listjobbase.h"
 #include "notificationinfo.h"
+
+namespace KFacebook {
 
 class LIBKFACEBOOK_EXPORT NotificationsListJob : public ListJobBase
 {
@@ -39,5 +41,7 @@ private:
     QList<NotificationInfoPtr> mNotifications;
 
 };
+
+}
 
 #endif // NOTIFICATIONSLISTJOB_H

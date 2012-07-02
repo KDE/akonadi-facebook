@@ -88,9 +88,9 @@ class FacebookResource : public Akonadi::ResourceBase,
     QMap<QString,KDateTime> mExistingFriends;
 
     // Pending new/changed friends we still need to download
-    QList<UserInfoPtr> mPendingFriends;
+    QList<KFacebook::UserInfoPtr> mPendingFriends;
 
-    QList<UserInfoPtr> mNewOrChangedFriends;
+    QList<KFacebook::UserInfoPtr> mNewOrChangedFriends;
 
     // Total number of new & changed friends
     int mNumFriends;

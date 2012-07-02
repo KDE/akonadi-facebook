@@ -30,7 +30,7 @@
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
-#include <akonadi/changerecorder.h>
+#include <Akonadi/ChangeRecorder>
 
 using namespace Akonadi;
 
@@ -40,16 +40,16 @@ void FacebookResource::eventListFetched( KJob* job )
 {
   Q_ASSERT( !mIdle );
   Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  AllEventsListJob * const listJob = dynamic_cast<AllEventsListJob*>( job );
+  KFacebook::AllEventsListJob * const listJob = dynamic_cast<KFacebook::AllEventsListJob*>( job );
   Q_ASSERT( listJob );
   mCurrentJobs.removeAll(job);
 
   if ( listJob->error() ) {
     abortWithError( i18n( "Unable to get events from server: %1", listJob->errorString() ),
-                    listJob->error() == FacebookJob::AuthenticationProblem );
+                    listJob->error() == KFacebook::FacebookJob::AuthenticationProblem );
   } else {
     QStringList eventIds;
-    foreach( const EventInfoPtr &event, listJob->allEvents() ) {
+    foreach( const KFacebook::EventInfoPtr &event, listJob->allEvents() ) {
       eventIds.append( event->id() );
     }
     if ( eventIds.isEmpty() ) {
@@ -57,7 +57,7 @@ void FacebookResource::eventListFetched( KJob* job )
       finishEventsFetching();
       return;
     }
-    EventJob * const eventJob = new EventJob( eventIds, Settings::self()->accessToken() );
+    KFacebook::EventJob * const eventJob = new KFacebook::EventJob( eventIds, Settings::self()->accessToken() );
     mCurrentJobs << eventJob;
     connect( eventJob, SIGNAL(result(KJob*)), this, SLOT(detailedEventListJobFinished(KJob*)) );
     eventJob->start();
@@ -68,7 +68,7 @@ void FacebookResource::detailedEventListJobFinished( KJob* job )
 {
   Q_ASSERT( !mIdle );
   Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  EventJob * const eventJob = dynamic_cast<EventJob*>( job );
+  KFacebook::EventJob * const eventJob = dynamic_cast<KFacebook::EventJob*>( job );
   Q_ASSERT( eventJob );
   mCurrentJobs.removeAll(job);
 
@@ -78,7 +78,7 @@ void FacebookResource::detailedEventListJobFinished( KJob* job )
     setItemStreamingEnabled( true );
 
     Item::List eventItems;
-    foreach ( const EventInfoPtr &eventInfo, eventJob->eventInfo() ) {
+    foreach ( const KFacebook::EventInfoPtr &eventInfo, eventJob->eventInfo() ) {
       Item event;
       event.setRemoteId( eventInfo->id() );
       event.setPayload<IncidencePtr>( eventInfo->asEvent() );

@@ -18,8 +18,8 @@
 */
 
 
-#ifndef NOTIFICATIONINFO_H
-#define NOTIFICATIONINFO_H
+#ifndef KFACEBOOK_NOTIFICATIONINFO_H
+#define KFACEBOOK_NOTIFICATIONINFO_H
 
 #include <QObject>
 
@@ -31,6 +31,8 @@
 
 #include <KDateTime>
 #include <QObject>
+
+namespace KFacebook {
 
 /**
  * Class to represent a facebook notification.
@@ -165,6 +167,8 @@ private:
 
 typedef QSharedPointer<NotificationInfo> NotificationInfoPtr;
 
-Q_DECLARE_METATYPE(NotificationInfo *);
+}
+
+Q_DECLARE_METATYPE(KFacebook::NotificationInfo *);
 
 #endif // NOTIFICATIONINFO_H

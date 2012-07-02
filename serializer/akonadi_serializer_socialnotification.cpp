@@ -41,7 +41,7 @@ bool SerializerPluginSocialNotification::deserialize(Item& item, const QByteArra
     if (label != Item::FullPayload)
         return false;
 
-    NotificationInfo *object = new NotificationInfo();
+    KFacebook::NotificationInfo *object = new KFacebook::NotificationInfo();
 
     //FIXME: Use   QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
     QJson::Parser parser;
@@ -57,9 +57,9 @@ bool SerializerPluginSocialNotification::deserialize(Item& item, const QByteArra
     object->setApplication(map["application"].toMap());
     object->setUnread(map["unread"].toBool());
 
-    NotificationInfoPtr notificationItem(object);
+    KFacebook::NotificationInfoPtr notificationItem(object);
     item.setMimeType( "text/x-vnd.akonadi.socialnotification" );
-    item.setPayload< NotificationInfoPtr >(notificationItem);
+    item.setPayload< KFacebook::NotificationInfoPtr >(notificationItem);
 
     return true;
 }
@@ -69,10 +69,10 @@ void SerializerPluginSocialNotification::serialize(const Item& item, const QByte
     Q_UNUSED(label)
     Q_UNUSED(version)
 
-    if (!item.hasPayload< NotificationInfoPtr >())
+    if (!item.hasPayload< KFacebook::NotificationInfoPtr >())
         return;
 
-    NotificationInfoPtr notificationInfo = item.payload< NotificationInfoPtr >();
+    KFacebook::NotificationInfoPtr notificationInfo = item.payload< KFacebook::NotificationInfoPtr >();
 
     QVariantMap map;
 

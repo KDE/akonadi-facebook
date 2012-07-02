@@ -24,6 +24,8 @@
 #include <KLocalizedString>
 #include <KPIMUtils/LinkLocator>
 
+using namespace KFacebook;
+
 AttendeeInfo::AttendeeInfo(const QString &name, const QString &id, const Attendee::PartStat &status)
   : mName(name), mId(id), mStatus(status)
 {
@@ -89,8 +91,8 @@ EventPtr EventInfo::asEvent() const
   //       picture?
   foreach(const AttendeeInfoPtr &attendeeInfo, attendees()) {
     AttendeePtr attendee( new Attendee(attendeeInfo->name(),
-                                 "facebook@unkown.invalid", 
-                                 false, 
+                                 "facebook@unkown.invalid",
+                                 false,
                                  attendeeInfo->status(),
                                  Attendee::OptParticipant,
                                  attendeeInfo->id() ) );

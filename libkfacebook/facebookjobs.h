@@ -17,13 +17,15 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef FACEBOOKJOBS_H
-#define FACEBOOKJOBS_H
+#ifndef KFACEBOOK_FACEBOOKJOBS_H
+#define KFACEBOOK_FACEBOOKJOBS_H
 
 #include "libkfacebook_export.h"
 #include <KJob>
 #include <QStringList>
 #include <QPointer>
+
+namespace KFacebook {
 
 typedef QPair<QString, QString> QueryItem;
 
@@ -34,8 +36,8 @@ class LIBKFACEBOOK_EXPORT FacebookJob : public KJob
 {
   Q_OBJECT
   public:
-    /** 
-     * Constructor that sets the path and the accesstoken 
+    /**
+     * Constructor that sets the path and the accesstoken
      *
      * @param path The path after https://graphs.facebook.com
      * @param accessToken The accessToken to access our data on facebook
@@ -49,7 +51,7 @@ class LIBKFACEBOOK_EXPORT FacebookJob : public KJob
     virtual void start() = 0;
 
     enum JobErrorType { AuthenticationProblem = KJob::UserDefinedError + 42 };
-  
+
   protected:
     /** Kill the currentjobs and its subjobs */
     virtual bool doKill();
@@ -107,23 +109,23 @@ class LIBKFACEBOOK_EXPORT FacebookGetJob : public FacebookJob
   Q_OBJECT
 
   public:
-    FacebookGetJob( const QString &path, const QString &accessToken ); 
-    explicit FacebookGetJob( const QString &accessToken ); 
+    FacebookGetJob( const QString &path, const QString &accessToken );
+    explicit FacebookGetJob( const QString &accessToken );
 
     /** Set the fields the job should retrieve from facebook */
-    void setFields( const QStringList &fields ); 
+    void setFields( const QStringList &fields );
 
     /** Set the Id's the job should retrieve from facebook.
      * If this is set then the path is ignored */
-    void setIds( const QStringList &ids ); 
+    void setIds( const QStringList &ids );
 
     virtual void start();
 
   protected:
-    virtual void handleData( const QVariant &data ) = 0; 
+    virtual void handleData( const QVariant &data ) = 0;
 
   protected slots:
-    void jobFinished( KJob *job ); 
+    void jobFinished( KJob *job );
 
   private:
     QStringList mFields; /** The field to retrieve from facebook */
@@ -164,6 +166,8 @@ class LIBKFACEBOOK_EXPORT FacebookGetIdJob : public FacebookGetJob
   private:
     virtual void handleData(const QVariant &data);
     bool mMultiQuery;
-};  
+};
+
+}
 
 #endif

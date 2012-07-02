@@ -16,11 +16,13 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef POSTJOB_H
-#define POSTJOB_H
+#ifndef KFACEBOOK_POSTJOB_H
+#define KFACEBOOK_POSTJOB_H
 
 #include "facebookjobs.h"
 #include "postinfo.h"
+
+namespace KFacebook {
 
 /**
 * A job to retrieve one or multiple posts from facebook and convert them into
@@ -37,7 +39,7 @@ class LIBKFACEBOOK_EXPORT PostJob : public FacebookGetIdJob
     * @param accessToken The token to access data on facebook.
     */
     PostJob( const QStringList &postIds, const QString &accessToken );
-    
+
     /**
     * @brief Contrust a postjob to retrieve a single post from facebook.
     *
@@ -55,8 +57,10 @@ class LIBKFACEBOOK_EXPORT PostJob : public FacebookGetIdJob
 
   private:
     void handleSingleData( const QVariant& data );
-    
+
     QList<PostInfoPtr> mPostInfo;
 };
+
+}
 
 #endif

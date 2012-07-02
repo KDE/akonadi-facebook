@@ -21,6 +21,8 @@
 #include <KDebug>
 #include <qjson/qobjecthelper.h>
 
+using namespace KFacebook;
+
 NotesListJob::NotesListJob( const QString& accessToken )
   : ListJobBase( "/me/notes", accessToken )
 {

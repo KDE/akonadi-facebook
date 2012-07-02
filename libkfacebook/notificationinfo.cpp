@@ -22,6 +22,8 @@
 #include "appinfo.h"
 #include "util.h"
 
+using namespace KFacebook;
+
 void NotificationInfo::setId(const QString& id)
 {
   mId = id;

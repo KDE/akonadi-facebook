@@ -16,11 +16,13 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef FRIENDLISTJOB_H
-#define FRIENDLISTJOB_H
+#ifndef KFACEBOOK_FRIENDLISTJOB_H
+#define KFACEBOOK_FRIENDLISTJOB_H
 
 #include "userinfo.h"
 #include "facebookjobs.h"
+
+namespace KFacebook {
 
 /// Get a list of friends of the user
 class LIBKFACEBOOK_EXPORT FriendListJob : public FacebookGetJob
@@ -36,5 +38,6 @@ class LIBKFACEBOOK_EXPORT FriendListJob : public FacebookGetJob
     QList<UserInfoPtr> mFriends;
 };
 
+}
 
 #endif

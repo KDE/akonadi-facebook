@@ -23,6 +23,8 @@
 #include <KDebug>
 #include <KUrl>
 
+using namespace KFacebook;
+
 AllNotesListJob::AllNotesListJob( const QString& accessToken )
   : PagedListJob( accessToken )
 {

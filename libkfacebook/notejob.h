@@ -16,11 +16,13 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef NOTEJOB_H
-#define NOTEJOB_H
+#ifndef KFACEBOOK_NOTEJOB_H
+#define KFACEBOOK_NOTEJOB_H
 
 #include "facebookjobs.h"
 #include "noteinfo.h"
+
+namespace KFacebook {
 
 /**
 * A job to retrieve one or multiple notes from facebook and convert them into
@@ -37,7 +39,7 @@ class LIBKFACEBOOK_EXPORT NoteJob : public FacebookGetIdJob
     * @param accessToken The token to access data on facebook.
     */
     NoteJob( const QStringList &noteIds, const QString &accessToken );
-    
+
     /**
     * @brief Contrust a notejob to retrieve a single note from facebook.
     *
@@ -55,8 +57,10 @@ class LIBKFACEBOOK_EXPORT NoteJob : public FacebookGetIdJob
 
   private:
     void handleSingleData( const QVariant& data );
-    
+
     QList<NoteInfoPtr> mNoteInfo;
 };
+
+}
 
 #endif

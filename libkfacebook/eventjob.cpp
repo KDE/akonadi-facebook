@@ -21,6 +21,8 @@
 #include <KDebug>
 #include <qjson/qobjecthelper.h>
 
+using namespace KFacebook;
+
 EventJob::EventJob( const QString& eventId, const QString& accessToken )
   : FacebookGetIdJob(eventId, accessToken)
 {

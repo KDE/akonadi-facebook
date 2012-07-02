@@ -16,11 +16,13 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef NOTESLISTJOB_H
-#define NOTESLISTJOB_H
+#ifndef KFACEBOOK_NOTESLISTJOB_H
+#define KFACEBOOK_NOTESLISTJOB_H
 
 #include "listjobbase.h"
 #include "noteinfo.h"
+
+namespace KFacebook {
 
 class LIBKFACEBOOK_EXPORT NotesListJob : public ListJobBase
 {
@@ -36,5 +38,7 @@ class LIBKFACEBOOK_EXPORT NotesListJob : public ListJobBase
   private:
     QList<NoteInfoPtr> mNotes;
 };
+
+}
 
 #endif

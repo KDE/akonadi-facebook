@@ -24,6 +24,8 @@
 #include <KLocalizedString>
 #include <KPIMUtils/LinkLocator>
 
+using namespace KFacebook;
+
 void NoteInfo::setId( const QString &id)
 {
   mId = id;

@@ -16,11 +16,13 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef USERINFOJOB_H
-#define USERINFOJOB_H
+#ifndef KFACEBOOK_USERINFOJOB_H
+#define KFACEBOOK_USERINFOJOB_H
 
 #include "userinfo.h"
 #include "facebookjobs.h"
+
+namespace KFacebook {
 
 /**
  * Get information about the currently authenticated user
@@ -49,5 +51,7 @@ class LIBKFACEBOOK_EXPORT UserInfoJob : public FacebookGetJob
   private:
     UserInfoPtr mUserInfo;
 };
+
+}
 
 #endif

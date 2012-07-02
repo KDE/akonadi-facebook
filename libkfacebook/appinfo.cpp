@@ -19,6 +19,8 @@
 
 #include "appinfo.h"
 
+using namespace KFacebook;
+
 void AppInfo::setId( const QString &id)
 {
   mId = id;

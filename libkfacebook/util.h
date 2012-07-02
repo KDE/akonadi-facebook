@@ -16,8 +16,8 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef KFACEBOOK_UTIL_H
+#define KFACEBOOK_UTIL_H
 
 #include <KDateTime>
 

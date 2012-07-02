@@ -20,6 +20,8 @@
 
 #include <qjson/qobjecthelper.h>
 
+using namespace KFacebook;
+
 UserInfoJob::UserInfoJob( const QString& accessToken )
   : FacebookGetJob( "/me", accessToken )
 {

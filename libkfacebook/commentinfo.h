@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef COMMENTINFO_H
-#define COMMENTINFO_H
+#ifndef KFACEBOOK_COMMENTINFO_H
+#define KFACEBOOK_COMMENTINFO_H
 
 #include "libkfacebook_export.h"
 #include <qjson/qobjecthelper.h>
@@ -26,6 +26,8 @@
 
 #include <KDateTime>
 #include <QObject>
+
+namespace KFacebook {
 
 /**
  * Class that represents data to be held by comment
@@ -38,9 +40,9 @@ class LIBKFACEBOOK_EXPORT CommentData : public QObject
 	Q_PROPERTY(QString message WRITE setMessage READ message)
 	Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
 	Q_PROPERTY(int likes WRITE setLikes READ likes)
-	
+
 	public:
-	
+
 		/**
 		 * Set the facebook id of comment
 		 * @param id the facebook id
@@ -50,7 +52,7 @@ class LIBKFACEBOOK_EXPORT CommentData : public QObject
 		 * Returns the facebook id of comment
 		 */
 		QString id() const;
-		
+
 		/**
 		 * Set the person who commented the post
 		 * @param from the person
@@ -60,7 +62,7 @@ class LIBKFACEBOOK_EXPORT CommentData : public QObject
 		 * Returns the person who commented the post
 		 */
 		UserInfoPtr from() const;
-		
+
 		/**
 		 * Set the actual content of the comment
 		 * @param message The actual content of the comment
@@ -70,7 +72,7 @@ class LIBKFACEBOOK_EXPORT CommentData : public QObject
 		 * Returns the content of the comment.
 		 */
 		QString message() const;
-		
+
 		/**
 		 * Set the creation time of the comment
 		 * @param createdTime Time in "facebook format"
@@ -84,7 +86,7 @@ class LIBKFACEBOOK_EXPORT CommentData : public QObject
 		 * Returns the creation time in KDateTime
 		 */
 		KDateTime createdTime() const;
-		
+
 		/**
 		 * Set the no. of likes of comment
 		 * @param likes the no. of likes
@@ -94,8 +96,8 @@ class LIBKFACEBOOK_EXPORT CommentData : public QObject
 		 * Returns the no. of likes
 		 */
 		int likes() const;
-		
-		
+
+
 	private:
 
 		QString mId;          /* Facebook id of comment. */
@@ -115,9 +117,9 @@ class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
 	Q_OBJECT
 	Q_PROPERTY(QVariantList data WRITE setData )
 	Q_PROPERTY(int count WRITE setCount READ count)
-	
+
 	public:
-	
+
 		/**
 		 * Set the data of this like ( list of people who like the post)
 		 * @param data the like data
@@ -127,7 +129,7 @@ class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
 		 * Returns the like data
 		 */
 		QList<CommentDataPtr> data() const;
-		
+
 		/**
 		 * Set the count of this like ( number of people who like the post)
 		 * @param count the like count
@@ -137,14 +139,16 @@ class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
 		 * Returns the comment count
 		 */
 		int count() const;
-		
-	
+
+
 	private:
-	
+
 		QList<CommentDataPtr> mData;          /*  Data of comment. */
-		int mCount;          /* Count  of comment. */	
+		int mCount;          /* Count  of comment. */
 };
 
 typedef QSharedPointer<CommentInfo> CommentInfoPtr;
+
+}
 
 #endif

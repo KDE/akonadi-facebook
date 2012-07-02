@@ -31,30 +31,30 @@
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
-#include <akonadi/changerecorder.h>
+#include <Akonadi/ChangeRecorder>
 
 using namespace Akonadi;
 
 void FacebookResource::postsListFetched( KJob* job )
 {
     Q_ASSERT( !mIdle );
-    PostsListJob * const listJob = dynamic_cast<PostsListJob*>( job );
+    KFacebook::PostsListJob * const listJob = dynamic_cast<KFacebook::PostsListJob*>( job );
     Q_ASSERT( listJob );
     mCurrentJobs.removeAll(job);
 
     if ( listJob->error() ) {
         abortWithError( i18n( "Unable to get posts from server: %1", listJob->errorString() ),
-        listJob->error() == FacebookJob::AuthenticationProblem );
+                        listJob->error() == KFacebook::FacebookJob::AuthenticationProblem );
     } else {
         setItemStreamingEnabled( true );
 
         Item::List postItems;
         kDebug() << "Going into foreach";
-        foreach( const PostInfoPtr &postInfo, listJob->posts() ) {
+        foreach( const KFacebook::PostInfoPtr &postInfo, listJob->posts() ) {
             Item post;
             post.setRemoteId( postInfo->id() );
             post.setMimeType( "text/x-vnd.akonadi.statusitem" );
-            post.setPayload<PostInfoPtr>( postInfo );
+            post.setPayload<KFacebook::PostInfoPtr>( postInfo );
             postItems.append(post);
         }
 
@@ -75,7 +75,7 @@ void FacebookResource::postJobFinished(KJob *job)
 {
     Q_ASSERT(!mIdle);
     Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-    PostJob * const postJob = dynamic_cast<PostJob*>( job );
+    KFacebook::PostJob * const postJob = dynamic_cast<KFacebook::PostJob*>( job );
     Q_ASSERT( postJob );
     Q_ASSERT( postJob->postInfo().size() == 1 );
     mCurrentJobs.removeAll(job);

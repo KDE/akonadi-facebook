@@ -29,6 +29,8 @@
 #include <QWebFrame>
 #include <QWebElement>
 
+using namespace KFacebook;
+
 AuthenticationDialog::AuthenticationDialog( QWidget* parent )
   : KDialog(parent)
 {

@@ -21,7 +21,7 @@
 
 #include "facebookjobs.h"
 
-
+namespace KFacebook {
 
 /**
 * Add a post to facebook
@@ -42,5 +42,7 @@ class LIBKFACEBOOK_EXPORT PostAddJob : public FacebookAddJob
     PostAddJob( const QString &message, const QString &accessToken );
     void abort();
 };
+
+}
 
 #endif

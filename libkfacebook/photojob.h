@@ -21,9 +21,13 @@
 
 #include "libkfacebook_export.h"
 #include "facebookjobs.h"
+
 #include <KJob>
+
 #include <QImage>
 #include <QPointer>
+
+namespace KFacebook {
 
 /**
  * A FacebookGetJob to retrieve the profile picture of a person.
@@ -53,5 +57,7 @@ class LIBKFACEBOOK_EXPORT PhotoJob : public FacebookGetJob
     void handleData( const QVariant& data );
     QImage mImage;
 };
+
+}
 
 #endif

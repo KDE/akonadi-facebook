@@ -16,14 +16,16 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef NOTEINFO_H
-#define NOTEINFO_H
+#ifndef KFACEBOOK_NOTEINFO_H
+#define KFACEBOOK_NOTEINFO_H
 
 #include "libkfacebook_export.h"
 
 #include <KMime/Message>
 #include <KDateTime>
 #include <QObject>
+
+namespace KFacebook {
 
 /**
  * Class to represent a facebook note
@@ -123,5 +125,7 @@ class LIBKFACEBOOK_EXPORT NoteInfo : public QObject
 };
 
 typedef QSharedPointer<NoteInfo> NoteInfoPtr;
+
+}
 
 #endif

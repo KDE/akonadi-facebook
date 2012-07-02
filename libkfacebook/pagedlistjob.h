@@ -16,8 +16,8 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef PAGEDLISTJOB_H
-#define PAGEDLISTJOB_H
+#ifndef KFACEBOOK_PAGEDLISTJOB_H
+#define KFACEBOOK_PAGEDLISTJOB_H
 
 #include "libkfacebook_export.h"
 
@@ -25,6 +25,8 @@
 #include <KUrl>
 #include <KDateTime>
 #include <QPointer>
+
+namespace KFacebook {
 
 class ListJobBase;
 
@@ -51,5 +53,7 @@ class LIBKFACEBOOK_EXPORT PagedListJob : public KJob
   private:
     QPointer<ListJobBase> mCurrentJob;
 };
+
+}
 
 #endif

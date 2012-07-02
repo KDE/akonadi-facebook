@@ -75,7 +75,7 @@ void SettingsDialog::showAuthenticationDialog()
               << "read_stream"
               << "user_events"
               << "user_notes";
-  AuthenticationDialog * const authDialog = new AuthenticationDialog( this );
+  KFacebook::AuthenticationDialog * const authDialog = new KFacebook::AuthenticationDialog( this );
   authDialog->setAppId( Settings::self()->appID() );
   authDialog->setPermissions( permissions );
   connect( authDialog, SIGNAL(authenticated(QString)),
@@ -125,7 +125,7 @@ void SettingsDialog::resetAuthentication()
 void SettingsDialog::updateUserName()
 {
   if ( Settings::self()->userName().isEmpty() && ! Settings::self()->accessToken().isEmpty() ) {
-    UserInfoJob * const job = new UserInfoJob( Settings::self()->accessToken() );
+    KFacebook::UserInfoJob * const job = new KFacebook::UserInfoJob( Settings::self()->accessToken() );
     connect( job, SIGNAL(result(KJob*)), this, SLOT(userInfoJobDone(KJob*)) );
     job->start();
   }
@@ -133,7 +133,7 @@ void SettingsDialog::updateUserName()
 
 void SettingsDialog::userInfoJobDone( KJob* job )
 {
-  UserInfoJob * const userInfoJob = dynamic_cast<UserInfoJob*>( job );
+  KFacebook::UserInfoJob * const userInfoJob = dynamic_cast<KFacebook::UserInfoJob*>( job );
   Q_ASSERT( userInfoJob );
   if ( !userInfoJob->error() ) {
     Settings::self()->setUserName( userInfoJob->userInfo()->name() );

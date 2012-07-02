@@ -17,27 +17,30 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef PROPERTYINFO_H
-#define PROPERTYINFO_H
+#ifndef KFACEBOOK_PROPERTYINFO_H
+#define KFACEBOOK_PROPERTYINFO_H
 
 #include "libkfacebook_export.h"
+
 #include <qjson/qobjecthelper.h>
 #include <QObject>
 #include <QSharedPointer>
 
+namespace KFacebook {
+
 /**
  *	Class to represent a property associated with a facebook post
  */
- 
+
  class LIBKFACEBOOK_EXPORT PropertyInfo : public QObject
  {
 	Q_OBJECT
 	Q_PROPERTY(QString name WRITE setName READ name)
 	Q_PROPERTY(QString text WRITE setText READ text)
 	Q_PROPERTY(QString href WRITE setHref READ href)
-	
+
 	public:
-	
+
 		/**
 		 * Set the name of this property
 		 * @param name the property name
@@ -47,7 +50,7 @@
 		 * Returns the property name
 		 */
 		QString name() const;
-		
+
 		/**
 		 * Set the text of this property
 		 * @param text the property text
@@ -57,7 +60,7 @@
 		 * Returns the property text
 		 */
 		QString text() const;
-		
+
 		/**
 		 * Set the href link of this property
 		 * @param href the property href
@@ -67,14 +70,16 @@
 		 * Returns the property href
 		 */
 		QString href() const;
-		
+
 	private:
-		
+
 		QString mName;          /* Name of the property. */
 		QString mText;          /* Text of the property. */
-		QString mHref;          /* Href Link of the property. */		
+		QString mHref;          /* Href Link of the property. */
  };
- 
+
 typedef QSharedPointer<PropertyInfo> PropertyInfoPtr;
+
+}
 
 #endif

@@ -21,6 +21,8 @@
 #include <KDebug>
 #include <KIO/Job>
 
+using namespace KFacebook;
+
 PhotoJob::PhotoJob(const QString& friendId, const QString& accessToken)
   : FacebookGetJob("/" + friendId + "/picture", accessToken)
 {

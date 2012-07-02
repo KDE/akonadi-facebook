@@ -16,12 +16,14 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef LISTJOBBASE_H
-#define LISTJOBBASE_H
+#ifndef KFACEBOOK_LISTJOBBASE_H
+#define KFACEBOOK_LISTJOBBASE_H
 
 #include "libkfacebook_export.h"
 
 #include "facebookjobs.h"
+
+namespace KFacebook {
 
 class LIBKFACEBOOK_EXPORT ListJobBase : public FacebookGetJob
 {
@@ -41,5 +43,7 @@ class LIBKFACEBOOK_EXPORT ListJobBase : public FacebookGetJob
     QString mNextPage;
     QString mPrevPage;
 };
+
+}
 
 #endif

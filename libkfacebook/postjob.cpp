@@ -18,8 +18,9 @@
 */
 #include "postjob.h"
 
-#include <KDebug>
 #include <qjson/qobjecthelper.h>
+
+using namespace KFacebook;
 
 PostJob::PostJob( const QString& postId, const QString& accessToken )
   : FacebookGetIdJob(postId, accessToken)

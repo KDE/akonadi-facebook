@@ -16,12 +16,14 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef ALLNOTESLISTJOB_H
-#define ALLNOTESLISTJOB_H
+#ifndef KFACEBOOK_ALLNOTESLISTJOB_H
+#define KFACEBOOK_ALLNOTESLISTJOB_H
 
 #include "pagedlistjob.h"
 #include "noteinfo.h"
 #include "libkfacebook_export.h"
+
+namespace KFacebook {
 
 class LIBKFACEBOOK_EXPORT AllNotesListJob : public PagedListJob
 {
@@ -38,5 +40,7 @@ class LIBKFACEBOOK_EXPORT AllNotesListJob : public PagedListJob
   private:
     QList<NoteInfoPtr> mNotes;
 };
+
+}
 
 #endif

@@ -22,6 +22,8 @@
 
 #include <KDebug>
 
+using namespace KFacebook;
+
 PagedListJob::PagedListJob( const QString& accessToken )
   : mAccessToken( accessToken )
 {

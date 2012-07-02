@@ -16,12 +16,13 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef NOTEADDJOB_H
-#define NOTEADDJOB_H
+#ifndef KFACEBOOK_NOTEADDJOB_H
+#define KFACEBOOK_NOTEADDJOB_H
 
 #include "facebookjobs.h"
 #include "noteinfo.h"
 
+namespace KFacebook {
 
 /**
 * Add a note to facebook
@@ -41,5 +42,7 @@ class LIBKFACEBOOK_EXPORT NoteAddJob : public FacebookAddJob
     */
     NoteAddJob( const QString &subject,const QString &message, const QString &accessToken );
 };
+
+}
 
 #endif

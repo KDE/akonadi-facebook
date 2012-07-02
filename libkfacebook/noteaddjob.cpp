@@ -18,6 +18,8 @@
 */
 #include "noteaddjob.h"
 
+using namespace KFacebook;
+
 NoteAddJob::NoteAddJob( const QString &subject,const QString &message, const QString &accessToken )
   : FacebookAddJob( "/me/notes", accessToken)
 {

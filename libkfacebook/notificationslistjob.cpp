@@ -22,6 +22,8 @@
 
 #include <KDebug>
 
+using namespace KFacebook;
+
 NotificationsListJob::NotificationsListJob( const QString &accessToken )
 : ListJobBase("/me/notifications", accessToken)
 {

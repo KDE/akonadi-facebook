@@ -17,23 +17,25 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef LIKEINFO_H
-#define LIKEINFO_H
+#ifndef KFACEBOOK_LIKEINFO_H
+#define KFACEBOOK_LIKEINFO_H
 
 #include "libkfacebook_export.h"
 #include "userinfo.h"
+
 #include <qjson/qobjecthelper.h>
 #include <QObject>
 
+namespace KFacebook {
 /*
 class LikeData : public QObject
 {
 	Q_OBJECT
 	Q_PROPERTY(QString name WRITE setName READ name)
 	Q_PROPERTY(QString id WRITE setId READ id)
-	
+
 	public:
-	
+
 		/**
 		 * Set the name of person who liked the post
 		 * @param name the name
@@ -43,7 +45,7 @@ class LikeData : public QObject
 		 * Returns the name of person who liked the post
 		 *
 		QString name() const;
-		
+
 		/**
 		 * Set the facebook id of person who liked the post
 		 * @param id the facebook id
@@ -53,7 +55,7 @@ class LikeData : public QObject
 		 * Returns the facebook id of person who liked the post
 		 *
 		QString id() const;
-		
+
 	private:
 
 		QString mId;          /* Facebook id person who liked the post. *
@@ -66,16 +68,16 @@ typedef QSharedPointer<LikeData> LikeDataPtr;
 /**
  *	Class to represent likes on a facebook post
  */
- 
+
  class LIBKFACEBOOK_EXPORT LikeInfo : public QObject
  {
-	
+
 	Q_OBJECT
 	Q_PROPERTY(QVariantList data WRITE setData )
 	Q_PROPERTY(int count WRITE setCount READ count)
-	
+
 	public:
-	
+
 		/**
 		 * Set the data of this like ( list of people who like the post)
 		 * @param data the like data
@@ -85,7 +87,7 @@ typedef QSharedPointer<LikeData> LikeDataPtr;
 		 * Returns the like data
 		 */
 		QList<UserInfoPtr> data() const;
-		
+
 		/**
 		 * Set the count of this like ( number of people who like the post)
 		 * @param count the like count
@@ -95,15 +97,17 @@ typedef QSharedPointer<LikeData> LikeDataPtr;
 		 * Returns the like count
 		 */
 		int count() const;
-		
-	
+
+
 	private:
-	
+
 		QList<UserInfoPtr> mData;          /*  Data of like. */
 		int mCount;          /* Count  of like. */
-	
+
  };
- 
+
 typedef QSharedPointer<LikeInfo> LikeInfoPtr;
+
+}
 
 #endif

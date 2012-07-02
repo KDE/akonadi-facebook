@@ -22,6 +22,8 @@
 
 #include <KDebug>
 
+using namespace KFacebook;
+
 AllEventsListJob::AllEventsListJob( const QString& accessToken )
   : PagedListJob( accessToken )
 {

@@ -17,18 +17,20 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef APPINFO_H
-#define APPINFO_H
+#ifndef KFACEBOOK_APPINFO_H
+#define KFACEBOOK_APPINFO_H
 
 #include "libkfacebook_export.h"
 #include <qjson/qobjecthelper.h>
 #include <QObject>
 #include <QSharedPointer>
 
+namespace KFacebook {
+
 /**
  *	Class to represent a facebook application. See https://developers.facebook.com/docs/reference/api/application/
  */
- 
+
  class LIBKFACEBOOK_EXPORT AppInfo : public QObject
  {
 	Q_OBJECT
@@ -41,9 +43,9 @@
 	Q_PROPERTY(QString subcategory WRITE setSubcategory READ subcategory)
 	Q_PROPERTY(QString link WRITE setLink READ link)
 	Q_PROPERTY(QString logo_url WRITE setLogoUrl READ logoUrl)
-	
+
 	public :
-		
+
 		/**
 		 * Set the facebook id of this application
 		 * @param id the facebook id
@@ -53,7 +55,7 @@
 		 * Returns the facebook id
 		 */
 		QString id() const;
-		
+
 		/**
 		 * Set the facebook name of this application
 		 * @param  the facebook name
@@ -63,7 +65,7 @@
 		 * Returns the facebook name
 		 */
 		QString name() const;
-		
+
 		/**
 		 * Set the description of this application
 		 * @param  the description
@@ -73,7 +75,7 @@
 		 * Returns the description
 		 */
 		QString description() const;
-		
+
 		/**
 		 * Set the category of this application
 		 * @param  the category
@@ -83,7 +85,7 @@
 		 * Returns the category
 		 */
 		QString category() const;
-		
+
 		/**
 		 * Set the company of this application
 		 * @param  the company
@@ -93,7 +95,7 @@
 		 * Returns the company
 		 */
 		QString company() const;
-		
+
 		/**
 		 * Set the Icon URL of this application
 		 * @param  the Icon URL
@@ -103,7 +105,7 @@
 		 * Returns the Icon Url
 		 */
 		QString iconUrl() const;
-		
+
 		/**
 		 * Set the subcategory of this application
 		 * @param  the subcategory
@@ -113,7 +115,7 @@
 		 * Returns the subcategory
 		 */
 		QString subcategory() const;
-		
+
 		/**
 		 * Set the Logo URL of this application
 		 * @param  the Logo URL
@@ -123,7 +125,7 @@
 		 * Returns the Logo URL
 		 */
 		QString logoUrl() const;
-		
+
 		/**
 		 * Set the link of this application
 		 * @param  the link
@@ -133,9 +135,9 @@
 		 * Returns the link
 		 */
 		QString link() const;
-	
+
 	private:
-	
+
 		QString mId;          /* Facebook id of the Application. */
 		QString mName; /* Name of the Application */
 		QString mDescription; /* Description of the Application. */
@@ -147,9 +149,11 @@
 		QString mLogoUrl; /* LogoUrl of the Application */
 		/*QString mName; /* Name of the Application *
 		QString mName; /* Name of the Application */
-	
+
  };
- 
+
 typedef QSharedPointer<AppInfo> AppInfoPtr;
+
+}
 
 #endif

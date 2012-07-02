@@ -21,6 +21,8 @@
 #include <KDebug>
 #include <qjson/qobjecthelper.h>
 
+using namespace KFacebook;
+
 FriendJob::FriendJob( const QString& friendId, const QString& accessToken )
   : FacebookGetIdJob(friendId, accessToken)
 {

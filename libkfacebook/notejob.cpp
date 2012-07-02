@@ -21,6 +21,8 @@
 #include <KDebug>
 #include <qjson/qobjecthelper.h>
 
+using namespace KFacebook;
+
 NoteJob::NoteJob( const QString& noteId, const QString& accessToken )
   : FacebookGetIdJob(noteId, accessToken)
 {
