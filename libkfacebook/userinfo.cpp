@@ -119,6 +119,16 @@ QString UserInfo::website() const
   return mWebsite;
 }
 
+QString UserInfo::username() const
+{
+  return mUsername;
+}
+
+void UserInfo::setUsername(const QString& username)
+{
+  mUsername = username;
+}
+
 QString UserInfo::company() const
 {
   return mCompany;

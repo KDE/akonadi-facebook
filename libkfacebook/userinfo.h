@@ -41,6 +41,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
   Q_PROPERTY(QString last_name WRITE setLastName READ lastName)
   Q_PROPERTY(QString birthday WRITE setBirthday READ birthdayAsString)
   Q_PROPERTY(QString website WRITE setWebsite READ website)
+  Q_PROPERTY(QString username WRITE setUsername READ username)
   Q_PROPERTY(int timezone WRITE setTimezone READ timezone)
   Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
   public:
@@ -111,6 +112,16 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     */
     QString website() const;
 
+	/**
+     * @brief Set the username of this person.
+     * @param username The username of this user.
+     */
+    void setUsername( const QString &username );
+    /**
+    * @return The username of this user as a QString.
+    */
+    QString username() const;
+    
     /**
     * @brief Set the current city of this person.
     * @param city The current city of this person.
@@ -194,6 +205,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     QString mLastName;
     QDate mBirthday;
     QString mWebsite;
+    QString mUsername;
     QString mCountry;
     QString mCity;
     QString mCompany;
