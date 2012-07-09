@@ -24,6 +24,6 @@ Comment[x-test]=xxAn Akonadi serializer plugin for Facebookxx
 
 [Plugin]
 Type=text/x-vnd.akonadi.statusitem
-X-Akonadi-Class=PostInfo*;
+X-Akonadi-Class=KFacebook::PostInfo*;
 X-KDE-Library=akonadi_serializer_statusitem
 X-KDE-ClassName=Akonadi::SerializerPluginStatusItem
