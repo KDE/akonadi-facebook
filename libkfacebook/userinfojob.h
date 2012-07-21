@@ -36,6 +36,8 @@ class LIBKFACEBOOK_EXPORT UserInfoJob : public FacebookGetJob
     * @param accessToken The access token to access data on facebook.
     */
     UserInfoJob( const QString &accessToken );
+    
+    UserInfoJob(const QString& userId, const QString& accessToken);
     /**
     * @return A pointer to a userInfo object about the currently authenticated user.
     */

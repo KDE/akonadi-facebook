@@ -28,6 +28,11 @@ UserInfoJob::UserInfoJob( const QString& accessToken )
   setFields( QStringList() << "name" );
 }
 
+UserInfoJob::UserInfoJob(const QString& userId, const QString& accessToken) : FacebookGetJob("/"+userId, accessToken)
+{
+	//setFields(QStringList() << "name");
+}
+
 UserInfoPtr UserInfoJob::userInfo() const
 {
   return mUserInfo;
