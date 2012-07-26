@@ -1,5 +1,6 @@
 /* Copyright 2010, 2011 Thomas McGuire <mcguire@kde.org>
    Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
+   Copyright 2012 Martin Klapetek <martin.klapetek@gmail.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -215,7 +216,7 @@ bool FacebookResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
     noteJob->setProperty( "Item", QVariant::fromValue( item ) );
     connect( noteJob, SIGNAL(result(KJob*)), this, SLOT(noteJobFinished(KJob*)) );
     noteJob->start();
-  } else if(item.mimeType() == "text/x-vnd.akonadi.statusitem") {
+  } else if(item.mimeType() == "text/x-vnd.akonadi.socialfeeditem") {
     mIdle = false;
     KFacebook::PostJob * const postJob = new KFacebook::PostJob( item.remoteId(), Settings::self()->accessToken());
     mCurrentJobs << postJob;
@@ -265,7 +266,7 @@ void FacebookResource::retrieveCollections()
   posts.setRemoteId( postsRID );
   posts.setName( i18n( "Posts" ) );
   posts.setParentCollection( Akonadi::Collection::root() );
-  posts.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.statusitem" );
+  posts.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.socialfeeditem" );
   posts.setRights(Collection::ReadOnly);
   EntityDisplayAttribute * const postsDisplayAttribute = new EntityDisplayAttribute();
   postsDisplayAttribute->setIconName( "facebookresource" );

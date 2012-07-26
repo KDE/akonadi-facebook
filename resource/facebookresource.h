@@ -1,5 +1,6 @@
 /* Copyright 2010, 2011 Thomas McGuire <mcguire@kde.org>
    Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
+   Copyright 2012 Martin Klapetek <martin.klapetek@gmail.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -20,7 +21,10 @@
 #ifndef FACEBOOKRESOURCE_H
 #define FACEBOOKRESOURCE_H
 
-#include <libkfacebook/userinfo.h>
+#include <kfacebook/userinfo.h>
+#include <kfacebook/socialfeeditem.h>
+#include <kfacebook/postinfo.h>
+
 #include <Akonadi/ResourceBase>
 #include <QPointer>
 #include <QMutex>
@@ -83,6 +87,7 @@ class FacebookResource : public Akonadi::ResourceBase,
     void finishNotesFetching();
     void finishPostsFetching();
     void finishNotificationsFetching();
+    Akonadi::SocialFeedItemPtr convertToSocialFeedItem(const KFacebook::PostInfoPtr &postinfo);
 
     // Friends that are already stored on the Akonadi server
     QMap<QString,KDateTime> mExistingFriends;
