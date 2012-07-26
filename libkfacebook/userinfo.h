@@ -44,6 +44,8 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
   Q_PROPERTY(QString username WRITE setUsername READ username)
   Q_PROPERTY(int timezone WRITE setTimezone READ timezone)
   Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
+  Q_PROPERTY(QUrl picture WRITE setPicture READ picture)
+
   public:
     UserInfo();
 
@@ -121,7 +123,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     * @return The username of this user as a QString.
     */
     QString username() const;
-    
+
     /**
     * @brief Set the current city of this person.
     * @param city The current city of this person.
@@ -198,6 +200,16 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     */
     KABC::Addressee toAddressee() const;
 
+    /**
+     * @brief Set the profile picture url
+     * @param pictureUrl Url of the profile picture
+     */
+    void setPicture(const QUrl &pictureUrl);
+    /**
+     * @return The profile picture url
+     */
+    QUrl picture() const;
+
   private:
     QString mId;
     QString mName;
@@ -213,6 +225,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     QString mPartner;
     QString mUpdatedTime;
     int mTimezone;
+    QUrl mPictureUrl;
 };
 
 typedef QSharedPointer<UserInfo> UserInfoPtr;

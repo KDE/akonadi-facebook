@@ -49,7 +49,8 @@ QStringList FriendJob::friendFields() const
          << "work"
          << "significant_other"
          << "timezone"
-         << "updated_time";
+         << "updated_time"
+         << "picture";
   return fields;
 }
 

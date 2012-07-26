@@ -100,5 +100,6 @@ install( FILES
   appinfo.h
   commentinfo.h
   likeinfo.h
+
  DESTINATION ${INCLUDE_INSTALL_DIR}/kfacebook COMPONENT Devel
 )

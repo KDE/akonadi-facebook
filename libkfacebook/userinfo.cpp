@@ -207,3 +207,13 @@ KDateTime UserInfo::updatedTime() const
 {
   return facebookTimeToKDateTime( mUpdatedTime );
 }
+
+void UserInfo::setPicture( const QUrl &pictureUrl )
+{
+  mPictureUrl = pictureUrl;
+}
+
+QUrl UserInfo::picture() const
+{
+  return mPictureUrl;
+}
