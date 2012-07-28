@@ -22,8 +22,9 @@
 #define FACEBOOKRESOURCE_H
 
 #include <kfacebook/userinfo.h>
-#include <kfacebook/socialfeeditem.h>
 #include <kfacebook/postinfo.h>
+
+#include <akonadisocialutils/socialfeeditem.h>
 
 #include <Akonadi/ResourceBase>
 #include <QPointer>

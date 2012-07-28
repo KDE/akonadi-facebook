@@ -62,6 +62,7 @@ target_link_libraries( akonadi_facebook_resource
   ${KDE4_KDECORE_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
   kfacebook
+  akonadisocialutils
 )
 
 if(KDEPIM_44_COMPAT)
