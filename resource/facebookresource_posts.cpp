@@ -95,7 +95,9 @@ SocialFeedItemPtr FacebookResource::convertToSocialFeedItem(const KFacebook::Pos
 {
     SocialFeedItem *item = new SocialFeedItem();
     item->setPostId(postinfo.data()->id());
-    item->setMessage(postinfo.data()->message());
+    item->setPostText(postinfo.data()->message());
+    item->setPostLink(postinfo.data()->link());
+    item->setPostImageUrl(postinfo.data()->pictureUrl());
     item->setPostTime(postinfo.data()->createdTimeString(), QLatin1String("%Y-%m-%dT%H:%M:%S%z"));
 //     item->setShared(postinfo.data()->retweeted());
 
