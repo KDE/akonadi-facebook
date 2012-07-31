@@ -49,17 +49,27 @@ void LikeInfo::setData( const QVariantList &data)
 
   foreach (QVariant	v, data)
   {
-	QVariantMap vMap = v.toMap();
-	UserInfoPtr userInfo ( new UserInfo());
-	QJson::QObjectHelper::qvariant2qobject(vMap, userInfo.data());
-	mData << userInfo;
+    QVariantMap vMap = v.toMap();
+    UserInfoPtr userInfo ( new UserInfo());
+    QJson::QObjectHelper::qvariant2qobject(vMap, userInfo.data());
+    mData << userInfo;
   }
-
 }
 
 QList<UserInfoPtr> LikeInfo::data() const
 {
   return mData;
+}
+
+QVariantList LikeInfo::dataList() const
+{
+  QVariantList list;
+
+  foreach( const UserInfoPtr &user, mData ) {
+    list.append(QJson::QObjectHelper::qobject2qvariant(user.data()));
+  }
+
+  return list;
 }
 
 void LikeInfo::setCount( const int &count)

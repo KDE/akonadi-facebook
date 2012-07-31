@@ -36,7 +36,7 @@ class LIBKFACEBOOK_EXPORT CommentData : public QObject
 {
 	Q_OBJECT
 	Q_PROPERTY(QString id WRITE setId READ id)
-	Q_PROPERTY(QVariantMap from WRITE setFrom )
+	Q_PROPERTY(QVariantMap from WRITE setFrom READ fromMap)
 	Q_PROPERTY(QString message WRITE setMessage READ message)
 	Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
 	Q_PROPERTY(int likes WRITE setLikes READ likes)
@@ -62,7 +62,10 @@ class LIBKFACEBOOK_EXPORT CommentData : public QObject
 		 * Returns the person who commented the post
 		 */
 		UserInfoPtr from() const;
-
+        /**
+         * Returns the person who commented the post as a QVariantMap
+         */
+        QVariantMap fromMap() const;
 		/**
 		 * Set the actual content of the comment
 		 * @param message The actual content of the comment
@@ -115,7 +118,7 @@ typedef QSharedPointer<CommentData> CommentDataPtr;
 class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
 {
 	Q_OBJECT
-	Q_PROPERTY(QVariantList data WRITE setData )
+	Q_PROPERTY(QVariantList data WRITE setData READ dataList)
 	Q_PROPERTY(int count WRITE setCount READ count)
 
 	public:
@@ -124,17 +127,21 @@ class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
 		 * Set the data of this like ( list of people who like the post)
 		 * @param data the like data
 		 */
-		void setData( const QVariantList &data);
+		void setData( const QVariantList &data );
 		/**
-		 * Returns the like data
+		 * Returns the comment data
 		 */
 		QList<CommentDataPtr> data() const;
+        /**
+         * Returns the comment data as Variant List
+         */
+        QVariantList dataList() const;
 
 		/**
 		 * Set the count of this like ( number of people who like the post)
 		 * @param count the like count
 		 */
-		void setCount( const int &count);
+		void setCount( const int &count );
 		/**
 		 * Returns the comment count
 		 */

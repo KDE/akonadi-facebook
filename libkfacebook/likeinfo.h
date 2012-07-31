@@ -73,7 +73,7 @@ typedef QSharedPointer<LikeData> LikeDataPtr;
  {
 
 	Q_OBJECT
-	Q_PROPERTY(QVariantList data WRITE setData )
+	Q_PROPERTY(QVariantList data WRITE setData READ dataList)
 	Q_PROPERTY(int count WRITE setCount READ count)
 
 	public:
@@ -87,6 +87,10 @@ typedef QSharedPointer<LikeData> LikeDataPtr;
 		 * Returns the like data
 		 */
 		QList<UserInfoPtr> data() const;
+        /**
+         * Return the like data as VariantList
+         */
+        QVariantList dataList() const;
 
 		/**
 		 * Set the count of this like ( number of people who like the post)

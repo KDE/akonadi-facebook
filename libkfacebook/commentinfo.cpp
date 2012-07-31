@@ -43,6 +43,11 @@ UserInfoPtr CommentData::from() const
   return mFrom;
 }
 
+QVariantMap CommentData::fromMap() const
+{
+  return QJson::QObjectHelper::qobject2qvariant(mFrom.data());
+}
+
 void CommentData::setMessage( const QString &message)
 {
   mMessage = message;
@@ -84,17 +89,27 @@ void CommentInfo::setData( const QVariantList &data)
 
   foreach (QVariant	v, data)
   {
-	QVariantMap vMap = v.toMap();
-	CommentDataPtr commentData ( new CommentData());
-	QJson::QObjectHelper::qvariant2qobject(vMap, commentData.data());
-	mData << commentData;
+    QVariantMap vMap = v.toMap();
+    CommentDataPtr commentData ( new CommentData());
+    QJson::QObjectHelper::qvariant2qobject(vMap, commentData.data());
+    mData << commentData;
   }
-  //mData = data;
 }
 
 QList<CommentDataPtr> CommentInfo::data() const
 {
   return mData;
+}
+
+QVariantList CommentInfo::dataList() const
+{
+  QVariantList list;
+
+  foreach( const CommentDataPtr &comment, mData ) {
+    list.append(QJson::QObjectHelper::qobject2qvariant(comment.data()));
+  }
+
+  return list;
 }
 
 void CommentInfo::setCount( const int &count)

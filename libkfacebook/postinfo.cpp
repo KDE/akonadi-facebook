@@ -167,6 +167,15 @@ LikeInfoPtr PostInfo::likes() const
   return mLikes;
 }
 
+QVariantMap PostInfo::likesMap() const
+{
+  if ( !mLikes.isNull() ) {
+    return QJson::QObjectHelper::qobject2qvariant(mLikes.data());
+  }
+
+  return QVariantMap();
+}
+
 void PostInfo::setStory( const QString &story)
 {
   mStory = story;
@@ -187,6 +196,15 @@ void PostInfo::setComments( const QVariantMap &comments)
 CommentInfoPtr PostInfo::comments() const
 {
   return mComments;
+}
+
+QVariantMap PostInfo::commentsMap() const
+{
+  if ( !mComments.isNull() ) {
+    return QJson::QObjectHelper::qobject2qvariant(mComments.data());
+  }
+
+  return QVariantMap();
 }
 
 void PostInfo::setApplication( const QVariantMap &application)
