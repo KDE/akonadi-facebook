@@ -62,6 +62,7 @@ target_link_libraries( akonadi_facebook_resource
   ${QT_QTCORE_LIBRARY}
   ${QT_QTGUI_LIBRARY}
   ${QT_QTDBUS_LIBRARY}
+  ${QJSON_LIBRARIES}
   ${KDE4_KDECORE_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
   kfacebook
