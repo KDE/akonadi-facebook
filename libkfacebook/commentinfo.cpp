@@ -121,3 +121,8 @@ int CommentInfo::count() const
 {
   return mCount;
 }
+
+QString CommentInfo::path() const
+{
+	return "/comments";
+}

@@ -21,27 +21,6 @@
 
 using namespace KFacebook;
 
-/*
-void LikeData::setId( const QString &id)
-{
-  mId = id;
-}
-
-QString LikeData::id() const
-{
-  return mId;
-}
-
-void LikeData::setName( const QString &name)
-{
-  mName = name;
-}
-
-QString LikeData::name() const
-{
-  return mName;
-}
-*/
 
 void LikeInfo::setData( const QVariantList &data)
 {
@@ -80,4 +59,9 @@ void LikeInfo::setCount( const int &count)
 int LikeInfo::count() const
 {
   return mCount;
+}
+
+QString LikeInfo::path() const
+{
+	return "/likes";
 }

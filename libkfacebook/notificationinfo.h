@@ -166,7 +166,7 @@ private:
 };
 
 typedef QSharedPointer<NotificationInfo> NotificationInfoPtr;
-
+typedef QList<NotificationInfoPtr> NotificationInfoList;
 }
 
 Q_DECLARE_METATYPE(KFacebook::NotificationInfo *);

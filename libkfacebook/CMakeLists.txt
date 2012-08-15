@@ -38,6 +38,12 @@ set(kfacebook_SRCS
   likeinfo.cpp
   notificationinfo.cpp
   notificationslistjob.cpp
+  getlikesjob.cpp
+  getcommentsjob.cpp
+  notificationsmarkreadjob.cpp
+  #connectioninfo.cpp
+  #connectionslistjob.cpp
+
 )
 
 kde4_add_library(kfacebook SHARED ${kfacebook_SRCS})
@@ -100,6 +106,13 @@ install( FILES
   appinfo.h
   commentinfo.h
   likeinfo.h
+  getlikesjob.h
+  getcommentsjob.h
+  notificationinfo.h
+  notificationslistjob.h
+  notificationsmarkreadjob.h
+  #connectioninfo.h
+  #connectionslistjob.h
 
  DESTINATION ${INCLUDE_INSTALL_DIR}/kfacebook COMPONENT Devel
 )

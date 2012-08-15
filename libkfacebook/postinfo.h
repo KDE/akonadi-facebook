@@ -259,48 +259,6 @@ class LIBKFACEBOOK_EXPORT PostInfo : public QObject
      */
     KDateTime updatedTime() const;
 
-    /*/**
-     * Set the id of app used to write the post
-     * @param appId id of the creator app of the post
-     *
-    void setAppId( const QString &appId);
-    /**
-     * Returns the app id of creator app of the post
-     *
-    QString appId() const;
-
-    /**
-     * Set name of app who wrote the post
-     * @param AppName of the creator app of the post
-     *
-    void setAppName( const QString &AppName);
-    /**
-     * Returns appName of the creator app of the post
-     *
-    QString appName() const;
-
-
-
-    /**
-     * Set who wrote the post
-     * @param senderId the creator of the post
-     *
-    void setSenderId( const QString &senderId);
-    /**
-     * Returns the creator of the post
-     *
-    QString senderId() const;
-
-    /**
-     * Set who wrote the post
-     * @param sendrName the creator of the post
-     *
-    void setSenderName( const QString &senderName);
-    /**
-     * Returns the creator of the post
-     *
-    QString senderName() const;
-    */
 
 
   private:
@@ -323,10 +281,6 @@ class LIBKFACEBOOK_EXPORT PostInfo : public QObject
     QString mCreatedTime; /* Creation time of the post. */
     QString mUpdatedTime; /* Last update time of the post. */
 
-    //QString mSenderId;          /* Facebook id of the post. */
-    //QString mSenderName;          /* Facebook id of the post. */
-    //QString mAppName; /* App Name*/
-    //QString mAppId; /*App id*/
 
 
 };

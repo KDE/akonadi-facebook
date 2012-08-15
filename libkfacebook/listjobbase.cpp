@@ -22,20 +22,31 @@
 
 using namespace KFacebook;
 
-ListJobBase::ListJobBase( const QString &path, const QString& accessToken )
+ListJobBase::ListJobBase( const QString &path, const QString& accessToken, bool multiQuery )
   : FacebookGetJob( path, accessToken )
 {
+	mMultiQuery = multiQuery;
 }
 
 void ListJobBase::handleData( const QVariant& root )
 {
-  const QVariant data = root.toMap()["data"];
-  foreach( const QVariant &user, data.toList() ) {
-    handleItem( user );
-  }
+  if (!mMultiQuery)
+    handleItems(root);
+    
+  else 
+  { 	
+	  const QVariant data = root.toMap()["data"];
+	  foreach( const QVariant &user, data.toList() ) {
+		handleItem( user );
+	  }
+  }	  
   const QVariant paging = root.toMap()["paging"];
   mNextPage = paging.toMap().value("next").toString();
   mPrevPage = paging.toMap().value("previous").toString();
+}
+
+void ListJobBase::handleItems( const QVariant& root)
+{
 }
 
 QString ListJobBase::nextItems() const
@@ -47,3 +58,4 @@ QString ListJobBase::previousItems() const
 {
   return mPrevPage;
 }
+

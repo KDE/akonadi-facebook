@@ -23,7 +23,6 @@
 #include "libkfacebook_export.h"
 #include <qjson/qobjecthelper.h>
 #include "userinfo.h"
-
 #include <KDateTime>
 #include <QObject>
 
@@ -127,7 +126,7 @@ class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
 		 * Set the data of this like ( list of people who like the post)
 		 * @param data the like data
 		 */
-		void setData( const QVariantList &data );
+		virtual void setData( const QVariantList &data );
 		/**
 		 * Returns the comment data
 		 */
@@ -135,17 +134,22 @@ class LIBKFACEBOOK_EXPORT CommentInfo : public QObject
         /**
          * Returns the comment data as Variant List
          */
-        QVariantList dataList() const;
+        virtual QVariantList dataList() const;
 
 		/**
 		 * Set the count of this like ( number of people who like the post)
 		 * @param count the like count
 		 */
-		void setCount( const int &count );
+		virtual void setCount( const int &count );
 		/**
 		 * Returns the comment count
 		 */
-		int count() const;
+		virtual int count() const;
+		
+		/**
+		 * Returns relative REST path w.r.t FacebookObject, "/" included
+		 * */
+		virtual QString path() const ;
 
 
 	private:

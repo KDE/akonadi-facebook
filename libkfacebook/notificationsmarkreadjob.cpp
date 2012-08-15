@@ -1,4 +1,4 @@
-/* Copyright 2011 Thomas McGuire <mcguire@kde.org>
+/* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -16,36 +16,18 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#ifndef KFACEBOOK_LISTJOBBASE_H
-#define KFACEBOOK_LISTJOBBASE_H
+#include "notificationsmarkreadjob.h"
 
-#include "libkfacebook_export.h"
+using namespace KFacebook;
 
-#include "facebookjobs.h"
-
-namespace KFacebook {
-
-class LIBKFACEBOOK_EXPORT ListJobBase : public FacebookGetJob
+NotificationsMarkReadJob::NotificationsMarkReadJob( const QString &notificationId, const QString &accessToken )
+  : FacebookAddJob( "/" + notificationId, accessToken)
 {
-  Q_OBJECT
-  public:
-    ListJobBase( const QString &path, const QString &accessToken, bool multiQuery=true );
-    virtual int numEntries() const = 0;
-
-    QString previousItems() const;
-    QString nextItems() const;
-
-  protected:
-    virtual void handleData( const QVariant& data );
-    virtual void handleItems(const QVariant& data);
-    virtual void handleItem( const QVariant& item ) = 0;
-
-  private:
-    QString mNextPage;
-    QString mPrevPage;
-    bool mMultiQuery;
-};
-
+  addQueryItem("unread", 0);
 }
 
-#endif
+void NotificationsMarkReadJob::abort()
+{
+  doKill();
+}
+#include "notificationsmarkreadjob.moc"

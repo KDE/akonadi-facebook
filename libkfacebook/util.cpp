@@ -23,3 +23,5 @@ KDateTime facebookTimeToKDateTime(const QString& facebookTime)
   // Example: "2011-01-31T17:36:19+0000"
   return KDateTime::fromString(facebookTime, "%Y-%m-%dT%H:%M:%S%z");
 }
+
+

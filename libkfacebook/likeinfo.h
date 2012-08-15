@@ -22,48 +22,11 @@
 
 #include "libkfacebook_export.h"
 #include "userinfo.h"
-
 #include <qjson/qobjecthelper.h>
 #include <QObject>
 
 namespace KFacebook {
-/*
-class LikeData : public QObject
-{
-	Q_OBJECT
-	Q_PROPERTY(QString name WRITE setName READ name)
-	Q_PROPERTY(QString id WRITE setId READ id)
 
-	public:
-
-		/**
-		 * Set the name of person who liked the post
-		 * @param name the name
-		 *
-		void setName( const QString &name);
-		/**
-		 * Returns the name of person who liked the post
-		 *
-		QString name() const;
-
-		/**
-		 * Set the facebook id of person who liked the post
-		 * @param id the facebook id
-		 *
-		void setId( const QString &id);
-		/**
-		 * Returns the facebook id of person who liked the post
-		 *
-		QString id() const;
-
-	private:
-
-		QString mId;          /* Facebook id person who liked the post. *
-		QString mName;          /* Name person who liked the post. *
-}
-
-typedef QSharedPointer<LikeData> LikeDataPtr;
-*/
 
 /**
  *	Class to represent likes on a facebook post
@@ -82,7 +45,7 @@ typedef QSharedPointer<LikeData> LikeDataPtr;
 		 * Set the data of this like ( list of people who like the post)
 		 * @param data the like data
 		 */
-		void setData( const QVariantList &data);
+		virtual void setData( const QVariantList &data);
 		/**
 		 * Returns the like data
 		 */
@@ -90,17 +53,22 @@ typedef QSharedPointer<LikeData> LikeDataPtr;
         /**
          * Return the like data as VariantList
          */
-        QVariantList dataList() const;
+        virtual QVariantList dataList() const;
 
 		/**
 		 * Set the count of this like ( number of people who like the post)
 		 * @param count the like count
 		 */
-		void setCount( const int &count);
+		virtual void setCount( const int &count);
 		/**
 		 * Returns the like count
 		 */
-		int count() const;
+		virtual int count() const;
+		
+		/**
+		 * Returns relative REST path w.r.t FacebookObject, "/" included
+		 * */
+		virtual QString path() const ;
 
 
 	private:

@@ -1,4 +1,4 @@
-/* Copyright 2011 Pankaj Bhambhani <pankajb64@gmail.com>
+ /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -16,34 +16,43 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
-#include "postslistjob.h"
 
-#include <qjson/qobjecthelper.h>
+#include "getcommentsjob.h"
 
 using namespace KFacebook;
 
-PostsListJob::PostsListJob( const QString& accessToken )
-  : ListJobBase( "/me/home", accessToken )
+GetCommentsJob::GetCommentsJob(const QString& postId, const QString& accessToken) : FacebookGetJob("/fql", accessToken), mCommentCount(0)
 {
+	mPostId = postId;
+	QString query = QString("SELECT comments FROM stream WHERE post_id = \"%1\"").arg(mPostId);
+	addQueryItem("q", query);
 }
 
-PostsListJob::PostsListJob(const QString& userId, const QString& accessToken):ListJobBase("/" + userId + "/feed", accessToken)
+
+void GetCommentsJob::handleData(const QVariant& data)
 {
-}
-PostInfoList PostsListJob::posts() const
-{
-  return mPosts;
+	QVariantMap dataMap = data.toMap();
+	
+	if (!dataMap.isEmpty())
+	{
+		  QVariantList dataList = dataMap["data"].toList();
+		
+		if (!dataList.isEmpty())
+		{
+			  QVariantMap map = dataList[0].toMap();
+			
+			if (!map.isEmpty())
+			{
+				  QVariantMap commentMap = map["comments"].toMap();
+				
+				if (!commentMap.isEmpty())
+				  mCommentCount = commentMap["count"].toUInt();
+			}
+		}
+	}
 }
 
-void PostsListJob::handleItem(const QVariant& item)
+uint GetCommentsJob::commentCount()
 {
-  PostInfoPtr postInfo( new PostInfo() );
-  QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
-  mPosts.append( postInfo );
+	return mCommentCount;
 }
-
-int PostsListJob::numEntries() const
-{
-  return mPosts.size();
-}
-

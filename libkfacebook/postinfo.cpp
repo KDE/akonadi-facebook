@@ -127,7 +127,6 @@ void PostInfo::setProperties( const QVariantList &properties)
 	QJson::QObjectHelper::qvariant2qobject(vMap, propertyInfo.data());
 	mProperties << propertyInfo;
   }
-  //mProperties = properties;
 }
 
 QList<PropertyInfoPtr> PostInfo::properties() const
@@ -159,7 +158,6 @@ void PostInfo::setLikes( const QVariantMap &likes)
 {
   mLikes = LikeInfoPtr( new LikeInfo());
   QJson::QObjectHelper::qvariant2qobject(likes, mLikes.data());
-  //mLikes = likes;
 }
 
 LikeInfoPtr PostInfo::likes() const
@@ -190,7 +188,6 @@ void PostInfo::setComments( const QVariantMap &comments)
 {
   mComments  = CommentInfoPtr ( new CommentInfo());
   QJson::QObjectHelper::qvariant2qobject(comments, mComments.data());
-  //mComments = comments;
 }
 
 CommentInfoPtr PostInfo::comments() const
@@ -211,7 +208,6 @@ void PostInfo::setApplication( const QVariantMap &application)
 {
   mApplication = AppInfoPtr( new AppInfo());
   QJson::QObjectHelper::qvariant2qobject(application, mApplication.data());
-  //mApplication = application;
 }
 
 AppInfoPtr PostInfo::application() const
@@ -248,50 +244,3 @@ KDateTime PostInfo::updatedTime() const
 {
   return facebookTimeToKDateTime(mUpdatedTime);
 }
-
-/*
-void PostInfo::setSenderId( const QString &senderId)
-{
-  mSenderId = senderId;
-}
-
-QString PostInfo::senderId() const
-{
-  return mSenderId;
-}
-
-void PostInfo::setSenderName( const QString &senderName)
-{
-  mSenderName = senderName;
-}
-
-
-QString PostInfo::senderName() const
-{
-  return mSenderName;
-}
-
-
-
-void PostInfo::setAppId( const QString &appId)
-{
-  mAppId = appId;
-}
-
-
-QString PostInfo::appId() const
-{
-  return mAppId;
-}
-
-void PostInfo::setAppName( const QString &appName)
-{
-  mAppName = appName;
-}
-
-
-QString PostInfo::appName() const
-{
-  return mAppName;
-}
-*/

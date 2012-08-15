@@ -20,6 +20,7 @@
 #define KFACEBOOK_UTIL_H
 
 #include <KDateTime>
+#include <QDateTime>
 
 /**
  * Convert a QString containing a timestamp in "facebook format",
