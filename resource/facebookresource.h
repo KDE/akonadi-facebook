@@ -88,7 +88,7 @@ class FacebookResource : public Akonadi::ResourceBase,
     void finishNotesFetching();
     void finishPostsFetching();
     void finishNotificationsFetching();
-    Akonadi::SocialFeedItemPtr convertToSocialFeedItem(const KFacebook::PostInfoPtr &postinfo);
+    Akonadi::SocialFeedItem convertToSocialFeedItem(const KFacebook::PostInfoPtr &postinfo);
 
     // Friends that are already stored on the Akonadi server
     QMap<QString,KDateTime> mExistingFriends;

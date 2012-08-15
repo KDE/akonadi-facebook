@@ -54,7 +54,7 @@ void FacebookResource::postsListFetched( KJob* job )
             Item post;
             post.setRemoteId( postInfo->id() );
             post.setMimeType( "text/x-vnd.akonadi.socialfeeditem" );
-            post.setPayload<Akonadi::SocialFeedItemPtr>( convertToSocialFeedItem(postInfo) );
+            post.setPayload<Akonadi::SocialFeedItem>( convertToSocialFeedItem(postInfo) );
             postItems.append(post);
         }
 
@@ -91,32 +91,31 @@ void FacebookResource::postJobFinished(KJob *job)
 }
 
 
-SocialFeedItemPtr FacebookResource::convertToSocialFeedItem(const KFacebook::PostInfoPtr &postinfo)
+SocialFeedItem FacebookResource::convertToSocialFeedItem(const KFacebook::PostInfoPtr &postinfo)
 {
-    SocialFeedItem *item = new SocialFeedItem();
-    item->setPostId(postinfo.data()->id());
-    item->setPostText(postinfo.data()->message());
-    item->setPostLink(postinfo.data()->link());
-    item->setPostLinkTitle(postinfo.data()->name());
-    item->setPostImageUrl(postinfo.data()->pictureUrl());
-    item->setPostTime(postinfo.data()->createdTimeString(), QLatin1String("%Y-%m-%dT%H:%M:%S%z"));
-//     item->setShared(postinfo.data()->retweeted());
+    SocialFeedItem item;
+    item.setPostId(postinfo.data()->id());
+    item.setPostText(postinfo.data()->message());
+    item.setPostLink(postinfo.data()->link());
+    item.setPostLinkTitle(postinfo.data()->name());
+    item.setPostImageUrl(postinfo.data()->pictureUrl());
+    item.setPostTime(postinfo.data()->createdTimeString(), QLatin1String("%Y-%m-%dT%H:%M:%S%z"));
 
     KFacebook::UserInfoPtr user = postinfo.data()->from();
 
-    item->setUserId(user.data()->id());
+    item.setUserId(user.data()->id());
     if (user.data()->username().isEmpty()) {
-        item->setUserName(user.data()->id());
+        item.setUserName(user.data()->id());
     } else {
-        item->setUserName(user.data()->username());
+        item.setUserName(user.data()->username());
     }
-    item->setUserDisplayName(user.data()->name());
-    item->setNetworkString(i18nc("This string is used in a sentence 'Someone on Facebook: Just had lunch.', so should be translated in such form."
+    item.setUserDisplayName(user.data()->name());
+    item.setNetworkString(i18nc("This string is used in a sentence 'Someone on Facebook: Just had lunch.', so should be translated in such form."
                                  "This string is defined by the resource and the whole sentence is composed in the UI." ,
                                  "on Facebook"));
-    item->setAvatarUrl(QString("https://graph.facebook.com/%1/picture?type=square").arg(user.data()->id()));
+    item.setAvatarUrl(QString("https://graph.facebook.com/%1/picture?type=square").arg(user.data()->id()));
 
-    item->setItemSourceMap(QJson::QObjectHelper::qobject2qvariant(postinfo.data()));
+    item.setItemSourceMap(QJson::QObjectHelper::qobject2qvariant(postinfo.data()));
 
-    return SocialFeedItemPtr(item);
+    return item;
 }
