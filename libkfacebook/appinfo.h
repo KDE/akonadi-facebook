@@ -147,8 +147,7 @@ namespace KFacebook {
 		QString mSubcategory; /* Subcategory of the Application */
 		QString mLink; /* Link of the Application */
 		QString mLogoUrl; /* LogoUrl of the Application */
-		/*QString mName; /* Name of the Application *
-		QString mName; /* Name of the Application */
+
 
  };
 
