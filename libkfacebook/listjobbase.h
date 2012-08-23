@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_LISTJOBBASE_H
 #define KFACEBOOK_LISTJOBBASE_H
 
@@ -27,23 +28,23 @@ namespace KFacebook {
 
 class LIBKFACEBOOK_EXPORT ListJobBase : public FacebookGetJob
 {
-  Q_OBJECT
-  public:
-    ListJobBase( const QString &path, const QString &accessToken, bool multiQuery=true );
+    Q_OBJECT
+public:
+    ListJobBase(const QString &path, const QString &accessToken, bool multiQuery = true);
     virtual int numEntries() const = 0;
 
     QString previousItems() const;
     QString nextItems() const;
 
-  protected:
-    virtual void handleData( const QVariant& data );
-    virtual void handleItems(const QVariant& data);
-    virtual void handleItem( const QVariant& item ) = 0;
+protected:
+    virtual void handleData(const QVariant &data);
+    virtual void handleItems(const QVariant &data);
+    virtual void handleItem(const QVariant &item) = 0;
 
-  private:
-    QString mNextPage;
-    QString mPrevPage;
-    bool mMultiQuery;
+private:
+    QString m_nextPage;
+    QString m_prevPage;
+    bool m_multiQuery;
 };
 
 }

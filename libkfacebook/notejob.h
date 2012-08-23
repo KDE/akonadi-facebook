@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_NOTEJOB_H
 #define KFACEBOOK_NOTEJOB_H
 
@@ -30,15 +31,15 @@ namespace KFacebook {
 */
 class LIBKFACEBOOK_EXPORT NoteJob : public FacebookGetIdJob
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+public:
     /**
     * @brief Construct a notejob to retrieve multiple notes.
     *
     * @param noteIds A list of ids of notes to retrieve.
     * @param accessToken The token to access data on facebook.
     */
-    NoteJob( const QStringList &noteIds, const QString &accessToken );
+    NoteJob(const QStringList &noteIds, const QString &accessToken);
 
     /**
     * @brief Contrust a notejob to retrieve a single note from facebook.
@@ -46,7 +47,7 @@ class LIBKFACEBOOK_EXPORT NoteJob : public FacebookGetIdJob
     * @param noteId The id of the note to retrieve.
     * @param accessToken The token to accesss data on facebook.
     */
-    NoteJob( const QString &noteId, const QString &accessToken );
+    NoteJob(const QString &noteId, const QString &accessToken);
 
     /**
     * @brief Return a list of all the notes that his job has retrieved
@@ -56,9 +57,9 @@ class LIBKFACEBOOK_EXPORT NoteJob : public FacebookGetIdJob
     QList<NoteInfoPtr> noteInfo() const;
 
   private:
-    void handleSingleData( const QVariant& data );
+    void handleSingleData(const QVariant &data);
 
-    QList<NoteInfoPtr> mNoteInfo;
+    QList<NoteInfoPtr> m_noteInfo;
 };
 
 }

@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_FRIENDJOB_H
 #define KFACEBOOK_FRIENDJOB_H
 
@@ -30,14 +31,14 @@ namespace KFacebook {
 class LIBKFACEBOOK_EXPORT FriendJob : public FacebookGetIdJob
 {
   Q_OBJECT
-  public:
+public:
     /**
     * @brief Constructor to retrieve multiple friends from facebook.
     *
     * @param friendIds A list of ids of the friends you want to retrieve from facebook.
     * @param accessToken The access token to retrieve the data from facebook.
     */
-    FriendJob( const QStringList &friendIds, const QString &accessToken );
+    FriendJob(const QStringList &friendIds, const QString &accessToken);
 
     /**
     * @brief Constructor to retrieve a single friend from facebook.
@@ -45,7 +46,7 @@ class LIBKFACEBOOK_EXPORT FriendJob : public FacebookGetIdJob
     * @param friendId The id of the friend you want to retrieve data from.
     * @param accessToken The access token to retrieve the data from facebook.
     */
-    FriendJob( const QString &friendId, const QString &accessToken );
+    FriendJob(const QString &friendId, const QString &accessToken);
 
     /**
     * @return A list of pointers to UserInfo objects of all the users (friends)
@@ -53,14 +54,14 @@ class LIBKFACEBOOK_EXPORT FriendJob : public FacebookGetIdJob
     */
     QList<UserInfoPtr> friendInfo() const;
 
-  private:
+private:
     QStringList friendFields() const;
-    void handleSingleData( const QVariant& data );
+    void handleSingleData(const QVariant &data);
     void handlePartner(const UserInfoPtr &userInfo, const QVariant &partner);
     void handleLocation(const UserInfoPtr &userInfo, const QVariant &data);
     void handleWork(const UserInfoPtr &userInfo, const QVariant &data);
 
-    QList<UserInfoPtr> mFriendInfo;
+    QList<UserInfoPtr> m_friendInfo;
 };
 
 }

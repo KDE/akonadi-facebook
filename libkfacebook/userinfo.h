@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_USERINFO_H
 #define KFACEBOOK_USERINFO_H
 
@@ -34,37 +35,36 @@ namespace KFacebook {
 */
 class LIBKFACEBOOK_EXPORT UserInfo : public QObject
 {
-  Q_OBJECT
-  Q_PROPERTY(QString id WRITE setId READ id)
-  Q_PROPERTY(QString name WRITE setName READ name)
-  Q_PROPERTY(QString first_name WRITE setFirstName READ firstName)
-  Q_PROPERTY(QString last_name WRITE setLastName READ lastName)
-  Q_PROPERTY(QString birthday WRITE setBirthday READ birthdayAsString)
-  Q_PROPERTY(QString website WRITE setWebsite READ website)
-  Q_PROPERTY(QString username WRITE setUsername READ username)
-  Q_PROPERTY(int timezone WRITE setTimezone READ timezone)
-  Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
-  Q_PROPERTY(QUrl picture WRITE setPicture READ picture)
+    Q_OBJECT
+    Q_PROPERTY(QString id WRITE setId READ id)
+    Q_PROPERTY(QString name WRITE setName READ name)
+    Q_PROPERTY(QString first_name WRITE setFirstName READ firstName)
+    Q_PROPERTY(QString last_name WRITE setLastName READ lastName)
+    Q_PROPERTY(QString birthday WRITE setBirthday READ birthdayAsString)
+    Q_PROPERTY(QString website WRITE setWebsite READ website)
+    Q_PROPERTY(QString username WRITE setUsername READ username)
+    Q_PROPERTY(int timezone WRITE setTimezone READ timezone)
+    Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
+    Q_PROPERTY(QUrl picture WRITE setPicture READ picture)
 
-  public:
+public:
     UserInfo();
 
     /**
     * @brief Sets the facebook id of a person
     * @param id The Facebook id
     */
-    void setId( const QString &id );
+    void setId(const QString &id);
     /**
     * @return The facebook id of this person
     */
     QString id() const;
 
-
     /**
     * @brief Set the name of this person.
     * @param name The name of this person.
     */
-    void setName( const QString &name );
+    void setName(const QString &name);
     /**
     * @return The name this person.
     */
@@ -74,7 +74,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     * @brief Set the first name of this person.
     * @param firstName The first name of this person.
     */
-    void setFirstName( const QString &firstName );
+    void setFirstName(const QString &firstName);
     /**
     * @return The first name of this person.
     */
@@ -84,7 +84,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     * @brief Set the last name of this person.
     * @param lastName The last name of this person.
     */
-    void setLastName( const QString &lastName );
+    void setLastName(const QString &lastName);
     /**
     * @return The last name of this person.
     */
@@ -94,7 +94,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     * @brief Set the birthday of this person.
     * @param birthday The birthday in "facebook format"
     */
-    void setBirthday( const QString &birthday );
+    void setBirthday(const QString &birthday);
     /**
     * @return The birthday as a QString in "facebook format"
     */
@@ -108,7 +108,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
      * @brief Set the website of this person.
      * @param website The url to the website of this user.
      */
-    void setWebsite( const QString &website );
+    void setWebsite(const QString &website);
     /**
     * @return The url to the website of this user as a QString.
     */
@@ -118,7 +118,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
      * @brief Set the username of this person.
      * @param username The username of this user.
      */
-    void setUsername( const QString &username );
+    void setUsername(const QString &username);
     /**
     * @return The username of this user as a QString.
     */
@@ -128,19 +128,19 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     * @brief Set the current city of this person.
     * @param city The current city of this person.
     */
-    void setCity( const QString &city );
+    void setCity(const QString &city);
 
     /**
     * @brief Set the current country of this person.
     * @param country The current country of this person.
     */
-    void setCountry( const QString &country );
+    void setCountry(const QString &country);
 
     /**
     * @brief Set the current company this person is working at.
     * @param company The company this person is working at.
     */
-    void setCompany( const QString &company );
+    void setCompany(const QString &company);
 
     /**
     * @return The company this person is working at.
@@ -151,7 +151,7 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
     * @brief Set the profession of this person.
     * @param profession The profession of this person.
     */
-    void setProfession( const QString &profession );
+    void setProfession(const QString &profession);
     /**
     * @return The profession of this person.
     */
@@ -210,22 +210,22 @@ class LIBKFACEBOOK_EXPORT UserInfo : public QObject
      */
     QUrl picture() const;
 
-  private:
-    QString mId;
-    QString mName;
-    QString mFirstName;
-    QString mLastName;
-    QDate mBirthday;
-    QString mWebsite;
-    QString mUsername;
-    QString mCountry;
-    QString mCity;
-    QString mCompany;
-    QString mProfession;
-    QString mPartner;
-    QString mUpdatedTime;
-    int mTimezone;
-    QUrl mPictureUrl;
+private:
+    QString m_id;
+    QString m_name;
+    QString m_firstName;
+    QString m_lastName;
+    QDate m_birthday;
+    QString m_website;
+    QString m_username;
+    QString m_country;
+    QString m_city;
+    QString m_company;
+    QString m_profession;
+    QString m_partner;
+    QString m_updatedTime;
+    int m_timezone;
+    QUrl m_pictureUrl;
 };
 
 typedef QSharedPointer<UserInfo> UserInfoPtr;

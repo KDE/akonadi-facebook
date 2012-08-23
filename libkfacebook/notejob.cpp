@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,34 +16,36 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #include "notejob.h"
 
 #include <KDebug>
+
 #include <qjson/qobjecthelper.h>
 
 using namespace KFacebook;
 
-NoteJob::NoteJob( const QString& noteId, const QString& accessToken )
-  : FacebookGetIdJob(noteId, accessToken)
+NoteJob::NoteJob(const QString &noteId, const QString &accessToken)
+    : FacebookGetIdJob(noteId, accessToken)
 {
 }
 
-NoteJob::NoteJob( const QStringList& noteIds, const QString& accessToken )
-  : FacebookGetIdJob(noteIds, accessToken )
+NoteJob::NoteJob(const QStringList &noteIds, const QString &accessToken)
+    : FacebookGetIdJob(noteIds, accessToken)
 {
 }
 
 QList<NoteInfoPtr> NoteJob::noteInfo() const
 {
-  return mNoteInfo;
+    return m_noteInfo;
 }
 
-void NoteJob::handleSingleData( const QVariant& data )
+void NoteJob::handleSingleData(const QVariant &data)
 {
-  NoteInfoPtr noteInfo( new NoteInfo() );
-  const QVariantMap dataMap = data.toMap();
-  QJson::QObjectHelper::qvariant2qobject( dataMap, noteInfo.data() );
-  mNoteInfo.append(noteInfo);
+    NoteInfoPtr noteInfo(new NoteInfo());
+    const QVariantMap dataMap = data.toMap();
+    QJson::QObjectHelper::qvariant2qobject(dataMap, noteInfo.data());
+    m_noteInfo.append(noteInfo);
 }
 
 #include "notejob.moc"

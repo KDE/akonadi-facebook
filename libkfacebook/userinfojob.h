@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_USERINFOJOB_H
 #define KFACEBOOK_USERINFOJOB_H
 
@@ -29,29 +30,29 @@ namespace KFacebook {
  */
 class LIBKFACEBOOK_EXPORT UserInfoJob : public FacebookGetJob
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+public:
     /**
     * @brief Construct a job to retrieve the data of the currently authenticaed user.
     * @param accessToken The access token to access data on facebook.
     */
-    UserInfoJob( const QString &accessToken );
-    
-    UserInfoJob(const QString& userId, const QString& accessToken);
+    UserInfoJob(const QString &accessToken);
+
+    UserInfoJob(const QString &userId, const QString &accessToken);
     /**
     * @return A pointer to a userInfo object about the currently authenticated user.
     */
     UserInfoPtr userInfo() const;
 
-  protected:
+protected:
     /**
     * @brief Handles the data returned by the FacebookGetJob
     * @param data A JSON string containing the data of the currently authenticated user.
     */
-    virtual void handleData( const QVariant& data );
+    virtual void handleData(const QVariant &data);
 
-  private:
-    UserInfoPtr mUserInfo;
+private:
+    UserInfoPtr m_userInfo;
 };
 
 }

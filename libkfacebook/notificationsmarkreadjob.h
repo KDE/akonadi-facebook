@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef NOTIFCATIONSMARKREADJOB_H
 #define NOTIFCATIONSMARKREADJOB_H
 
@@ -29,15 +30,15 @@ namespace KFacebook {
 */
 class LIBKFACEBOOK_EXPORT NotificationsMarkReadJob : public FacebookAddJob
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+public:
     /**
     * @brief mark a notification as read
     *
     * @param id The notification id
     * @param accessToken The accessToken to add content to facebook
     */
-    NotificationsMarkReadJob( const QString &notificationId, const QString &accessToken );
+    NotificationsMarkReadJob(const QString &notificationId, const QString &accessToken);
     void abort();
 };
 

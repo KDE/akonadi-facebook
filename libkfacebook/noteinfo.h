@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_NOTEINFO_H
 #define KFACEBOOK_NOTEINFO_H
 
@@ -23,6 +24,7 @@
 
 #include <KMime/Message>
 #include <KDateTime>
+
 #include <QObject>
 
 namespace KFacebook {
@@ -39,12 +41,13 @@ class LIBKFACEBOOK_EXPORT NoteInfo : public QObject
   Q_PROPERTY(QString message WRITE setMessage READ message)
   Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
   Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
-  public:
+
+public:
     /**
      * Set the facebook id of this note
      * @param id the facebook id
      */
-    void setId( const QString &id);
+    void setId(const QString &id);
     /**
      * Returns the facebook id
      */
@@ -54,7 +57,7 @@ class LIBKFACEBOOK_EXPORT NoteInfo : public QObject
      * Set who wrote the note
      * @param from the creator of the note
      */
-    void setFrom( const QString &from);
+    void setFrom(const QString &from);
     /**
      * Returns the creator of the note
      */
@@ -64,7 +67,7 @@ class LIBKFACEBOOK_EXPORT NoteInfo : public QObject
      * Set the subject of the note
      * @param subject the subject
      */
-    void setSubject( const QString &subject);
+    void setSubject(const QString &subject);
     /**
      * Returns the subject of the note.
      */
@@ -74,7 +77,7 @@ class LIBKFACEBOOK_EXPORT NoteInfo : public QObject
      * Set the actual content of the note
      * @param message The actual content of the note
      */
-    void setMessage( const QString &message);
+    void setMessage(const QString &message);
     /**
      * Returns the content of the note.
      */
@@ -84,7 +87,7 @@ class LIBKFACEBOOK_EXPORT NoteInfo : public QObject
      * Set the creation time of the note
      * @param createdTime Time in "facebook format"
      */
-    void setCreatedTimeString( const QString &createdTime );
+    void setCreatedTimeString(const QString &createdTime);
     /**
      * Returns the creation time as a string in "facebook format"
      */
@@ -99,7 +102,7 @@ class LIBKFACEBOOK_EXPORT NoteInfo : public QObject
      * @param updatedTime The time, in "facebook format", of the last update of
      *                    the note.
      */
-    void setUpdatedTimeString( const QString &updatedTime );
+    void setUpdatedTimeString(const QString &updatedTime);
     /**
      * Returns the time of the last update of the note in "facebook format"
      */
@@ -115,13 +118,13 @@ class LIBKFACEBOOK_EXPORT NoteInfo : public QObject
      */
     KMime::Message::Ptr asNote() const;
 
-  private:
-    QString mId;          /* Facebook id of the note. */
-    QString mFrom;        /* Creator of the note. */
-    QString mSubject;     /* Subject of the note. */
-    QString mMessage;     /* Actual content of the note. */
-    QString mCreatedTime; /* Creation time of the note. */
-    QString mUpdatedTime; /* Last update time of the note. */
+private:
+    QString m_id;          /* Facebook id of the note. */
+    QString m_from;        /* Creator of the note. */
+    QString m_subject;     /* Subject of the note. */
+    QString m_message;     /* Actual content of the note. */
+    QString m_createdTime; /* Creation time of the note. */
+    QString m_updatedTime; /* Last update time of the note. */
 };
 
 typedef QSharedPointer<NoteInfo> NoteInfoPtr;

@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,107 +22,106 @@
 
 using namespace KFacebook;
 
-void CommentData::setId( const QString &id)
+void CommentData::setId(const QString &id)
 {
-  mId = id;
+    m_id = id;
 }
 
 QString CommentData::id() const
 {
-  return mId;
+    return m_id;
 }
 
-void CommentData::setFrom( const QVariantMap &from)
+void CommentData::setFrom(const QVariantMap &from)
 {
-  mFrom = UserInfoPtr( new UserInfo());
-  QJson::QObjectHelper::qvariant2qobject(from, mFrom.data());
+    m_from = UserInfoPtr(new UserInfo());
+    QJson::QObjectHelper::qvariant2qobject(from, m_from.data());
 }
 
 UserInfoPtr CommentData::from() const
 {
-  return mFrom;
+    return m_from;
 }
 
 QVariantMap CommentData::fromMap() const
 {
-  return QJson::QObjectHelper::qobject2qvariant(mFrom.data());
+    return QJson::QObjectHelper::qobject2qvariant(m_from.data());
 }
 
-void CommentData::setMessage( const QString &message)
+void CommentData::setMessage(const QString &message)
 {
-  mMessage = message;
+    m_message = message;
 }
 
 QString CommentData::message() const
 {
-  return mMessage;
+    return m_message;
 }
 
-void CommentData::setCreatedTimeString( const QString &createdTime )
+void CommentData::setCreatedTimeString(const QString &createdTime)
 {
-  mCreatedTime = createdTime;
+    m_createdTime = createdTime;
 }
 
 QString CommentData::createdTimeString() const
 {
-  return mCreatedTime;
+    return m_createdTime;
 }
 
 KDateTime CommentData::createdTime() const
 {
-  return facebookTimeToKDateTime(mCreatedTime);
+    return facebookTimeToKDateTime(m_createdTime);
 }
 
-void CommentData::setLikes( const int &likes)
+void CommentData::setLikes(const int &likes)
 {
-  mLikes = likes;
+    m_likes = likes;
 }
 
 int CommentData::likes() const
 {
-  return mLikes;
+    return m_likes;
 }
 
-void CommentInfo::setData( const QVariantList &data)
+void CommentInfo::setData(const QVariantList &data)
 {
-  mData = QList<CommentDataPtr>();
+    m_data = QList<CommentDataPtr>();
 
-  foreach (QVariant	v, data)
-  {
-    QVariantMap vMap = v.toMap();
-    CommentDataPtr commentData ( new CommentData());
-    QJson::QObjectHelper::qvariant2qobject(vMap, commentData.data());
-    mData << commentData;
-  }
+    foreach (QVariant	v, data) {
+        QVariantMap vMap = v.toMap();
+        CommentDataPtr commentData (new CommentData());
+        QJson::QObjectHelper::qvariant2qobject(vMap, commentData.data());
+        m_data << commentData;
+    }
 }
 
 QList<CommentDataPtr> CommentInfo::data() const
 {
-  return mData;
+    return m_data;
 }
 
 QVariantList CommentInfo::dataList() const
 {
-  QVariantList list;
+    QVariantList list;
 
-  foreach( const CommentDataPtr &comment, mData ) {
-    list.append(QJson::QObjectHelper::qobject2qvariant(comment.data()));
-  }
+    foreach(const CommentDataPtr &comment, m_data) {
+        list.append(QJson::QObjectHelper::qobject2qvariant(comment.data()));
+    }
 
-  return list;
+    return list;
 }
 
-void CommentInfo::setCount( const int &count)
+void CommentInfo::setCount(const int &count)
 {
-  mCount = count;
+    m_count = count;
 }
 
 int CommentInfo::count() const
 {
-  return mCount;
+    return m_count;
 }
 
 QString CommentInfo::path() const
 {
-	return "/comments";
+    return "/comments";
 }

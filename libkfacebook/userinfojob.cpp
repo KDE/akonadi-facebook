@@ -16,33 +16,33 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #include "userinfojob.h"
 
 #include <qjson/qobjecthelper.h>
 
 using namespace KFacebook;
 
-UserInfoJob::UserInfoJob( const QString& accessToken )
-  : FacebookGetJob( "/me", accessToken )
+UserInfoJob::UserInfoJob(const QString &accessToken)
+    : FacebookGetJob("/me", accessToken)
 {
-  setFields( QStringList() << "name" );
+    setFields(QStringList() << "name");
 }
 
-UserInfoJob::UserInfoJob(const QString& userId, const QString& accessToken) : FacebookGetJob("/"+userId, accessToken)
+UserInfoJob::UserInfoJob(const QString &userId, const QString &accessToken)
+    : FacebookGetJob("/" + userId, accessToken)
 {
-	//setFields(QStringList() << "name");
 }
 
 UserInfoPtr UserInfoJob::userInfo() const
 {
-  return mUserInfo;
+    return m_userInfo;
 }
 
-void UserInfoJob::handleData(const QVariant& data)
+void UserInfoJob::handleData(const QVariant &data)
 {
-  mUserInfo = UserInfoPtr( new UserInfo() );
-  QJson::QObjectHelper::qvariant2qobject( data.toMap(), mUserInfo.data() );
+    m_userInfo = UserInfoPtr(new UserInfo());
+    QJson::QObjectHelper::qvariant2qobject(data.toMap(), m_userInfo.data());
 }
 
 #include "userinfojob.moc"
-

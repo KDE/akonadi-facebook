@@ -16,12 +16,11 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #include "util.h"
 
-KDateTime facebookTimeToKDateTime(const QString& facebookTime)
+KDateTime facebookTimeToKDateTime(const QString &facebookTime)
 {
   // Example: "2011-01-31T17:36:19+0000"
   return KDateTime::fromString(facebookTime, "%Y-%m-%dT%H:%M:%S%z");
 }
-
-

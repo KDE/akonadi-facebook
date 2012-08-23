@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,24 +23,24 @@
 
 using namespace KFacebook;
 
-NotesListJob::NotesListJob( const QString& accessToken )
-  : ListJobBase( "/me/notes", accessToken )
+NotesListJob::NotesListJob(const QString &accessToken)
+    : ListJobBase("/me/notes", accessToken)
 {
 }
 
-QList< NoteInfoPtr > NotesListJob::notes() const
+QList<NoteInfoPtr> NotesListJob::notes() const
 {
-  return mNotes;
+    return m_notes;
 }
 
-void NotesListJob::handleItem(const QVariant& item)
+void NotesListJob::handleItem(const QVariant &item)
 {
-  NoteInfoPtr noteInfo( new NoteInfo() );
-  QJson::QObjectHelper::qvariant2qobject( item.toMap(), noteInfo.data() );
-  mNotes.append( noteInfo );
+    NoteInfoPtr noteInfo(new NoteInfo());
+    QJson::QObjectHelper::qvariant2qobject(item.toMap(), noteInfo.data());
+    m_notes.append(noteInfo);
 }
 
 int NotesListJob::numEntries() const
 {
-  return mNotes.size();
+    return m_notes.size();
 }

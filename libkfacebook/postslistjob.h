@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_POSTSLISTJOB_H
 #define KFACEBOOK_POSTSLISTJOB_H
 
@@ -27,17 +28,17 @@ namespace KFacebook {
 class LIBKFACEBOOK_EXPORT PostsListJob : public ListJobBase
 {
   Q_OBJECT
-  public:
-    PostsListJob( const QString &accessToken );
-    PostsListJob(const QString& userId, const QString& accessToken);
+public:
+    PostsListJob(const QString &accessToken );
+    PostsListJob(const QString &userId, const QString &accessToken);
     QList<PostInfoPtr> posts() const;
     int numEntries() const;
 
-  protected:
-    void handleItem( const QVariant& item );
+protected:
+    void handleItem(const QVariant &item);
 
-  private:
-    QList<PostInfoPtr> mPosts;
+private:
+    QList<PostInfoPtr> m_posts;
 };
 
 }

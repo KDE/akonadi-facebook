@@ -4,8 +4,8 @@
     This library is free software; you can redistribute it and/or modify
     it under the terms of the GNU Library General Public License as published
     by the Free Software Foundation; either version 2 of the License or
-    ( at your option ) version 3 or, at the discretion of KDE e.V.
-    ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+    (at your option) version 3 or, at the discretion of KDE e.V.
+    (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
     This library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,14 +33,14 @@ AllPostsListJob::AllPostsListJob(const QString &accessToken)
 
 QList<PostInfoPtr> AllPostsListJob::allPosts() const
 {
-    return mPosts;
+    return m_posts;
 }
 
 void AllPostsListJob::appendItems(const ListJobBase *job)
 {
     const PostsListJob * const listJob = dynamic_cast<const PostsListJob*>(job);
     Q_ASSERT(listJob);
-    mPosts.append(listJob->posts());
+    m_posts.append(listJob->posts());
 }
 
 bool AllPostsListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
@@ -52,35 +52,35 @@ bool AllPostsListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
         return false;
     }
     KDateTime sinceTime;
-    sinceTime.setTime_t( since.toLongLong() );
-    if ( !sinceTime.isValid() ) {
+    sinceTime.setTime_t(since.toLongLong());
+    if (!sinceTime.isValid()) {
         kDebug() << "Aborting posts fetching, invalid date range found in URL!";
         return false;
     }
-    return (sinceTime >= mLowerLimit);
+    return (sinceTime >= m_lowerLimit);
 }
 
 ListJobBase* AllPostsListJob::createJob(const KUrl &prev, const KUrl &next)
 {
     Q_UNUSED(prev);
-    PostsListJob * const job = new PostsListJob(mAccessToken);
+    PostsListJob * const job = new PostsListJob(m_accessToken);
     if (!next.isEmpty()) {
-        const QString limit = next.queryItem( "limit" );
-        const QString until = next.queryItem( "until" );
-        const QString since = next.queryItem( "since" );
-        if ( !limit.isEmpty() ) {
-            job->addQueryItem( "limit", limit );
+        const QString limit = next.queryItem("limit");
+        const QString until = next.queryItem("until");
+        const QString since = next.queryItem("since");
+        if (!limit.isEmpty()) {
+            job->addQueryItem("limit", limit);
         }
-        if ( !until.isEmpty() ) {
-            job->addQueryItem( "until", until );
+        if (!until.isEmpty()) {
+            job->addQueryItem("until", until);
         }
-        if ( !since.isEmpty() ) {
-            job->addQueryItem( "since", since );
+        if (!since.isEmpty()) {
+            job->addQueryItem("since", since);
         }
     } else {
         //add default values for the first job
-        job->addQueryItem( "since", mLowerLimit.toString() );
-        job->addQueryItem( "limit", QString::number( 100 ) );
+        job->addQueryItem("since", m_lowerLimit.toString());
+        job->addQueryItem("limit", QString::number(100));
     }
     return job;
 }

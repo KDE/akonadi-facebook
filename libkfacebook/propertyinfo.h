@@ -29,53 +29,51 @@
 namespace KFacebook {
 
 /**
- *	Class to represent a property associated with a facebook post
+ * Class to represent a property associated with a facebook post
  */
 
- class LIBKFACEBOOK_EXPORT PropertyInfo : public QObject
- {
-	Q_OBJECT
-	Q_PROPERTY(QString name WRITE setName READ name)
-	Q_PROPERTY(QString text WRITE setText READ text)
-	Q_PROPERTY(QString href WRITE setHref READ href)
+class LIBKFACEBOOK_EXPORT PropertyInfo : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString name WRITE setName READ name)
+    Q_PROPERTY(QString text WRITE setText READ text)
+    Q_PROPERTY(QString href WRITE setHref READ href)
 
-	public:
+public:
+    /**
+    * Set the name of this property
+    * @param name the property name
+    */
+    void setName(const QString &name);
+    /**
+    * Returns the property name
+    */
+    QString name() const;
 
-		/**
-		 * Set the name of this property
-		 * @param name the property name
-		 */
-		void setName( const QString &name);
-		/**
-		 * Returns the property name
-		 */
-		QString name() const;
+    /**
+    * Set the text of this property
+    * @param text the property text
+    */
+    void setText(const QString &text);
+    /**
+    * Returns the property text
+    */
+    QString text() const;
 
-		/**
-		 * Set the text of this property
-		 * @param text the property text
-		 */
-		void setText( const QString &text);
-		/**
-		 * Returns the property text
-		 */
-		QString text() const;
+    /**
+    * Set the href link of this property
+    * @param href the property href
+    */
+    void setHref(const QString &href);
+    /**
+    * Returns the property href
+    */
+    QString href() const;
 
-		/**
-		 * Set the href link of this property
-		 * @param href the property href
-		 */
-		void setHref( const QString &href);
-		/**
-		 * Returns the property href
-		 */
-		QString href() const;
-
-	private:
-
-		QString mName;          /* Name of the property. */
-		QString mText;          /* Text of the property. */
-		QString mHref;          /* Href Link of the property. */
+private:
+    QString m_name;          /* Name of the property. */
+    QString m_text;          /* Text of the property. */
+    QString m_href;          /* Href Link of the property. */
  };
 
 typedef QSharedPointer<PropertyInfo> PropertyInfoPtr;

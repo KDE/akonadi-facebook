@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_EVENTINFO_H
 #define KFACEBOOK_EVENTINFO_H
 
@@ -51,7 +52,7 @@ namespace KFacebook {
 */
 class AttendeeInfo
 {
-  public:
+public:
 
     /**
     * @brief Construct an attendee to an event.
@@ -75,11 +76,12 @@ class AttendeeInfo
     */
     Attendee::PartStat status() const;
 
-  private:
-    QString mName;
-    QString mId;
-    Attendee::PartStat mStatus;
+private:
+    QString m_name;
+    QString m_id;
+    Attendee::PartStat m_status;
 };
+
 typedef QSharedPointer<AttendeeInfo> AttendeeInfoPtr;
 
 
@@ -96,12 +98,13 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
   Q_PROPERTY(QString id WRITE setId READ id)
   Q_PROPERTY(QString description WRITE setDescription READ description)
   Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
-  public:
+
+public:
     /**
     * @brief Set the name of the event.
     * @param name The name of the event.
     */
-    void setName( const QString &name );
+    void setName(const QString &name);
     /**
     * @return The name of the event.
     */
@@ -112,7 +115,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
     * @param startTime The start time of the event as a QString in the
     *                  "facebook format".
     */
-    void setStartTimeString( const QString &startTime );
+    void setStartTimeString(const QString &startTime);
     /**
     * @return The start time of the event as a QString in the "facebook format".
     */
@@ -127,7 +130,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
     * @param endTime The end time of the event as a QString in the
     *                "facebook format".
     */
-    void setEndTimeString( const QString &endTime );
+    void setEndTimeString(const QString &endTime);
     /**
     * @return The end time of the event as a QString in the "facebook format".
     */
@@ -141,7 +144,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
     * @brief Set the location of the event,
     * @param location The location of the event,
     */
-    void setLocation( const QString &location );
+    void setLocation(const QString &location);
     /**
     * @return The location of the event
     */
@@ -151,7 +154,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
     * @brief Set the facebook id of the event.
     * @param id The facebook id of the event.
     */
-    void setId( const QString &id );
+    void setId(const QString &id);
     /**
     * @return The facebook id of the event.
     */
@@ -161,7 +164,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
     * @brief Set the description of the event.
     * @param description The description of the event.
     */
-    void setDescription( const QString &description );
+    void setDescription(const QString &description);
     /**
     * @return The description of the event.
     */
@@ -171,7 +174,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
     * @brief Set the organizer of the event.
     * @param organizer The organizer of the event.
     */
-    void setOrganizer( const QString &organizer );
+    void setOrganizer(const QString &organizer);
     /**
     * @return The organizer of the event as a QString.
     */
@@ -181,7 +184,7 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
     * @brief Set the time the event is last updated.
     * @param updatedTime The last update time of the event in "facebook format".
     */
-    void setUpdatedTimeString( const QString & updatedTime );
+    void setUpdatedTimeString(const QString  &updatedTime);
     /**
     * @return The time of the last update of the event in "facebook format".
     */
@@ -201,17 +204,17 @@ class LIBKFACEBOOK_EXPORT EventInfo : public QObject
 
     EventPtr asEvent() const;
 
-  private:
-    QString mName;
-    QString mStartTime;
-    QString mEndTime;
-    QString mLocation;
-    QString mId;
-    QString mDescription;
-    QString mOrganizer;
-    QString mUpdatedTime;
+private:
+    QString m_name;
+    QString m_startTime;
+    QString m_endTime;
+    QString m_location;
+    QString m_id;
+    QString m_description;
+    QString m_organizer;
+    QString m_updatedTime;
 
-    QList<AttendeeInfoPtr> mAttendees;
+    QList<AttendeeInfoPtr> m_attendees;
 };
 
 typedef QSharedPointer<EventInfo> EventInfoPtr;

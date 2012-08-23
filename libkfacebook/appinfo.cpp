@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,92 +21,92 @@
 
 using namespace KFacebook;
 
-void AppInfo::setId( const QString &id)
+void AppInfo::setId(const QString &id)
 {
-  mId = id;
+    m_id = id;
 }
 
 QString AppInfo::id() const
 {
-  return mId;
+    return m_id;
 }
 
-void AppInfo::setName( const QString &name)
+void AppInfo::setName(const QString &name)
 {
-  mName = name;
+    m_name = name;
 }
 
 QString AppInfo::name() const
 {
-  return mName;
+    return m_name;
 }
 
-void AppInfo::setDescription( const QString &description)
+void AppInfo::setDescription(const QString &description)
 {
-  mDescription = description;
+    m_description = description;
 }
 
 QString AppInfo::description() const
 {
-  return mDescription;
+    return m_description;
 }
 
-void AppInfo::setCategory( const QString &category)
+void AppInfo::setCategory(const QString &category)
 {
-  mCategory = category;
+    m_category = category;
 }
 
 QString AppInfo::category() const
 {
-  return mCategory;
+    return m_category;
 }
 
-void AppInfo::setCompany( const QString &company)
+void AppInfo::setCompany(const QString &company)
 {
-  mCompany = company;
+    m_company = company;
 }
 
 QString AppInfo::company() const
 {
-  return mCompany;
+    return m_company;
 }
 
-void AppInfo::setIconUrl( const QString &iconUrl)
+void AppInfo::setIconUrl(const QString &iconUrl)
 {
-  mIconUrl = iconUrl;
+    m_iconUrl = iconUrl;
 }
 
 QString AppInfo::iconUrl() const
 {
-  return mIconUrl;
+    return m_iconUrl;
 }
 
-void AppInfo::setSubcategory( const QString &subCategory)
+void AppInfo::setSubcategory(const QString &subCategory)
 {
-  mSubcategory = subCategory;
+    m_subcategory = subCategory;
 }
 
 QString AppInfo::subcategory() const
 {
-  return mSubcategory;
+    return m_subcategory;
 }
 
-void AppInfo::setLink( const QString &link)
+void AppInfo::setLink(const QString &link)
 {
-  mLink = link;
+    m_link = link;
 }
 
 QString AppInfo::link() const
 {
-  return mLink;
+    return m_link;
 }
 
-void AppInfo::setLogoUrl( const QString &logoUrl)
+void AppInfo::setLogoUrl(const QString &logoUrl)
 {
-  mLogoUrl = logoUrl;
+    m_logoUrl = logoUrl;
 }
 
 QString AppInfo::logoUrl() const
 {
-  return mLogoUrl;
+    return m_logoUrl;
 }

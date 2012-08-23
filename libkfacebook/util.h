@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_UTIL_H
 #define KFACEBOOK_UTIL_H
 
@@ -26,6 +27,6 @@
  * Convert a QString containing a timestamp in "facebook format",
  * "%Y-%m-%dT%H:%M:%S%z" to a KDateTime element
  */
-KDateTime facebookTimeToKDateTime( const QString &facebookTime );
+KDateTime facebookTimeToKDateTime(const QString &facebookTime);
 
 #endif

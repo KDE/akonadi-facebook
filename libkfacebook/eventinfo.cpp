@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #include "eventinfo.h"
 
 #include "util.h"
@@ -27,182 +28,183 @@
 using namespace KFacebook;
 
 AttendeeInfo::AttendeeInfo(const QString &name, const QString &id, const Attendee::PartStat &status)
-  : mName(name), mId(id), mStatus(status)
+    : m_name(name),
+      m_id(id),
+      m_status(status)
 {
-
 }
 
 QString AttendeeInfo::name() const
 {
-  return mName;
+    return m_name;
 }
 
 QString AttendeeInfo::id() const
 {
-  return mId;
+    return m_id;
 }
 
 Attendee::PartStat AttendeeInfo::status() const
 {
-  return mStatus;
+    return m_status;
 }
 
 EventPtr EventInfo::asEvent() const
 {
-  EventPtr event( new Event );
-  QString desc = description();
-  desc = KPIMUtils::LinkLocator::convertToHtml( desc, KPIMUtils::LinkLocator::ReplaceSmileys );
-  if ( !desc.isEmpty() ) {
-    desc += "<br><br>";
-  }
-  desc += "<a href=\"" + QString( "http://www.facebook.com/event.php?eid=%1" ).arg( id() ) +
-          "\">" + i18n( "View Event on Facebook" ) + "</a>";
+    EventPtr event(new Event);
+    QString desc = description();
+    desc = KPIMUtils::LinkLocator::convertToHtml(desc, KPIMUtils::LinkLocator::ReplaceSmileys);
+    if (!desc.isEmpty()) {
+        desc += "<br><br>";
+    }
+    desc += "<a href=\"" + QString("http://www.facebook.com/event.php?eid=%1").arg(id()) +
+            "\">" + i18n("View Event on Facebook") + "</a>";
 
-  event->setSummary( name() );
-  event->setLastModified( updatedTime() );
-  event->setCreated( updatedTime() ); // That's a lie, but Facebook doesn't give us the created time
-  event->setDescription( desc, true );
-  event->setLocation( location() );
-  event->setHasEndDate( endTime().isValid() );
-  event->setOrganizer( organizer() );
-  event->setUid( id() );
-  if ( startTime().isValid() ) {
-    event->setDtStart( startTime() );
-  } else {
-    kWarning() << "WTF, event has no start date??";
-  }
-  if ( endTime().isValid() ) {
-    event->setDtEnd( endTime() );
-  } else if ( startTime().isValid() && !endTime().isValid() ) {
-    // Urgh...
-    KDateTime endDate;
-    endDate.setDate( startTime().date() );
-    endDate.setTime( QTime::fromString( "23:59:00" ) );
-    kWarning() << "Event without end time: " << event->summary() << event->dtStart();
-    kWarning() << "Making it an event until the end of the day.";
-    event->setDtEnd( endDate );
-    //kWarning() << "Using a duration of 2 hours";
-    //event->setDuration( KCalCore::Duration( 2 * 60 * 60, KCalCore::Duration::Seconds ) );
-  }
+    event->setSummary(name());
+    event->setLastModified(updatedTime());
+    event->setCreated(updatedTime()); // That's a lie, but Facebook doesn't give us the created time
+    event->setDescription(desc, true);
+    event->setLocation(location());
+    event->setHasEndDate(endTime().isValid());
+    event->setOrganizer(organizer());
+    event->setUid(id());
+    if (startTime().isValid()) {
+        event->setDtStart(startTime());
+    } else {
+        kWarning() << "WTF, event has no start date??";
+    }
+    if (endTime().isValid()) {
+        event->setDtEnd(endTime());
+    } else if (startTime().isValid() && !endTime().isValid()) {
+        // Urgh...
+        KDateTime endDate;
+        endDate.setDate(startTime().date());
+        endDate.setTime(QTime::fromString("23:59:00"));
+        kWarning() << "Event without end time: " << event->summary() << event->dtStart();
+        kWarning() << "Making it an event until the end of the day.";
+        event->setDtEnd(endDate);
+        //kWarning() << "Using a duration of 2 hours";
+        //event->setDuration(KCalCore::Duration(2 * 60 * 60, KCalCore::Duration::Seconds));
+    }
 
-  // TODO: Organizer
-  //       Public/Private -> freebusy!
-  //       venue: add to location?
-  //       picture?
-  foreach(const AttendeeInfoPtr &attendeeInfo, attendees()) {
-    AttendeePtr attendee( new Attendee(attendeeInfo->name(),
-                                 "facebook@unkown.invalid",
-                                 false,
-                                 attendeeInfo->status(),
-                                 Attendee::OptParticipant,
-                                 attendeeInfo->id() ) );
-    event->addAttendee(attendee);
-  }
+    // TODO: Organizer
+    //       Public/Private -> freebusy!
+    //       venue: add to location?
+    //       picture?
+    foreach (const AttendeeInfoPtr &attendeeInfo, attendees()) {
+        AttendeePtr attendee(new Attendee(attendeeInfo->name(),
+                                    "facebook@unkown.invalid",
+                                    false,
+                                    attendeeInfo->status(),
+                                    Attendee::OptParticipant,
+                                    attendeeInfo->id()));
+        event->addAttendee(attendee);
+    }
 
-  return event;
+    return event;
 }
 
 KDateTime EventInfo::endTime() const
 {
-  return facebookTimeToKDateTime(mEndTime);
+    return facebookTimeToKDateTime(m_endTime);
 }
 
 QString EventInfo::endTimeString() const
 {
-  return mEndTime;
+    return m_endTime;
 }
 
 QString EventInfo::id() const
 {
-  return mId;
+    return m_id;
 }
 
 QString EventInfo::location() const
 {
-  return mLocation;
+    return m_location;
 }
 
 QString EventInfo::name() const
 {
-  return mName;
+    return m_name;
 }
 
-void EventInfo::setEndTimeString(const QString& endTime)
+void EventInfo::setEndTimeString(const QString &endTime)
 {
-  mEndTime = endTime;
+    m_endTime = endTime;
 }
 
-void EventInfo::setId(const QString& id)
+void EventInfo::setId(const QString &id)
 {
-  mId = id;
+    m_id = id;
 }
 
-void EventInfo::setLocation(const QString& location)
+void EventInfo::setLocation(const QString &location)
 {
-  mLocation = location;
+    m_location = location;
 }
 
-void EventInfo::setName(const QString& name)
+void EventInfo::setName(const QString &name)
 {
-  mName = name;
+    m_name = name;
 }
 
-void EventInfo::setStartTimeString(const QString& startTime)
+void EventInfo::setStartTimeString(const QString &startTime)
 {
-  mStartTime = startTime;
+    m_startTime = startTime;
 }
 
 KDateTime EventInfo::startTime() const
 {
-  return facebookTimeToKDateTime(mStartTime);
+    return facebookTimeToKDateTime(m_startTime);
 }
 
 QString EventInfo::startTimeString() const
 {
-  return mStartTime;
+    return m_startTime;
 }
 
 QString EventInfo::description() const
 {
-  return mDescription;
+    return m_description;
 }
 
-void EventInfo::setDescription( const QString& description )
+void EventInfo::setDescription(const QString &description)
 {
-  mDescription = description;
+    m_description = description;
 }
 
 QString EventInfo::organizer() const
 {
-  return mOrganizer;
+    return m_organizer;
 }
 
-void EventInfo::setOrganizer(const QString& organizer)
+void EventInfo::setOrganizer(const QString &organizer)
 {
-  mOrganizer = organizer;
+    m_organizer = organizer;
 }
 
-void EventInfo::setUpdatedTimeString(const QString& updatedTime)
+void EventInfo::setUpdatedTimeString(const QString &updatedTime)
 {
-  mUpdatedTime = updatedTime;
+    m_updatedTime = updatedTime;
 }
 
 KDateTime EventInfo::updatedTime() const
 {
-  return facebookTimeToKDateTime(mUpdatedTime);
+    return facebookTimeToKDateTime(m_updatedTime);
 }
 
 QString EventInfo::updatedTimeString() const
 {
-  return mUpdatedTime;
+    return m_updatedTime;
 }
 
 void EventInfo::addAttendees(const QList<AttendeeInfoPtr> &attendees)
 {
-  mAttendees << attendees;
+    m_attendees << attendees;
 }
 
 QList<AttendeeInfoPtr> EventInfo::attendees() const
 {
-  return mAttendees;
+    return m_attendees;
 }

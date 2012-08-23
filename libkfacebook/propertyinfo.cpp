@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option ) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,32 +21,32 @@
 
 using namespace KFacebook;
 
-void PropertyInfo::setName( const QString &name)
+void PropertyInfo::setName(const QString &name)
 {
-  mName = name;
+    m_name = name;
 }
 
 QString PropertyInfo::name() const
 {
-  return mName;
+    return m_name;
 }
 
-void PropertyInfo::setText( const QString &text)
+void PropertyInfo::setText(const QString &text)
 {
-  mText = text;
+    m_text = text;
 }
 
 QString PropertyInfo::text() const
 {
-  return mText;
+    return m_text;
 }
 
-void PropertyInfo::setHref( const QString &href)
+void PropertyInfo::setHref(const QString &href)
 {
-  mHref = href;
+    m_href = href;
 }
 
 QString PropertyInfo::href() const
 {
-  return mHref;
+    return m_href;
 }

@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,47 +21,45 @@
 
 using namespace KFacebook;
 
-
-void LikeInfo::setData( const QVariantList &data)
+void LikeInfo::setData(const QVariantList &data)
 {
-  mData =  QList<UserInfoPtr>();
+    m_data =  QList<UserInfoPtr>();
 
-  foreach (QVariant	v, data)
-  {
-    QVariantMap vMap = v.toMap();
-    UserInfoPtr userInfo ( new UserInfo());
-    QJson::QObjectHelper::qvariant2qobject(vMap, userInfo.data());
-    mData << userInfo;
-  }
+    foreach(const QVariant &v, data) {
+        QVariantMap vMap = v.toMap();
+        UserInfoPtr userInfo(new UserInfo());
+        QJson::QObjectHelper::qvariant2qobject(vMap, userInfo.data());
+        m_data << userInfo;
+    }
 }
 
 QList<UserInfoPtr> LikeInfo::data() const
 {
-  return mData;
+    return m_data;
 }
 
 QVariantList LikeInfo::dataList() const
 {
-  QVariantList list;
+    QVariantList list;
 
-  foreach( const UserInfoPtr &user, mData ) {
-    list.append(QJson::QObjectHelper::qobject2qvariant(user.data()));
-  }
+    foreach(const UserInfoPtr &user, m_data) {
+        list.append(QJson::QObjectHelper::qobject2qvariant(user.data()));
+    }
 
-  return list;
+    return list;
 }
 
-void LikeInfo::setCount( const int &count)
+void LikeInfo::setCount(const int &count)
 {
-  mCount = count;
+    m_count = count;
 }
 
 int LikeInfo::count() const
 {
-  return mCount;
+    return m_count;
 }
 
 QString LikeInfo::path() const
 {
-	return "/likes";
+    return "/likes";
 }

@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_AUTHENTICATIONWIDGET_H
 #define KFACEBOOK_AUTHENTICATIONWIDGET_H
 
@@ -31,33 +32,33 @@ namespace KFacebook {
 class LIBKFACEBOOK_EXPORT AuthenticationDialog : public KDialog
 {
   Q_OBJECT
-  public:
-    AuthenticationDialog( QWidget *parent );
-    void setAppId( const QString &appId );
-    void setPermissions( const QStringList &permissions );
+public:
+    AuthenticationDialog(QWidget *parent);
+    void setAppId(const QString &appId);
+    void setPermissions(const QStringList &permissions);
     void start();
     void setUsername(const QString &username);
     void setPassword(const QString &password);
 
-  Q_SIGNALS:
-    void authenticated( const QString &accessToken );
+Q_SIGNALS:
+    void authenticated(const QString &accessToken);
     void canceled();
 
-  private Q_SLOTS:
+private Q_SLOTS:
     void loadFinished();
-    void urlChanged( const QUrl &url );
+    void urlChanged(const QUrl &url);
     void showErrorDialog();
 
-  private:
-    QString mAppId;
-    QStringList mPermissions;
-    KWebView *mWebView;
-    QProgressBar *mProgressBar;
-    QString mError;
-    QString mErrorReason;
-    QString mErrorDescription;
-    QString mUsername;
-    QString mPassword;
+private:
+    QString m_appId;
+    QStringList m_permissions;
+    KWebView *m_webView;
+    QProgressBar *m_progressBar;
+    QString m_error;
+    QString m_errorReason;
+    QString m_errorDescription;
+    QString m_username;
+    QString m_password;
 };
 
 }

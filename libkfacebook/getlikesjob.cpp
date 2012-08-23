@@ -21,58 +21,57 @@
 
 using namespace KFacebook;
 
-GetLikesJob::GetLikesJob(const QString& postId, const QString& accessToken) : FacebookGetJob("/fql", accessToken), mLikeCount(0), mUserLikes(false), mCanLike(true)
+GetLikesJob::GetLikesJob(const QString &postId, const QString &accessToken)
+    : FacebookGetJob("/fql", accessToken),
+      m_likeCount(0),
+      m_userLikes(false),
+      m_canLike(true)
 {
-	mPostId = postId;
-	QString query = QString("SELECT likes FROM stream WHERE post_id = \"%1\"").arg(mPostId);
-	addQueryItem("q", query);
+    m_postId = postId;
+    QString query = QString("SELECT likes FROM stream WHERE post_id = \"%1\"").arg(m_postId);
+    addQueryItem("q", query);
 }
-
 
 void GetLikesJob::handleData(const QVariant& data)
 {
-	QVariantMap dataMap = data.toMap();
-	
-	if (!dataMap.isEmpty())
-	{
-		  QVariantList dataList = dataMap["data"].toList();
-		
-		if (!dataList.isEmpty())
-		{
-			  QVariantMap map = dataList[0].toMap();
-			
-			if (!map.isEmpty()) 
-			{ 
-				  QVariantMap likeMap = map["likes"].toMap();
-				
-				if (!likeMap.isEmpty())
-				{
-					mLikeCount = likeMap["count"].toUInt();
-					mUserLikes = likeMap["user_likes"].toBool();
-					mCanLike = likeMap["can_like"].toBool();
-					mHref = likeMap["href"].toString();
-				}
-			}
-		}
-	}
+    QVariantMap dataMap = data.toMap();
+
+    if (!dataMap.isEmpty()) {
+        QVariantList dataList = dataMap["data"].toList();
+
+        if (!dataList.isEmpty()) {
+            QVariantMap map = dataList[0].toMap();
+
+            if (!map.isEmpty()) {
+                QVariantMap likeMap = map["likes"].toMap();
+
+                if (!likeMap.isEmpty()) {
+                    m_likeCount = likeMap["count"].toUInt();
+                    m_userLikes = likeMap["user_likes"].toBool();
+                    m_canLike = likeMap["can_like"].toBool();
+                    m_href = likeMap["href"].toString();
+                }
+            }
+        }
+    }
 }
 
 uint GetLikesJob::likeCount()
 {
-	return mLikeCount;
+    return m_likeCount;
 }
 
 bool GetLikesJob::userLikes()
 {
-	return mUserLikes;
+    return m_userLikes;
 }
 
 bool GetLikesJob::canLike()
 {
-	return mCanLike;
+    return m_canLike;
 }
 
 QString GetLikesJob::href()
 {
-	return mHref;
+    return m_href;
 }

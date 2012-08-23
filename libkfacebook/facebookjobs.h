@@ -4,8 +4,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,11 +17,14 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_FACEBOOKJOBS_H
 #define KFACEBOOK_FACEBOOKJOBS_H
 
 #include "libkfacebook_export.h"
+
 #include <KJob>
+
 #include <QStringList>
 #include <QPointer>
 
@@ -34,38 +37,38 @@ typedef QPair<QString, QString> QueryItem;
  */
 class LIBKFACEBOOK_EXPORT FacebookJob : public KJob
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+public:
     /**
      * Constructor that sets the path and the accesstoken
      *
      * @param path The path after https://graphs.facebook.com
      * @param accessToken The accessToken to access our data on facebook
      * */
-    FacebookJob( const QString &path, const QString &accessToken );
-    explicit FacebookJob( const QString &accessToken );
+    FacebookJob(const QString &path, const QString &accessToken);
+    explicit FacebookJob(const QString &accessToken);
 
     /** Add a query item to the list */
-    void addQueryItem( const QString &key, const QString &value );
+    void addQueryItem(const QString &key, const QString &value);
 
     virtual void start() = 0;
 
     enum JobErrorType { AuthenticationProblem = KJob::UserDefinedError + 42 };
 
-  protected:
+protected:
     /** Kill the currentjobs and its subjobs */
     virtual bool doKill();
 
     /** Check for a return error and set the appropiate error messags */
-    void handleError( const QVariant &data );
+    void handleError(const QVariant &data);
 
-    QString mAccessToken;         /** Facebook Access token */
-    QString mPath;                /** path after https://graph.facebook.com/ */
-    QList<QueryItem> mQueryItems; /** The query items */
-    QPointer<KJob> mJob;          /** Pointer to the running job */
+    QString m_accessToken;         /** Facebook Access token */
+    QString m_path;                /** path after https://graph.facebook.com/ */
+    QList<QueryItem> m_queryItems; /** The query items */
+    QPointer<KJob> m_job;          /** Pointer to the running job */
 
-  private slots:
-    virtual void jobFinished( KJob *job ) = 0;
+private Q_SLOTS:
+    virtual void jobFinished(KJob *job) = 0;
 
 };
 
@@ -74,14 +77,14 @@ class LIBKFACEBOOK_EXPORT FacebookJob : public KJob
  */
 class LIBKFACEBOOK_EXPORT FacebookAddJob : public FacebookJob
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
-    FacebookAddJob( const QString &path, const QString &accessToken );
+public:
+    FacebookAddJob(const QString &path, const QString &accessToken);
 
     virtual void start();
 
-  private slots:
+private Q_SLOTS:
     void jobFinished(KJob *job);
 };
 
@@ -90,14 +93,14 @@ class LIBKFACEBOOK_EXPORT FacebookAddJob : public FacebookJob
  */
 class LIBKFACEBOOK_EXPORT FacebookDeleteJob : public FacebookJob
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
-    FacebookDeleteJob( const QString &id, const QString &accessToken);
+public:
+    FacebookDeleteJob(const QString &id, const QString &accessToken);
 
     virtual void start();
 
-  private slots:
+private Q_SLOTS:
     void jobFinished(KJob *job);
 };
 
@@ -106,30 +109,30 @@ class LIBKFACEBOOK_EXPORT FacebookDeleteJob : public FacebookJob
  */
 class LIBKFACEBOOK_EXPORT FacebookGetJob : public FacebookJob
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
-    FacebookGetJob( const QString &path, const QString &accessToken );
-    explicit FacebookGetJob( const QString &accessToken );
+public:
+    FacebookGetJob(const QString &path, const QString &accessToken);
+    explicit FacebookGetJob(const QString &accessToken);
 
     /** Set the fields the job should retrieve from facebook */
-    void setFields( const QStringList &fields );
+    void setFields(const QStringList &fields);
 
     /** Set the Id's the job should retrieve from facebook.
      * If this is set then the path is ignored */
-    void setIds( const QStringList &ids );
+    void setIds(const QStringList &ids);
 
     virtual void start();
 
-  protected:
-    virtual void handleData( const QVariant &data ) = 0;
+protected:
+    virtual void handleData(const QVariant &data) = 0;
 
-  protected slots:
-    void jobFinished( KJob *job );
+protected Q_SLOTS:
+    void jobFinished(KJob *job);
 
-  private:
-    QStringList mFields; /** The field to retrieve from facebook */
-    QStringList mIds;    /** The id's to retrieve from facebook */
+private:
+    QStringList m_fields; /** The field to retrieve from facebook */
+    QStringList m_ids;    /** The id's to retrieve from facebook */
 };
 
 /**
@@ -138,8 +141,8 @@ class LIBKFACEBOOK_EXPORT FacebookGetJob : public FacebookJob
  */
 class LIBKFACEBOOK_EXPORT FacebookGetIdJob : public FacebookGetJob
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+public:
     /**
      * @brief Constructor to retrieve a list of ids from facebook.
      *
@@ -156,16 +159,16 @@ class LIBKFACEBOOK_EXPORT FacebookGetIdJob : public FacebookGetJob
      */
     FacebookGetIdJob(const QString &id, const QString &accessToken);
 
-  protected:
+protected:
     /**
      * @brief Parse a single item that is returned by the FacebookGetJob and
      *        add it to the interl list of elements.
      */
     virtual void handleSingleData(const QVariant &data) = 0;
 
-  private:
+private:
     virtual void handleData(const QVariant &data);
-    bool mMultiQuery;
+    bool m_multiQuery;
 };
 
 }

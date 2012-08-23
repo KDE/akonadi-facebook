@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,193 +27,193 @@ using namespace KFacebook;
 static const int invalidTimezone = 42;
 
 UserInfo::UserInfo()
-  : mTimezone(invalidTimezone)
+    : m_timezone(invalidTimezone)
 {
 }
 
 QString UserInfo::name() const
 {
-  return mName;
+    return m_name;
 }
 
 QString UserInfo::id() const
 {
-  return mId;
+    return m_id;
 }
 
-void UserInfo::setName(const QString& name)
+void UserInfo::setName(const QString &name)
 {
-  mName = name;
+    m_name = name;
 }
 
-void UserInfo::setId(const QString& id)
+void UserInfo::setId(const QString &id)
 {
-  mId = id;
+    m_id = id;
 }
 
 QDate UserInfo::birthday() const
 {
-  return mBirthday;
+    return m_birthday;
 }
 
 QString UserInfo::birthdayAsString() const
 {
-  return mBirthday.toString();
+    return m_birthday.toString();
 }
 
 QString UserInfo::firstName() const
 {
-  return mFirstName;
+    return m_firstName;
 }
 
 QString UserInfo::lastName() const
 {
-  return mLastName;
+    return m_lastName;
 }
 
-void UserInfo::setBirthday(const QString& birthday)
+void UserInfo::setBirthday(const QString &birthday)
 {
-  mBirthday = QDate::fromString( birthday, "MM/dd/yyyy" );
-  if ( !mBirthday.isValid() ) {
-    // Some users don't tell the year of their birthday.
-    mBirthday = QDate::fromString( birthday + "/0001", "MM/dd/yyyy" );
-  }
+    m_birthday = QDate::fromString(birthday, "MM/dd/yyyy");
+    if (!m_birthday.isValid()) {
+        // Some users don't tell the year of their birthday.
+        m_birthday = QDate::fromString(birthday + "/0001", "MM/dd/yyyy");
+    }
 }
 
-void UserInfo::setFirstName(const QString& firstName)
+void UserInfo::setFirstName(const QString &firstName)
 {
-  mFirstName = firstName;
+    m_firstName = firstName;
 }
 
-void UserInfo::setLastName(const QString& lastName)
+void UserInfo::setLastName(const QString &lastName)
 {
-  mLastName = lastName;
+    m_lastName = lastName;
 }
 
-void UserInfo::setWebsite(const QString& website)
+void UserInfo::setWebsite(const QString &website)
 {
-  if ( website.contains( '\r' ) || website.contains( '\n' ) ) {
-    QString normalized = website;
-    normalized.replace( "\r\n", "\n" );
-    normalized.replace( "\r", "\n" );
-    const QStringList websites = normalized.split( '\n' );
-    mWebsite = websites[0];
-  } else {
-    mWebsite = website;
-  }
+    if (website.contains('\r') || website.contains('\n')) {
+        QString normalized = website;
+        normalized.replace("\r\n", "\n");
+        normalized.replace("\r", "\n");
+        const QStringList websites = normalized.split('\n');
+        m_website = websites[0];
+    } else {
+        m_website = website;
+    }
 }
 
-void UserInfo::setCity(const QString& city)
+void UserInfo::setCity(const QString &city)
 {
-  mCity = city;
+    m_city = city;
 }
 
-void UserInfo::setCountry(const QString& country)
+void UserInfo::setCountry(const QString &country)
 {
-  mCountry = country;
+    m_country = country;
 }
 
 
 QString UserInfo::website() const
 {
-  return mWebsite;
+    return m_website;
 }
 
 QString UserInfo::username() const
 {
-  return mUsername;
+    return m_username;
 }
 
-void UserInfo::setUsername(const QString& username)
+void UserInfo::setUsername(const QString &username)
 {
-  mUsername = username;
+    m_username = username;
 }
 
 QString UserInfo::company() const
 {
-  return mCompany;
+    return m_company;
 }
 
 QString UserInfo::profession() const
 {
-  return mProfession;
+    return m_profession;
 }
 
-void UserInfo::setCompany(const QString& company)
+void UserInfo::setCompany(const QString &company)
 {
-  mCompany = company;
+    m_company = company;
 }
 
-void UserInfo::setProfession(const QString& profession)
+void UserInfo::setProfession(const QString &profession)
 {
-  mProfession = profession;
+    m_profession = profession;
 }
 
 QString UserInfo::partner() const
 {
-  return mPartner;
+    return m_partner;
 }
 
-void UserInfo::setPartner(const QString& partner)
+void UserInfo::setPartner(const QString &partner)
 {
-  mPartner = partner;
+    m_partner = partner;
 }
 
 void UserInfo::setTimezone(int timezone)
 {
-  mTimezone = timezone;
+    m_timezone = timezone;
 }
 
 int UserInfo::timezone() const
 {
-  return mTimezone;
+    return m_timezone;
 }
 
 KABC::Addressee UserInfo::toAddressee() const
 {
-  KABC::Addressee addressee;
-  addressee.setGivenName( firstName() );
-  addressee.setUid( id() );
-  addressee.setFamilyName( lastName() );
-  addressee.setFormattedName( name() );
-  addressee.setUrl( website() );
-  addressee.setBirthday( QDateTime( birthday() ) );
-  addressee.setOrganization(mCompany);
-  if (mTimezone != invalidTimezone) {
-    addressee.setTimeZone(KABC::TimeZone(mTimezone));
-  }
-  addressee.insertCustom("KADDRESSBOOK", "X-Profession", mProfession);
-  addressee.insertCustom("KADDRESSBOOK", "X-SpousesName", mPartner);
-  if ( !mCity.isEmpty() || !mCountry.isEmpty() ) {
-    KABC::Address address( KABC::Address::Home );
-    address.setRegion( mCountry );
-    address.setLocality( mCity );
-    addressee.insertAddress( address );
-  }
-  return addressee;
+    KABC::Addressee addressee;
+    addressee.setGivenName(firstName());
+    addressee.setUid(id());
+    addressee.setFamilyName(lastName());
+    addressee.setFormattedName(name());
+    addressee.setUrl(website());
+    addressee.setBirthday(QDateTime(birthday()));
+    addressee.setOrganization(m_company);
+    if (m_timezone != invalidTimezone) {
+        addressee.setTimeZone(KABC::TimeZone(m_timezone));
+    }
+    addressee.insertCustom("KADDRESSBOOK", "X-Profession", m_profession);
+    addressee.insertCustom("KADDRESSBOOK", "X-SpousesName", m_partner);
+    if (!m_city.isEmpty() || !m_country.isEmpty()) {
+        KABC::Address address(KABC::Address::Home);
+        address.setRegion(m_country);
+        address.setLocality(m_city);
+        addressee.insertAddress(address);
+    }
+    return addressee;
 }
 
-void UserInfo::setUpdatedTimeString( const QString& updatedTime )
+void UserInfo::setUpdatedTimeString(const QString &updatedTime)
 {
-  mUpdatedTime = updatedTime;
+    m_updatedTime = updatedTime;
 }
 
 QString UserInfo::updatedTimeString() const
 {
-  return mUpdatedTime;
+    return m_updatedTime;
 }
 
 KDateTime UserInfo::updatedTime() const
 {
-  return facebookTimeToKDateTime( mUpdatedTime );
+    return facebookTimeToKDateTime(m_updatedTime);
 }
 
-void UserInfo::setPicture( const QUrl &pictureUrl )
+void UserInfo::setPicture(const QUrl &pictureUrl)
 {
-  mPictureUrl = pictureUrl;
+    m_pictureUrl = pictureUrl;
 }
 
 QUrl UserInfo::picture() const
 {
-  return mPictureUrl;
+    return m_pictureUrl;
 }

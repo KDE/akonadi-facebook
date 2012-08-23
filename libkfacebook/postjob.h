@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +16,7 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #ifndef KFACEBOOK_POSTJOB_H
 #define KFACEBOOK_POSTJOB_H
 
@@ -31,14 +32,14 @@ namespace KFacebook {
 class LIBKFACEBOOK_EXPORT PostJob : public FacebookGetIdJob
 {
   Q_OBJECT
-  public:
+public:
     /**
     * @brief Construct a postjob to retrieve multiple posts.
     *
     * @param postIds A list of ids of posts to retrieve.
     * @param accessToken The token to access data on facebook.
     */
-    PostJob( const QStringList &postIds, const QString &accessToken );
+    PostJob(const QStringList &postIds, const QString &accessToken);
 
     /**
     * @brief Contrust a postjob to retrieve a single post from facebook.
@@ -46,7 +47,7 @@ class LIBKFACEBOOK_EXPORT PostJob : public FacebookGetIdJob
     * @param postId The id of the post to retrieve.
     * @param accessToken The token to accesss data on facebook.
     */
-    PostJob( const QString &postId, const QString &accessToken );
+    PostJob(const QString &postId, const QString &accessToken);
 
     /**
     * @brief Return a list of all the posts that his job has retrieved
@@ -55,10 +56,10 @@ class LIBKFACEBOOK_EXPORT PostJob : public FacebookGetIdJob
     */
     QList<PostInfoPtr> postInfo() const;
 
-  private:
-    void handleSingleData( const QVariant& data );
+private:
+    void handleSingleData(const QVariant &data);
 
-    QList<PostInfoPtr> mPostInfo;
+    QList<PostInfoPtr> m_postInfo;
 };
 
 }

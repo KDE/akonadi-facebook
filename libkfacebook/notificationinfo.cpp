@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,105 +24,105 @@
 
 using namespace KFacebook;
 
-void NotificationInfo::setId(const QString& id)
+void NotificationInfo::setId(const QString &id)
 {
-  mId = id;
+    m_id = id;
 }
 
 QString NotificationInfo::id() const
 {
-  return mId;
+    return m_id;
 }
 
-void NotificationInfo::setFrom(const QVariantMap& from)
+void NotificationInfo::setFrom(const QVariantMap &from)
 {
-  mFrom = UserInfoPtr (new UserInfo());
-  QJson::QObjectHelper::qvariant2qobject(from, mFrom.data());
+    m_from = UserInfoPtr (new UserInfo());
+    QJson::QObjectHelper::qvariant2qobject(from, m_from.data());
 }
 
 UserInfoPtr NotificationInfo::from() const
 {
-  return mFrom;
+    return m_from;
 }
 
-void NotificationInfo::setTo(const QVariantMap& to)
+void NotificationInfo::setTo(const QVariantMap &to)
 {
-  mTo = UserInfoPtr (new UserInfo());
-  QJson::QObjectHelper::qvariant2qobject(to, mTo.data());
+    m_to = UserInfoPtr (new UserInfo());
+    QJson::QObjectHelper::qvariant2qobject(to, m_to.data());
 }
 
 UserInfoPtr NotificationInfo::to() const
 {
-  return mTo;
+    return m_to;
 }
 
-void NotificationInfo::setCreatedTimeString(const QString& time)
+void NotificationInfo::setCreatedTimeString(const QString &time)
 {
-  mCreatedTime = time;
+    m_createdTime = time;
 }
 
 QString NotificationInfo::createdTimeString() const
 {
-  return mCreatedTime;
+    return m_createdTime;
 }
 
 KDateTime NotificationInfo::createdTime() const
 {
-  return facebookTimeToKDateTime(mCreatedTime);
+    return facebookTimeToKDateTime(m_createdTime);
 }
 
-void NotificationInfo::setUpdatedTimeString(const QString& time)
+void NotificationInfo::setUpdatedTimeString(const QString &time)
 {
-  mUpdatedTime = time;
+    m_updatedTime = time;
 }
 
 QString NotificationInfo::updatedTimeString() const
 {
-  return mUpdatedTime;
+    return m_updatedTime;
 }
 
 KDateTime NotificationInfo::updatedTime() const
 {
-  return facebookTimeToKDateTime(mUpdatedTime);
+    return facebookTimeToKDateTime(m_updatedTime);
 }
 
-void NotificationInfo::setTitle(const QString& title)
+void NotificationInfo::setTitle(const QString &title)
 {
-  mTitle = title;
+    m_title = title;
 }
 
 QString NotificationInfo::title() const
 {
-  return mTitle;
+    return m_title;
 }
 
-void NotificationInfo::setLink(const QString& link)
+void NotificationInfo::setLink(const QString &link)
 {
-  mLink = link;
+    m_link = link;
 }
 
 QString NotificationInfo::link() const
 {
-  return mLink;
+    return m_link;
 }
 
-void NotificationInfo::setApplication(const QVariantMap& app)
+void NotificationInfo::setApplication(const QVariantMap &app)
 {
-  mApp = AppInfoPtr (new AppInfo());
-  QJson::QObjectHelper::qvariant2qobject(app, mApp.data());
+    m_app = AppInfoPtr (new AppInfo());
+    QJson::QObjectHelper::qvariant2qobject(app, m_app.data());
 }
 
 AppInfoPtr NotificationInfo::application() const
 {
-  return mApp;
+    return m_app;
 }
 
 void NotificationInfo::setUnread(bool unread)
 {
-  mUnread = unread;
+    m_unread = unread;
 }
 
 bool NotificationInfo::unread() const
 {
-  return mUnread;
+    return m_unread;
 }

@@ -3,8 +3,8 @@
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
    by the Free Software Foundation; either version 2 of the License or
-   ( at your option ) version 3 or, at the discretion of KDE e.V.
-   ( which shall act as a proxy as in section 14 of the GPLv3 ), any later version.
+   (at your option) version 3 or, at the discretion of KDE e.V.
+   (which shall act as a proxy as in section 14 of the GPLv3), any later version.
 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,7 +17,6 @@
    Boston, MA 02110-1301, USA.
 */
 
-
 #ifndef KFACEBOOK_NOTIFICATIONINFO_H
 #define KFACEBOOK_NOTIFICATIONINFO_H
 
@@ -29,8 +28,9 @@
 
 #include <qjson/qobjecthelper.h>
 
-#include <KDateTime>
 #include <QObject>
+
+#include <KDateTime>
 
 namespace KFacebook {
 
@@ -57,7 +57,7 @@ public:
      * Set the notification id of the post
      * @param id of the notification
      */
-    void setId( const QString &id );
+    void setId(const QString &id);
     /**
      * Returns notification id
      */
@@ -67,7 +67,7 @@ public:
      * Set the user creating the notification
      * @param from the user causing the notification
      */
-    void setFrom( const QVariantMap &from );
+    void setFrom(const QVariantMap &from);
     /**
      * Returns the user causing the notification as a User Info Object Pointer
      */
@@ -77,7 +77,7 @@ public:
      * Set the user receiving the notification
      * @param to the user receiving the notification
      */
-    void setTo( const QVariantMap &to );
+    void setTo(const QVariantMap &to);
     /**
      * Returns the user receiving the notification as a User Info Object Pointer
      */
@@ -87,7 +87,7 @@ public:
      * Set the creation time of the notification
      * @param createdTime Time in "facebook format"
      */
-    void setCreatedTimeString( const QString &time );
+    void setCreatedTimeString(const QString &time);
     /**
      * Returns the creation time as a string in "facebook format"
      */
@@ -102,7 +102,7 @@ public:
      * @param updatedTime The time, in "facebook format", of the last update of
      *                    the notification.
      */
-    void setUpdatedTimeString( const QString &time );
+    void setUpdatedTimeString(const QString &time);
     /**
      * Returns the time of the last update of the notification in "facebook format"
      */
@@ -117,7 +117,7 @@ public:
      * Set the title of the notification (it's the notification text itself)
      * @param title Title of the notification
      */
-    void setTitle( const QString &title );
+    void setTitle(const QString &title);
     /**
      * Returns notification title (which is the notification text itself)
      */
@@ -127,7 +127,7 @@ public:
      * Set the link for the notification
      * @param link Link for the notification
      */
-    void setLink( const QString &link );
+    void setLink(const QString &link);
     /**
      * Returns link for the notification
      */
@@ -137,7 +137,7 @@ public:
      * Set application details that caused the notification
      * @param app The app that caused the notification
      */
-    void setApplication( const QVariantMap &app );
+    void setApplication(const QVariantMap &app);
     /**
      * Returns the creator app that caused the notification
      */
@@ -154,15 +154,15 @@ public:
     bool unread() const;
 
 private:
-    QString mId;          /* Facebook notification id */
-    UserInfoPtr mFrom;    /* User from whom the notification originates */
-    UserInfoPtr mTo;      /* User receiving the notification */
-    QString mCreatedTime; /* Creation time of the post. */
-    QString mUpdatedTime; /* Last update time of the post. */
-    QString mTitle;       /* Title of the notification */
-    QString mLink;        /* Link for the notification */
-    AppInfoPtr mApp;      /* App causing the notification */
-    bool mUnread;         /* Status of the notification, true if unread, false otherwise */
+    QString m_id;          /* Facebook notification id */
+    UserInfoPtr m_from;    /* User from whom the notification originates */
+    UserInfoPtr m_to;      /* User receiving the notification */
+    QString m_createdTime; /* Creation time of the post. */
+    QString m_updatedTime; /* Last update time of the post. */
+    QString m_title;       /* Title of the notification */
+    QString m_link;        /* Link for the notification */
+    AppInfoPtr m_app;      /* App causing the notification */
+    bool m_unread;         /* Status of the notification, true if unread, false otherwise */
 };
 
 typedef QSharedPointer<NotificationInfo> NotificationInfoPtr;
