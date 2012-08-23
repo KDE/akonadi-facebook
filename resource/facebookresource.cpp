@@ -36,6 +36,7 @@
 #include <libkfacebook/postslistjob.h>
 #include <libkfacebook/postjob.h>
 #include <libkfacebook/notificationslistjob.h>
+#include <libkfacebook/allpostslistjob.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
@@ -174,8 +175,9 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of posts." ) );
     emit percent( 0 );
-    KFacebook::PostsListJob * const postsJob = new KFacebook::PostsListJob( Settings::self()->accessToken() );
-//     postsJob->setLowerLimit(KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ));
+//     KFacebook::PostsListJob * const postsJob = new KFacebook::PostsListJob( Settings::self()->accessToken() );
+    KFacebook::AllPostsListJob * const postsJob = new KFacebook::AllPostsListJob( Settings::self()->accessToken() );
+    postsJob->setLowerLimit(KDateTime::fromString( KDateTime::currentLocalDateTime().addDays(-3).toString(), "%Y-%m-%d" ));
     mCurrentJobs << postsJob;
     connect( postsJob, SIGNAL(result(KJob*)), this, SLOT(postsListFetched(KJob*)) );
     postsJob->start();

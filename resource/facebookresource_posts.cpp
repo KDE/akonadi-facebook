@@ -23,6 +23,7 @@
 #include "settingsdialog.h"
 #include "timestampattribute.h"
 
+#include <libkfacebook/allpostslistjob.h>
 #include <libkfacebook/postslistjob.h>
 #include <libkfacebook/noteaddjob.h>
 #include <libkfacebook/postjob.h>
@@ -38,7 +39,7 @@ using namespace Akonadi;
 void FacebookResource::postsListFetched( KJob* job )
 {
     Q_ASSERT( !mIdle );
-    KFacebook::PostsListJob * const listJob = dynamic_cast<KFacebook::PostsListJob*>( job );
+    KFacebook::AllPostsListJob * const listJob = dynamic_cast<KFacebook::AllPostsListJob*>( job );
     Q_ASSERT( listJob );
     mCurrentJobs.removeAll(job);
 
@@ -50,7 +51,7 @@ void FacebookResource::postsListFetched( KJob* job )
 
         Item::List postItems;
         kDebug() << "Going into foreach";
-        foreach( const KFacebook::PostInfoPtr &postInfo, listJob->posts() ) {
+        foreach( const KFacebook::PostInfoPtr &postInfo, listJob->allPosts() ) {
             Item post;
             post.setRemoteId( postInfo->id() );
             post.setMimeType( "text/x-vnd.akonadi.socialfeeditem" );
@@ -100,6 +101,24 @@ SocialFeedItem FacebookResource::convertToSocialFeedItem(const KFacebook::PostIn
     item.setPostLinkTitle(postinfo.data()->name());
     item.setPostImageUrl(postinfo.data()->pictureUrl());
     item.setPostTime(postinfo.data()->createdTimeString(), QLatin1String("%Y-%m-%dT%H:%M:%S%z"));
+
+    QString infoString;
+
+    qlonglong commentsCount = postinfo.data()->commentsMap().value("count").toLongLong();
+    qlonglong likesCount = postinfo.data()->likesMap().value("count").toLongLong();
+
+    if (commentsCount > 0) {
+        infoString.append(i18n("Comments: %1", commentsCount));
+        if (likesCount > 0) {
+            infoString.append(", ");
+        }
+    }
+
+    if (likesCount > 0) {
+        infoString.append(i18n("Likes: %1", likesCount));
+    }
+
+    item.setPostInfo(infoString);
 
     KFacebook::UserInfoPtr user = postinfo.data()->from();
 
