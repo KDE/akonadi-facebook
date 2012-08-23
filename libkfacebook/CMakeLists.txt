@@ -8,7 +8,8 @@ include_directories(
 
 
 
-set(kfacebook_SRCS
+set(kfacebook_SRCS 
+  allpostslistjob.cpp
   authenticationdialog.cpp
   userinfojob.cpp
   userinfo.cpp
