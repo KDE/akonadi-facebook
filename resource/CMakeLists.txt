@@ -4,7 +4,7 @@ find_package(Boost 1.34.0)
 macro_log_feature(Boost_FOUND "Boost" "Boost C++ Libraries" "http://www.boost.org" TRUE "1.34.0" "Required by Akonadi.")
 
 find_package(AkonadiSocialUtils REQUIRED)
-macro_log_feature(AKONADISOCIALUTILS_FOUND "AkonadiSocialUtils" "Akonadi social utilities library" TRUE "")
+macro_log_feature(AKONADISOCIALUTILS_FOUND "AkonadiSocialUtils" "Akonadi social utilities library" "git://anongit.kde.org/scratch/mklapetek/akonadi-social-utils.git" TRUE "")
 
 add_definitions(-DRESOURCE_VERSION=\\"${RESOURCE_VERSION}\\")
 if (XSLTPROC_EXECUTABLE)
