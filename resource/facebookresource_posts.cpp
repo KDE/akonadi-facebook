@@ -96,7 +96,7 @@ SocialFeedItem FacebookResource::convertToSocialFeedItem(const KFacebook::PostIn
 {
     SocialFeedItem item;
     item.setPostId(postinfo.data()->id());
-    item.setPostText(postinfo.data()->message());
+    item.setPostText(postinfo.data()->message().isEmpty() ? postinfo.data()->story() : postinfo.data()->message());
     item.setPostLink(postinfo.data()->link());
     item.setPostLinkTitle(postinfo.data()->name());
     item.setPostImageUrl(postinfo.data()->pictureUrl());
