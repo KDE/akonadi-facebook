@@ -46,18 +46,18 @@ void AllPostsListJob::appendItems(const ListJobBase *job)
 bool AllPostsListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
 {
     Q_UNUSED(prev);
-    const QString since = next.queryItem("since");
-    if (since.isEmpty()) {
+    const QString until = next.queryItem("until");
+    if (until.isEmpty()) {
         kDebug() << "Aborting posts fetching, no date range found in URL!";
         return false;
     }
-    KDateTime sinceTime;
-    sinceTime.setTime_t(since.toLongLong());
-    if (!sinceTime.isValid()) {
+    KDateTime untilTime;
+    untilTime.setTime_t(until.toLongLong());
+    if (!untilTime.isValid()) {
         kDebug() << "Aborting posts fetching, invalid date range found in URL!";
         return false;
     }
-    return (sinceTime >= m_lowerLimit);
+    return (untilTime >= m_lowerLimit);
 }
 
 ListJobBase* AllPostsListJob::createJob(const KUrl &prev, const KUrl &next)
