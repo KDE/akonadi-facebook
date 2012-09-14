@@ -21,8 +21,8 @@
 #ifndef FACEBOOKRESOURCE_H
 #define FACEBOOKRESOURCE_H
 
-#include <kfacebook/userinfo.h>
-#include <kfacebook/postinfo.h>
+#include <libkfacebook/userinfo.h>
+#include <libkfacebook/postinfo.h>
 
 #include <akonadisocialutils/socialfeeditem.h>
 
