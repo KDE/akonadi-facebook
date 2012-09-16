@@ -45,6 +45,8 @@
 #include <Akonadi/ItemFetchScope>
 #include <akonadi/changerecorder.h>
 
+#include <akonadisocialutils/socialnetworkattributes.h>
+
 using namespace Akonadi;
 
 static const char * friendsRID = "friends";
@@ -72,6 +74,8 @@ FacebookResource::FacebookResource( const QString &id )
 
   changeRecorder()->fetchCollection( true );
   changeRecorder()->itemFetchScope().fetchFullPayload( true );
+
+  AttributeFactory::registerAttribute<SocialNetworkAttributes>();
 }
 
 FacebookResource::~FacebookResource()
@@ -273,7 +277,9 @@ void FacebookResource::retrieveCollections()
   posts.setRights( Collection::CanCreateItem );
   EntityDisplayAttribute * const postsDisplayAttribute = new EntityDisplayAttribute();
   postsDisplayAttribute->setIconName( "facebookresource" );
+  SocialNetworkAttributes * const socialAttributes = new SocialNetworkAttributes( Settings::self()->userName(), QLatin1String( "Facebook" ), true);
   posts.addAttribute( postsDisplayAttribute );
+  posts.addAttribute( socialAttributes );
 
   Collection notifications;
   notifications.setRemoteId( notificationsRID );
