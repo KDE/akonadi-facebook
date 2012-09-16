@@ -72,6 +72,7 @@ void SettingsDialog::showAuthenticationDialog()
               << "friends_work_history"
               << "friends_relationships"
               << "manage_notifications"
+              << "publish_actions"
               << "read_stream"
               << "user_events"
               << "user_notes";

@@ -27,6 +27,7 @@
 #include <libkfacebook/postslistjob.h>
 #include <libkfacebook/noteaddjob.h>
 #include <libkfacebook/postjob.h>
+#include <libkfacebook/postaddjob.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
@@ -137,4 +138,23 @@ SocialFeedItem FacebookResource::convertToSocialFeedItem(const KFacebook::PostIn
     item.setItemSourceMap(QJson::QObjectHelper::qobject2qvariant(postinfo.data()));
 
     return item;
+}
+
+void FacebookResource::postAddJobFinished( KJob *job )
+{
+  Q_ASSERT( !mIdle );
+  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
+  KFacebook::PostAddJob * const addJob = dynamic_cast<KFacebook::PostAddJob*>( job );
+  Q_ASSERT( addJob );
+  mCurrentJobs.removeAll(job);
+
+  if (job->error()) {
+    abortWithError( i18n( "Unable to post the status to server: %1", job->errorText() ) );
+  } else {
+    Item post = addJob->property( "Item" ).value<Item>();
+    post.setRemoteId(addJob->property( "id" ).value<QString>());
+    changeCommitted( post );
+    resetState();
+    kDebug() << "Status posted to server";
+  }
 }

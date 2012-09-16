@@ -37,6 +37,7 @@
 #include <libkfacebook/postjob.h>
 #include <libkfacebook/notificationslistjob.h>
 #include <libkfacebook/allpostslistjob.h>
+#include <libkfacebook/postaddjob.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
@@ -269,7 +270,7 @@ void FacebookResource::retrieveCollections()
   posts.setName( i18n( "Posts" ) );
   posts.setParentCollection( Akonadi::Collection::root() );
   posts.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.socialfeeditem" );
-  posts.setRights(Collection::ReadOnly);
+  posts.setRights( Collection::CanCreateItem );
   EntityDisplayAttribute * const postsDisplayAttribute = new EntityDisplayAttribute();
   postsDisplayAttribute->setIconName( "facebookresource" );
   posts.addAttribute( postsDisplayAttribute );
@@ -336,6 +337,23 @@ void FacebookResource::itemAdded( const Akonadi::Item &item, const Akonadi::Coll
       Q_ASSERT(!"Note has wrong mimetype.");
       cancelTask();
     }
+  } else if ( collection.remoteId() == postsRID ) {
+    kDebug() << "Adding new status";
+    QString message;
+    if ( item.hasPayload<KFacebook::PostInfoPtr>() && !item.payload<KFacebook::PostInfoPtr>().isNull() ) {
+      message = item.payload<KFacebook::PostInfoPtr>().data()->message();
+      mIdle = false;
+    } else if ( item.hasPayload<Akonadi::SocialFeedItem>() ) {
+      message = item.payload<Akonadi::SocialFeedItem>().postText();
+      mIdle = false;
+    }
+
+    KFacebook::PostAddJob * const addJob = new KFacebook::PostAddJob( message, Settings::self()->accessToken() );
+    mCurrentJobs << addJob;
+    addJob->setProperty( "Item", QVariant::fromValue( item ));
+    connect( addJob, SIGNAL(result(KJob*)), this, SLOT(postAddJobFinished(KJob*) ) );
+    addJob->start();
+
   } else {
     Q_ASSERT(!"Can not add this type of item!");
     cancelTask();
