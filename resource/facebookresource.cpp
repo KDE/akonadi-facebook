@@ -277,7 +277,12 @@ void FacebookResource::retrieveCollections()
   posts.setRights( Collection::CanCreateItem );
   EntityDisplayAttribute * const postsDisplayAttribute = new EntityDisplayAttribute();
   postsDisplayAttribute->setIconName( "facebookresource" );
-  SocialNetworkAttributes * const socialAttributes = new SocialNetworkAttributes( Settings::self()->userName(), QLatin1String( "Facebook" ), true);
+  //facebook's max post length is 63206 as of September 2012
+  //(Facebook ... Face Boo K ... hex(FACE) – K ... 64206 – 1000 = 63206)...don't ask me
+  SocialNetworkAttributes * const socialAttributes = new SocialNetworkAttributes( Settings::self()->userName(),
+                                                                                  QLatin1String( "Facebook" ),
+                                                                                  true,
+                                                                                  63206);
   posts.addAttribute( postsDisplayAttribute );
   posts.addAttribute( socialAttributes );
 
