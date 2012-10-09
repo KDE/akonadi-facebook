@@ -45,7 +45,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <akonadi/changerecorder.h>
 
-#include <akonadisocialutils/socialnetworkattributes.h>
+#include <Akonadi/SocialUtils/SocialNetworkAttributes>
 
 using namespace Akonadi;
 

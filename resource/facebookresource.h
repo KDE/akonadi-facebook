@@ -24,7 +24,7 @@
 #include <libkfacebook/userinfo.h>
 #include <libkfacebook/postinfo.h>
 
-#include <akonadisocialutils/socialfeeditem.h>
+#include <Akonadi/SocialUtils/SocialFeedItem>
 
 #include <Akonadi/ResourceBase>
 #include <QPointer>

@@ -3,9 +3,6 @@ project(facebookresource)
 find_package(Boost 1.34.0)
 macro_log_feature(Boost_FOUND "Boost" "Boost C++ Libraries" "http://www.boost.org" TRUE "1.34.0" "Required by Akonadi.")
 
-find_package(AkonadiSocialUtils REQUIRED)
-macro_log_feature(AKONADISOCIALUTILS_FOUND "AkonadiSocialUtils" "Akonadi social utilities library" "git://anongit.kde.org/scratch/mklapetek/akonadi-social-utils.git" TRUE "")
-
 add_definitions(-DRESOURCE_VERSION=\\"${RESOURCE_VERSION}\\")
 if (XSLTPROC_EXECUTABLE)
   macro( kcfg_generate_dbus_interface _kcfg _name )
@@ -57,6 +54,7 @@ include_directories (
 )
 
 target_link_libraries( akonadi_facebook_resource
+  ${KDEPIMLIBS_AKONADI_SOCIALUTILS_LIBS}
   ${KDEPIMLIBS_AKONADI_LIBS}
   ${KDEPIMLIBS_KABC_LIBS}
   ${QT_QTCORE_LIBRARY}
@@ -66,7 +64,6 @@ target_link_libraries( akonadi_facebook_resource
   ${KDE4_KDECORE_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
   kfacebook
-  ${AKONADISOCIALUTILS_LIBRARIES}
 )
 
 if(KDEPIM_44_COMPAT)
