@@ -62,6 +62,7 @@ target_link_libraries(kfacebook
   ${KDE4_KIO_LIBS}
   ${QJSON_LIBRARIES}
   ${QJSON_LIBRARY}
+  ${qjson_LIBRARIES} # for Debian
   ${KDEPIMLIBS_KABC_LIBS}
   ${KDEPIMLIBS_KPIMUTILS_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
