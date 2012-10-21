@@ -332,8 +332,8 @@ void FacebookResource::deleteJobFinished(KJob *job)
 
 void FacebookResource::itemAdded( const Akonadi::Item &item, const Akonadi::Collection &collection )
 {
-  if (collection.remoteId() == notesRID) {
-    if (item.hasPayload<KMime::Message::Ptr>()) {
+  if ( collection.remoteId() == notesRID ) {
+    if ( item.hasPayload<KMime::Message::Ptr>() ) {
       const KMime::Message::Ptr note = item.payload<KMime::Message::Ptr>();
       const QString subject = note->subject()->asUnicodeString();
       const QString message = note->body();
