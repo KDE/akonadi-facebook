@@ -86,7 +86,7 @@ void FacebookResource::postJobFinished(KJob *job)
         abortWithError( i18n( "Unable to get information about post from server: %1", postJob->errorText() ) );
     } else {
         Item post = postJob->property( "Item" ).value<Item>();
-        post.setPayload( postJob->postInfo().first() );
+        post.setPayload( convertToSocialFeedItem( postJob->postInfo().first() ) );
         itemRetrieved( post );
         resetState();
     }
