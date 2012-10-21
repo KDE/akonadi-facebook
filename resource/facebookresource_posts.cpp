@@ -113,6 +113,23 @@ SocialFeedItem FacebookResource::convertToSocialFeedItem(const KFacebook::PostIn
         if (likesCount > 0) {
             infoString.append(", ");
         }
+
+
+        QList<PostReply> replies;
+
+        Q_FOREACH(const QVariant &listItem, postinfo.data()->commentsMap().value("data").toList()) {
+            QVariantMap listItemMap = listItem.toMap();
+            Akonadi::PostReply postReply;
+            postReply.replyText = listItemMap.value("message").toString();
+            postReply.replyId = listItemMap.value("id").toString();
+            postReply.postId = postinfo.data()->id();
+            postReply.userId = listItemMap.value("from").toMap().value("id").toString();
+            postReply.userName = listItemMap.value("from").toMap().value("name").toString();
+
+            replies.append(postReply);
+        }
+
+        item.setPostReplies(replies);
     }
 
     if (likesCount > 0) {
