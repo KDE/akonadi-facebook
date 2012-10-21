@@ -169,7 +169,10 @@ void FacebookResource::postAddJobFinished( KJob *job )
     abortWithError( i18n( "Unable to post the status to server: %1", job->errorText() ) );
   } else {
     Item post = addJob->property( "Item" ).value<Item>();
-    post.setRemoteId(addJob->property( "id" ).value<QString>());
+    //we fill in a random fake id to prevent duplicates - this post would be in the collection twice
+    //once the resource syncs again, filling a random id guarantees that this Item will be removed
+    //with the next sync and will be replaced by the real item from the server
+    post.setRemoteId("non-existing-id");
     changeCommitted( post );
     resetState();
     kDebug() << "Status posted to server";
