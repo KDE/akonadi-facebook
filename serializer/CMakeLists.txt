@@ -1,4 +1,3 @@
-find_package(QJSON REQUIRED)
 set(SHARED_MIME_INFO_MINIMUM_VERSION "0.30")
 find_package(SharedMimeInfo)
 macro_log_feature(SHARED_MIME_INFO_FOUND "SMI" "SharedMimeInfo" "http://freedesktop.org/wiki/Software/shared-mime-info" TRUE "0.30" "SharedMimeInfo is required.")
