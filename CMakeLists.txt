@@ -7,7 +7,6 @@ set(LIB_SOVERSION "1")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
-include(MacroLibrary)
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
 
@@ -17,13 +16,14 @@ if(KDEPIM_44_COMPAT)
   add_definitions(-DWANT_DEPRECATED_KCAL_API)
 endif(KDEPIM_44_COMPAT)
 
-find_package(KdepimLibs 4.9.58 REQUIRED)
-find_program(XSLTPROC_EXECUTABLE xsltproc)
-macro_log_feature(XSLTPROC_EXECUTABLE "xsltproc" "The command line XSLT processor from libxslt" "http://xmlsoft.org/XSLT/" TRUE)
+find_package(KdepimLibs 4.9.58)
+set_package_properties(KdepimLibs PROPERTIES DESCRIPTION "The KDEPIM libraries" URL "http://www.kde.org" TYPE REQUIRED)
 
-set(QJSON_VERSION_REQUIRED 0.7)
-find_package(QJSON ${QJSON_VERSION_REQUIRED})
-macro_log_feature(QJSON_FOUND "QJSON" "Qt library for handling JSON data" "http://qjson.sourceforge.net/" TRUE "${QJSON_VERSION_REQUIRED}")
+find_program(XSLTPROC_EXECUTABLE xsltproc)
+#macro_log_feature(XSLTPROC_EXECUTABLE "xsltproc" "The command line XSLT processor from libxslt" "http://xmlsoft.org/XSLT/" TRUE)
+
+find_package(QJSON 0.7)
+set_package_properties(QJSON PROPERTIES DESCRIPTION "Qt library for handling JSON data" URL "http://qjson.sourceforge.net/" TYPE REQUIRED)
 
 configure_file(config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 
@@ -43,5 +43,4 @@ add_subdirectory(libkfacebook)
 add_subdirectory(serializer)
 add_subdirectory(resource)
 
-macro_display_feature_log()
-
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

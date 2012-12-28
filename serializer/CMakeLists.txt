@@ -1,6 +1,5 @@
-set(SHARED_MIME_INFO_MINIMUM_VERSION "0.30")
-find_package(SharedMimeInfo)
-macro_log_feature(SHARED_MIME_INFO_FOUND "SMI" "SharedMimeInfo" "http://freedesktop.org/wiki/Software/shared-mime-info" TRUE "0.30" "SharedMimeInfo is required.")
+find_package(SharedMimeInfo 0.30)
+set_package_properties(SharedMimeInfo PROPERTIES DESCRIPTION "shared-mime-info" URL "http://freedesktop.org/wiki/Software/shared-mime-info" TYPE REQUIRED PURPOSE "Information about filetypes")
 
 include_directories(
     ${KDE4_INCLUDES}
