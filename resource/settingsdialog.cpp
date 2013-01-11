@@ -170,7 +170,7 @@ void SettingsDialog::slotButtonClicked( int button )
       reject();
       return;
     case User1: {
-      KAboutData aboutData( QByteArray( "akonadi_facebook_resource" ),
+      KAboutData aboutData( QByteArray( "akonadi_facebook_resource_standalone" ),
                             QByteArray(),
                             ki18n("Akonadi Facebook Resource"),
                             QByteArray( RESOURCE_VERSION ),
