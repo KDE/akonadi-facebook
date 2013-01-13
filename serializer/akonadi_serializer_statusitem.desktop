@@ -1,6 +1,7 @@
 [Misc]
 Name=Facebook Serializer
 Name[da]=Facebook-serialisering
+Name[de]=Facebook-Serialisierung
 Name[es]=Serializador de Facebook
 Name[et]=Facebooki jadasti
 Name[hu]=Facebook sorosító
@@ -14,6 +15,7 @@ Name[uk]=Серіалізатор Facebook
 Name[x-test]=xxFacebook Serializerxx
 Comment=An Akonadi serializer plugin for Facebook
 Comment[da]=Et Akonadi-serialiseringsplugin til Facebook
+Comment[de]=Akonadi-Modul zur Serialisierung für Facebook
 Comment[es]=Un complemento serializador de Akonadi para Facebook
 Comment[et]=Akonadi Facebooki jadastamisplugin
 Comment[hu]=Egy Akonadi sorosító bővítmény a Facebookhoz
