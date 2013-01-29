@@ -18,13 +18,12 @@
 */
 
 #include "facebookresource.h"
-#include <config.h>
 #include "settings.h"
 #include "timestampattribute.h"
 
-#include <libkfacebook/postjob.h>
-#include <libkfacebook/notificationslistjob.h>
-#include <libkfacebook/notificationinfo.h>
+#include <libkfbapi/postjob.h>
+#include <libkfbapi/notificationslistjob.h>
+#include <libkfbapi/notificationinfo.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
@@ -36,38 +35,40 @@
 
 using namespace Akonadi;
 
-void FacebookResource::notificationsListFetched( KJob *job ) {
-    Q_ASSERT( !mIdle );
-    KFacebook::NotificationsListJob * const listJob = dynamic_cast<KFacebook::NotificationsListJob*>( job );
-    Q_ASSERT( listJob );
-    mCurrentJobs.removeAll(job);
+void FacebookResource::notificationsListFetched( KJob *job )
+{
+  Q_ASSERT( !mIdle );
+  KFbAPI::NotificationsListJob * const listJob = dynamic_cast<KFbAPI::NotificationsListJob*>( job );
+  Q_ASSERT( listJob );
+  mCurrentJobs.removeAll( job );
 
-    if ( listJob->error() ) {
-        abortWithError( i18n( "Unable to get notifications from server: %1", listJob->errorString() ),
-                        listJob->error() == KFacebook::FacebookJob::AuthenticationProblem );
-    } else {
-        setItemStreamingEnabled( true );
+  if ( listJob->error() ) {
+    abortWithError( i18n( "Unable to get notifications from server: %1", listJob->errorString() ),
+                    listJob->error() == KFbAPI::FacebookJob::AuthenticationProblem );
+  } else {
+    setItemStreamingEnabled( true );
 
-        Item::List notificationItems;
-        kDebug() << "Going into foreach";
-        foreach( const KFacebook::NotificationInfoPtr &notificationInfo, listJob->notifications() ) {
-          Item notification;
-          notification.setRemoteId( notificationInfo.data()->id() );
-          notification.setMimeType( "text/x-vnd.akonadi.socialnotification" );
-          notification.setPayload<KFacebook::NotificationInfoPtr>( notificationInfo );
-          notificationItems.append(notification);;
-        }
-
-        itemsRetrieved( notificationItems );
-        itemsRetrievalDone();
-        finishNotificationsFetching();
+    Item::List notificationItems;
+    kDebug() << "Going into foreach";
+    Q_FOREACH ( const KFbAPI::NotificationInfo &notificationInfo, listJob->notifications() ) {
+      Item notification;
+      notification.setRemoteId( notificationInfo.id() );
+      notification.setMimeType( "text/x-vnd.akonadi.socialnotification" );
+      notification.setPayload<KFbAPI::NotificationInfo>( notificationInfo );
+      notificationItems.append( notification );;
     }
 
+    itemsRetrieved( notificationItems );
+    itemsRetrievalDone();
+    finishNotificationsFetching();
+  }
+
+  listJob->deleteLater();
 }
 
 void FacebookResource::finishNotificationsFetching()
 {
-    emit percent(100);
-    emit status( Idle, i18n( "All notifications fetched from server." ) );
-    resetState();
+  emit percent( 100 );
+  emit status( Idle, i18n( "All notifications fetched from server." ) );
+  resetState();
 }

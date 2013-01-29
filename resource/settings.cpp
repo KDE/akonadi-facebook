@@ -78,4 +78,3 @@ QString Settings::appSecret() const
 {
   return "57b6eadd130bb9ecff7dcb701558833d";
 }
-

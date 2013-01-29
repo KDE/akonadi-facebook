@@ -20,8 +20,8 @@
 #include "facebookresource.h"
 #include "settings.h"
 
-#include <libkfacebook/authenticationdialog.h>
-#include <libkfacebook/userinfojob.h>
+#include <libkfbapi/authenticationdialog.h>
+#include <libkfbapi/userinfojob.h>
 #include <KAboutApplicationDialog>
 #include <KAboutData>
 #include <KWindowSystem>
@@ -35,10 +35,10 @@ SettingsDialog::SettingsDialog( FacebookResource *parentResource, WId parentWind
 {
   KWindowSystem::setMainWindow( this, parentWindow );
   setButtons( Ok|Cancel|User1 );
-  setButtonText(User1, i18n("About"));
-  setButtonIcon(User1, KIcon("help-about"));
+  setButtonText( User1, i18n( "About" ) );
+  setButtonIcon( User1, KIcon( "help-about" ) );
   setWindowIcon( KIcon( "facebookresource" ) );
-  setWindowTitle( i18n("Facebook Settings") );
+  setWindowTitle( i18n( "Facebook Settings" ) );
 
   setupWidgets();
   loadSettings();
@@ -76,7 +76,7 @@ void SettingsDialog::showAuthenticationDialog()
               << "read_stream"
               << "user_events"
               << "user_notes";
-  KFacebook::AuthenticationDialog * const authDialog = new KFacebook::AuthenticationDialog( this );
+  KFbAPI::AuthenticationDialog * const authDialog = new KFbAPI::AuthenticationDialog( this );
   authDialog->setAppId( Settings::self()->appID() );
   authDialog->setPermissions( permissions );
   connect( authDialog, SIGNAL(authenticated(QString)),
@@ -92,7 +92,7 @@ void SettingsDialog::authenticationCanceled()
   authenticateButton->setEnabled( true );
 }
 
-void SettingsDialog::authenticationDone(const QString& accessToken)
+void SettingsDialog::authenticationDone( const QString &accessToken )
 {
   if ( Settings::self()->accessToken() != accessToken && !accessToken.isEmpty() ) {
     mTriggerSync = true;
@@ -126,18 +126,18 @@ void SettingsDialog::resetAuthentication()
 void SettingsDialog::updateUserName()
 {
   if ( Settings::self()->userName().isEmpty() && ! Settings::self()->accessToken().isEmpty() ) {
-    KFacebook::UserInfoJob * const job = new KFacebook::UserInfoJob( Settings::self()->accessToken() );
+    KFbAPI::UserInfoJob * const job = new KFbAPI::UserInfoJob( Settings::self()->accessToken(), this );
     connect( job, SIGNAL(result(KJob*)), this, SLOT(userInfoJobDone(KJob*)) );
     job->start();
   }
 }
 
-void SettingsDialog::userInfoJobDone( KJob* job )
+void SettingsDialog::userInfoJobDone( KJob *job )
 {
-  KFacebook::UserInfoJob * const userInfoJob = dynamic_cast<KFacebook::UserInfoJob*>( job );
+  KFbAPI::UserInfoJob * const userInfoJob = dynamic_cast<KFbAPI::UserInfoJob*>( job );
   Q_ASSERT( userInfoJob );
   if ( !userInfoJob->error() ) {
-    Settings::self()->setUserName( userInfoJob->userInfo()->name() );
+    Settings::self()->setUserName( userInfoJob->userInfo().name() );
     updateAuthenticationWidgets();
   } else {
     kWarning() << "Can't get user info: " << userInfoJob->errorText();
@@ -170,20 +170,21 @@ void SettingsDialog::slotButtonClicked( int button )
       reject();
       return;
     case User1: {
-      KAboutData aboutData( QByteArray( "akonadi_facebook_resource_standalone" ),
+      KAboutData aboutData( QByteArray( "akonadi_facebook_resource" ),
                             QByteArray(),
-                            ki18n("Akonadi Facebook Resource"),
+                            ki18n( "Akonadi Facebook Resource" ),
                             QByteArray( RESOURCE_VERSION ),
-                            ki18n( "Makes your friends, events, notes and messages on Facebook available in KDE via Akonadi." ),
+                            ki18n( "Makes your friends, events, notes, posts and messages on Facebook available in KDE via Akonadi." ),
                             KAboutData::License_GPL_V2,
-                            ki18n( "Copyright (C) 2010,2011 Akonadi Facebook Resource Developers" ) );
-      aboutData.addAuthor( ki18n( "Thomas McGuire" ), ki18n( "Maintainer" ), "mcguire@kde.org" );
-      aboutData.addAuthor( ki18n( "Roeland Jago Douma" ), ki18n( "Developer" ), "unix@rullzer.com" );
+                            ki18n( "Copyright (C) 2010,2011,2012,2013 Akonadi Facebook Resource Developers" ) );
+      aboutData.addAuthor( ki18n( "Martin Klapetek" ), ki18n( "Developer" ), "mklapetek@kde.org" );
+      aboutData.addAuthor( ki18n( "Thomas McGuire" ), ki18n( "Past Maintainer" ), "mcguire@kde.org" );
+      aboutData.addAuthor( ki18n( "Roeland Jago Douma" ), ki18n( "Past Developer" ), "unix@rullzer.com" );
       aboutData.addCredit( ki18n( "Till Adam" ), ki18n( "MacOS Support" ), "adam@kde.org" );
-      aboutData.setProgramIconName("facebookresource");
-      aboutData.setTranslator( ki18nc("NAME OF TRANSLATORS", "Your names"),
-                            ki18nc("EMAIL OF TRANSLATORS", "Your emails"));
-      KAboutApplicationDialog *dialog = new KAboutApplicationDialog(&aboutData, this);
+      aboutData.setProgramIconName( "facebookresource" );
+      aboutData.setTranslator( ki18nc( "NAME OF TRANSLATORS", "Your names" ),
+                            ki18nc( "EMAIL OF TRANSLATORS", "Your emails" ) );
+      KAboutApplicationDialog *dialog = new KAboutApplicationDialog( &aboutData, this );
       dialog->setAttribute( Qt::WA_DeleteOnClose, true );
       dialog->show();
       break;

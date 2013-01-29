@@ -21,8 +21,8 @@
 #ifndef FACEBOOKRESOURCE_H
 #define FACEBOOKRESOURCE_H
 
-#include <libkfacebook/userinfo.h>
-#include <libkfacebook/postinfo.h>
+#include <libkfbapi/userinfo.h>
+#include <libkfbapi/postinfo.h>
 
 #include <Akonadi/SocialUtils/SocialFeedItem>
 
@@ -36,25 +36,24 @@ class FacebookResource : public Akonadi::ResourceBase,
   Q_OBJECT
 
   public:
-    FacebookResource( const QString &id );
+    explicit FacebookResource( const QString &id );
     ~FacebookResource();
 
     using ResourceBase::synchronize;
 
   public Q_SLOTS:
-    virtual void configure( WId windowId );
+    void configure( WId windowId );
 
   protected Q_SLOTS:
     void retrieveCollections();
     void retrieveItems( const Akonadi::Collection &col );
     bool retrieveItem( const Akonadi::Item &item, const QSet<QByteArray> &parts );
 
-    void itemRemoved( const Akonadi::Item &item);
+    void itemRemoved( const Akonadi::Item &item );
     void itemAdded( const Akonadi::Item &item, const Akonadi::Collection &collection );
 
   protected:
-
-    virtual void aboutToQuit();
+    void aboutToQuit();
 
   private Q_SLOTS:
 
@@ -80,8 +79,14 @@ class FacebookResource : public Akonadi::ResourceBase,
   private:
     void fetchPhotos();
     void resetState();
-    void abortWithError( const QString& errorMessage, bool authFailure = false );
+    void abortWithError( const QString &errorMessage, bool authFailure = false );
     void abort();
+
+    enum FormattingStringType {
+      FacebookComment = 0,
+      FacebookLike = 1
+    };
+    QString formatI18nString( FormattingStringType type, int n );
 
     void fetchNewOrChangedFriends();
     void finishFriendFetching();
@@ -89,15 +94,15 @@ class FacebookResource : public Akonadi::ResourceBase,
     void finishNotesFetching();
     void finishPostsFetching();
     void finishNotificationsFetching();
-    Akonadi::SocialFeedItem convertToSocialFeedItem(const KFacebook::PostInfoPtr &postinfo);
+    Akonadi::SocialFeedItem convertToSocialFeedItem( const KFbAPI::PostInfo &postinfo );
 
     // Friends that are already stored on the Akonadi server
-    QMap<QString,KDateTime> mExistingFriends;
+    QMap<QString, KDateTime> mExistingFriends;
 
     // Pending new/changed friends we still need to download
-    QList<KFacebook::UserInfoPtr> mPendingFriends;
+    QList<KFbAPI::UserInfo> mPendingFriends;
 
-    QList<KFacebook::UserInfoPtr> mNewOrChangedFriends;
+    QList<KFbAPI::UserInfo> mNewOrChangedFriends;
 
     // Total number of new & changed friends
     int mNumFriends;

@@ -25,11 +25,11 @@ TimeStampAttribute::TimeStampAttribute()
 Akonadi::Attribute* TimeStampAttribute::clone() const
 {
   TimeStampAttribute * const attribute = new TimeStampAttribute();
-  attribute->setTimeStamp(mTimeStamp);
+  attribute->setTimeStamp( mTimeStamp );
   return attribute;
 }
 
-void TimeStampAttribute::deserialize(const QByteArray& data)
+void TimeStampAttribute::deserialize( const QByteArray &data )
 {
   const QString timeStamp = QString::fromUtf8( data );
   mTimeStamp = KDateTime::fromString( timeStamp );
@@ -45,7 +45,7 @@ QByteArray TimeStampAttribute::type() const
   return "FACEBOOK_TIMESTAMP";
 }
 
-void TimeStampAttribute::setTimeStamp( const KDateTime& dateTime )
+void TimeStampAttribute::setTimeStamp( const KDateTime &dateTime )
 {
   mTimeStamp = dateTime;
 }
@@ -54,4 +54,3 @@ KDateTime TimeStampAttribute::timeStamp() const
 {
   return mTimeStamp;
 }
-

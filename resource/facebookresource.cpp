@@ -19,51 +19,48 @@
    Boston, MA 02110-1301, USA.
 */
 #include "facebookresource.h"
-#include <config.h>
 #include "settings.h"
 #include "settingsdialog.h"
 #include "timestampattribute.h"
 
-#include <libkfacebook/friendlistjob.h>
-#include <libkfacebook/friendjob.h>
-#include <libkfacebook/photojob.h>
-#include <libkfacebook/alleventslistjob.h>
-#include <libkfacebook/eventjob.h>
-#include <libkfacebook/allnoteslistjob.h>
-#include <libkfacebook/notejob.h>
-#include <libkfacebook/noteaddjob.h>
-#include <libkfacebook/facebookjobs.h>
-#include <libkfacebook/postslistjob.h>
-#include <libkfacebook/postjob.h>
-#include <libkfacebook/notificationslistjob.h>
-#include <libkfacebook/allpostslistjob.h>
-#include <libkfacebook/postaddjob.h>
+#include <libkfbapi/friendlistjob.h>
+#include <libkfbapi/friendjob.h>
+#include <libkfbapi/photojob.h>
+#include <libkfbapi/alleventslistjob.h>
+#include <libkfbapi/eventjob.h>
+#include <libkfbapi/allnoteslistjob.h>
+#include <libkfbapi/notejob.h>
+#include <libkfbapi/noteaddjob.h>
+#include <libkfbapi/facebookjobs.h>
+#include <libkfbapi/postslistjob.h>
+#include <libkfbapi/postjob.h>
+#include <libkfbapi/notificationslistjob.h>
+#include <libkfbapi/allpostslistjob.h>
+#include <libkfbapi/postaddjob.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
-#include <akonadi/changerecorder.h>
+#include <Akonadi/ChangeRecorder>
+#include <akonadi/notes/noteutils.h>
 
 #include <Akonadi/SocialUtils/SocialNetworkAttributes>
 
 using namespace Akonadi;
 
-static const char * friendsRID = "friends";
-static const char * eventsRID = "events";
-static const char * eventMimeType = "application/x-vnd.akonadi.calendar.event";
-static const char * notesRID = "notes";
-static const char * postsRID = "posts";
-static const char * notificationsRID = "notifications";
+static const QLatin1String friendsRID( "friends" );
+static const QLatin1String eventsRID( "events" );
+static const QLatin1String eventMimeType( "application/x-vnd.akonadi.calendar.event" );
+static const QLatin1String notesRID( "notes" );
+static const QLatin1String postsRID( "posts" );
+static const QLatin1String notificationsRID( "notifications" );
 
 FacebookResource::FacebookResource( const QString &id )
     : ResourceBase( id )
 {
   AttributeFactory::registerAttribute<TimeStampAttribute>();
   setNeedsNetwork( true );
-#if KDEPIMLIBS_IS_VERSION( 4, 6, 41 )
-  setAutomaticProgressReporting( false );
-#endif
   setObjectName( QLatin1String( "FacebookResource" ) );
   resetState();
   Settings::self()->setResourceId( identifier() );
@@ -99,7 +96,7 @@ void FacebookResource::abort()
   cancelTask();
 }
 
-void FacebookResource::abortWithError( const QString& errorMessage, bool authFailure )
+void FacebookResource::abortWithError( const QString &errorMessage, bool authFailure )
 {
   resetState();
   cancelTask( errorMessage );
@@ -123,10 +120,10 @@ void FacebookResource::resetState()
 
 void FacebookResource::slotAbortRequested()
 {
-  if (!mIdle) {
-    foreach(const QPointer<KJob> &job, mCurrentJobs) {
+  if ( !mIdle ) {
+    foreach ( const QPointer<KJob> &job, mCurrentJobs ) {
       kDebug() << "Killing current job:" << job;
-      job->kill(KJob::Quietly);
+      job->kill( KJob::Quietly );
     }
     abort();
   }
@@ -147,7 +144,7 @@ void FacebookResource::configure( WId windowId )
 
 void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
 {
-  Q_ASSERT(mIdle);
+  Q_ASSERT( mIdle );
 
   if ( collection.remoteId() == friendsRID ) {
     mIdle = false;
@@ -162,8 +159,8 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of events list." ) );
     emit percent( 0 );
-    KFacebook::AllEventsListJob * const listJob = new KFacebook::AllEventsListJob( Settings::self()->accessToken() );
-    listJob->setLowerLimit(KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ));
+    KFbAPI::AllEventsListJob * const listJob = new KFbAPI::AllEventsListJob( Settings::self()->accessToken(), this );
+    listJob->setLowerLimit( KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ) );
     mCurrentJobs << listJob;
     connect( listJob, SIGNAL(result(KJob*)), this, SLOT(eventListFetched(KJob*)) );
     listJob->start();
@@ -171,8 +168,8 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of notes list." ) );
     emit percent( 0 );
-    KFacebook::AllNotesListJob * const notesJob = new KFacebook::AllNotesListJob( Settings::self()->accessToken() );
-    notesJob->setLowerLimit(KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ));
+    KFbAPI::AllNotesListJob * const notesJob = new KFbAPI::AllNotesListJob( Settings::self()->accessToken(), this );
+    notesJob->setLowerLimit( KDateTime::fromString( Settings::self()->lowerLimit(), "%Y-%m-%d" ) );
     mCurrentJobs << notesJob;
     connect( notesJob, SIGNAL(result(KJob*)), this, SLOT(noteListFetched(KJob*)) );
     notesJob->start();
@@ -180,9 +177,8 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of posts." ) );
     emit percent( 0 );
-//     KFacebook::PostsListJob * const postsJob = new KFacebook::PostsListJob( Settings::self()->accessToken() );
-    KFacebook::AllPostsListJob * const postsJob = new KFacebook::AllPostsListJob( Settings::self()->accessToken() );
-    postsJob->setLowerLimit(KDateTime::fromString( KDateTime::currentLocalDateTime().addDays(-3).toString(), "%Y-%m-%d" ));
+    KFbAPI::AllPostsListJob * const postsJob = new KFbAPI::AllPostsListJob( Settings::self()->accessToken(), this );
+    postsJob->setLowerLimit( KDateTime::fromString( KDateTime::currentLocalDateTime().addDays( -3 ).toString(), "%Y-%m-%d" ) );
     mCurrentJobs << postsJob;
     connect( postsJob, SIGNAL(result(KJob*)), this, SLOT(postsListFetched(KJob*)) );
     postsJob->start();
@@ -190,13 +186,13 @@ void FacebookResource::retrieveItems( const Akonadi::Collection &collection )
     mIdle = false;
     emit status( Running, i18n( "Preparing sync of notifications." ) );
     emit percent( 0 );
-    KFacebook::NotificationsListJob * const notificationsJob = new KFacebook::NotificationsListJob( Settings::self()->accessToken() );
+    KFbAPI::NotificationsListJob * const notificationsJob = new KFbAPI::NotificationsListJob( Settings::self()->accessToken(), this );
     mCurrentJobs << notificationsJob;
     connect( notificationsJob, SIGNAL(result(KJob*)), this, SLOT(notificationsListFetched(KJob*)) );
     notificationsJob->start();
   } else {
     // This can not happen
-    Q_ASSERT(!"Unknown Collection");
+    Q_ASSERT( !"Unknown Collection" );
     cancelTask();
   }
 }
@@ -207,30 +203,31 @@ bool FacebookResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
 
   kDebug() << item.mimeType();
 
-  if (item.mimeType() == "text/directory") {
+  if ( item.mimeType() == KABC::Addressee::mimeType() ) {
     // TODO: Is this ever called??
     mIdle = false;
-    KFacebook::FriendJob * const friendJob = new KFacebook::FriendJob( item.remoteId(),
-                                               Settings::self()->accessToken() );
+    KFbAPI::FriendJob * const friendJob = new KFbAPI::FriendJob( item.remoteId(),
+                                                                       Settings::self()->accessToken(),
+                                                                       this );
     mCurrentJobs << friendJob;
     friendJob->setProperty( "Item", QVariant::fromValue( item ) );
     connect( friendJob, SIGNAL(result(KJob*)), this, SLOT(friendJobFinished(KJob*)) );
     friendJob->start();
-  } else if (item.mimeType() == "text/x-vnd.akonadi.note") {
+  } else if ( item.mimeType() == Akonadi::NoteUtils::noteMimeType() ) {
     mIdle = false;
-    KFacebook::NoteJob * const noteJob = new KFacebook::NoteJob( item.remoteId(), Settings::self()->accessToken());
+    KFbAPI::NoteJob * const noteJob = new KFbAPI::NoteJob( item.remoteId(), Settings::self()->accessToken(), this );
     mCurrentJobs << noteJob;
     noteJob->setProperty( "Item", QVariant::fromValue( item ) );
     connect( noteJob, SIGNAL(result(KJob*)), this, SLOT(noteJobFinished(KJob*)) );
     noteJob->start();
-  } else if(item.mimeType() == "text/x-vnd.akonadi.socialfeeditem") {
+  } else if( item.mimeType() == "text/x-vnd.akonadi.socialfeeditem" ) {
     mIdle = false;
-    KFacebook::PostJob * const postJob = new KFacebook::PostJob( item.remoteId(), Settings::self()->accessToken());
+    KFbAPI::PostJob * const postJob = new KFbAPI::PostJob( item.remoteId(), Settings::self()->accessToken(), this );
     mCurrentJobs << postJob;
-    postJob->setProperty( "Item", QVariant::fromValue( item ));
-    connect (postJob, SIGNAL(result(KJob*)), this, SLOT(postJobFinished(KJob*)) );
+    postJob->setProperty( "Item", QVariant::fromValue( item ) );
+    connect( postJob, SIGNAL(result(KJob*)), this, SLOT(postJobFinished(KJob*)) );
     postJob->start();
-  } else if (item.mimeType() == "text/x-vnd.akonadi.socialnotification") {
+  } else if ( item.mimeType() == "text/x-vnd.akonadi.socialnotification" ) {
     //FIXME: Need to figure out how to fetch single notification
     kDebug() << "Notifications listjob";
   }
@@ -241,9 +238,9 @@ void FacebookResource::retrieveCollections()
 {
   Collection friends;
   friends.setRemoteId( friendsRID );
-  friends.setName( i18n( "Friends" ) );
+  friends.setName( i18nc( "@title: addressbook name", "Friends on Facebook" ) );
   friends.setParentCollection( Akonadi::Collection::root() );
-  friends.setContentMimeTypes( QStringList() << "text/directory" );
+  friends.setContentMimeTypes( QStringList() << KABC::Addressee::mimeType() );
   friends.setRights( Collection::ReadOnly );
   EntityDisplayAttribute * const friendsDisplayAttribute = new EntityDisplayAttribute();
   friendsDisplayAttribute->setIconName( "facebookresource" );
@@ -251,7 +248,7 @@ void FacebookResource::retrieveCollections()
 
   Collection events;
   events.setRemoteId( eventsRID );
-  events.setName( i18n( "Events" ) );
+  events.setName( i18nc( "@title: events collection title", "Events on Facebook" ) );
   events.setParentCollection( Akonadi::Collection::root() );
   events.setContentMimeTypes( QStringList() << "text/calendar" << eventMimeType );
   events.setRights( Collection::ReadOnly );
@@ -261,66 +258,67 @@ void FacebookResource::retrieveCollections()
 
   Collection notes;
   notes.setRemoteId( notesRID );
-  notes.setName( i18n( "Notes" ) );
+  notes.setName( i18nc( "@title: notes collection", "Notes on Facebook" ) );
   notes.setParentCollection( Akonadi::Collection::root() );
-  notes.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.note"  );
-  notes.setRights(Collection::ReadOnly);
+  notes.setContentMimeTypes( QStringList() << Akonadi::NoteUtils::noteMimeType() );
+  notes.setRights( Collection::ReadOnly );
   EntityDisplayAttribute * const notesDisplayAttribute = new EntityDisplayAttribute();
   notesDisplayAttribute->setIconName( "facebookresource" );
   notes.addAttribute( notesDisplayAttribute );
 
   Collection posts;
   posts.setRemoteId( postsRID );
-  posts.setName( i18n( "Posts" ) );
+  posts.setName( i18nc( "@title: posts collection", "Posts on Facebook" ) );
   posts.setParentCollection( Akonadi::Collection::root() );
   posts.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.socialfeeditem" );
   posts.setRights( Collection::CanCreateItem );
   EntityDisplayAttribute * const postsDisplayAttribute = new EntityDisplayAttribute();
   postsDisplayAttribute->setIconName( "facebookresource" );
   //facebook's max post length is 63206 as of September 2012
-  //(Facebook ... Face Boo K ... hex(FACE) – K ... 64206 – 1000 = 63206)...don't ask me
+  //(Facebook ... Face Boo K ... hex(FACE) – K ... 64206 – 1000 = 63206)...don't ask me.
   SocialNetworkAttributes * const socialAttributes = new SocialNetworkAttributes( Settings::self()->userName(),
                                                                                   QLatin1String( "Facebook" ),
                                                                                   true,
-                                                                                  63206);
+                                                                                  63206 );
   posts.addAttribute( postsDisplayAttribute );
   posts.addAttribute( socialAttributes );
 
   Collection notifications;
   notifications.setRemoteId( notificationsRID );
-  notifications.setName( i18n( "Notifications" ) );
+  notifications.setName( i18nc( "@title: notifications collection", "Notifications on Facebook" ) );
   notifications.setParentCollection( Akonadi::Collection::root() );
   notifications.setContentMimeTypes( QStringList() << "text/x-vnd.akonadi.socialnotification" );
-  notifications.setRights(Collection::ReadOnly);
+  notifications.setRights( Collection::ReadOnly );
   EntityDisplayAttribute * const notificationsDisplayAttribute = new EntityDisplayAttribute();
   notificationsDisplayAttribute->setIconName( "facebookresource" );
   notifications.addAttribute( notificationsDisplayAttribute );
 
-  collectionsRetrieved( Collection::List() << friends << events << notes << posts << notifications);
+  collectionsRetrieved( Collection::List() << friends << events << notes << posts << notifications );
 }
 
-void FacebookResource::itemRemoved(const Akonadi::Item &item)
+void FacebookResource::itemRemoved( const Akonadi::Item &item )
 {
-  if (item.mimeType() == "text/x-vnd.akonadi.note") {
+  if ( item.mimeType() == "text/x-vnd.akonadi.note" ) {
     mIdle = false;
-    KFacebook::FacebookDeleteJob * const deleteJob = new KFacebook::FacebookDeleteJob( item.remoteId(),
-                                               Settings::self()->accessToken() );
+    KFbAPI::FacebookDeleteJob * const deleteJob = new KFbAPI::FacebookDeleteJob( item.remoteId(),
+                                                                                       Settings::self()->accessToken(),
+                                                                                       this );
     mCurrentJobs << deleteJob;
     deleteJob->setProperty( "Item", QVariant::fromValue( item ) );
     connect( deleteJob, SIGNAL(result(KJob*)), this, SLOT(deleteJobFinished(KJob*)) );
     deleteJob->start();
   } else {
     // Shouldn't happen, all other items are read-only
-    Q_ASSERT(!"Unable to delete item, not ours.");
+    Q_ASSERT( !"Unable to delete item, not ours." );
     cancelTask();
   }
 }
 
-void FacebookResource::deleteJobFinished(KJob *job)
+void FacebookResource::deleteJobFinished( KJob *job )
 {
-  Q_ASSERT(!mIdle);
-  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  mCurrentJobs.removeAll(job);
+  Q_ASSERT( !mIdle );
+  Q_ASSERT( mCurrentJobs.indexOf( job ) != -1 );
+  mCurrentJobs.removeAll( job );
   if ( job->error() ) {
     abortWithError( i18n( "Unable to delete note from server: %1", job->errorText() ) );
   } else {
@@ -339,34 +337,34 @@ void FacebookResource::itemAdded( const Akonadi::Item &item, const Akonadi::Coll
       const QString message = note->body();
 
       mIdle = false;
-      KFacebook::NoteAddJob * const addJob = new KFacebook::NoteAddJob( subject, message, Settings::self()->accessToken() );
+      KFbAPI::NoteAddJob * const addJob = new KFbAPI::NoteAddJob( subject, message, Settings::self()->accessToken(), this );
       mCurrentJobs << addJob;
       addJob->setProperty( "Item", QVariant::fromValue( item ) );
       connect( addJob, SIGNAL(result(KJob *)), this, SLOT(noteAddJobFinished(KJob *)) );
       addJob->start();
     } else {
-      Q_ASSERT(!"Note has wrong mimetype.");
+      Q_ASSERT( !"Note has wrong mimetype." );
       cancelTask();
     }
   } else if ( collection.remoteId() == postsRID ) {
     kDebug() << "Adding new status";
     QString message;
-    if ( item.hasPayload<KFacebook::PostInfoPtr>() && !item.payload<KFacebook::PostInfoPtr>().isNull() ) {
-      message = item.payload<KFacebook::PostInfoPtr>().data()->message();
+    if ( item.hasPayload<KFbAPI::PostInfo>() ) {
+      message = item.payload<KFbAPI::PostInfo>().message();
       mIdle = false;
     } else if ( item.hasPayload<Akonadi::SocialFeedItem>() ) {
       message = item.payload<Akonadi::SocialFeedItem>().postText();
       mIdle = false;
     }
 
-    KFacebook::PostAddJob * const addJob = new KFacebook::PostAddJob( message, Settings::self()->accessToken() );
+    KFbAPI::PostAddJob * const addJob = new KFbAPI::PostAddJob( message, Settings::self()->accessToken(), this );
     mCurrentJobs << addJob;
-    addJob->setProperty( "Item", QVariant::fromValue( item ));
+    addJob->setProperty( "Item", QVariant::fromValue( item ) );
     connect( addJob, SIGNAL(result(KJob*)), this, SLOT(postAddJobFinished(KJob*) ) );
     addJob->start();
 
   } else {
-    Q_ASSERT(!"Can not add this type of item!");
+    Q_ASSERT( !"Can not add this type of item!" );
     cancelTask();
   }
 }

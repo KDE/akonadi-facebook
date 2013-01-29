@@ -18,14 +18,13 @@
    Boston, MA 02110-1301, USA.
 */
 #include "facebookresource.h"
-#include <config.h>
 #include "settings.h"
 #include "settingsdialog.h"
 #include "timestampattribute.h"
 
-#include <libkfacebook/allnoteslistjob.h>
-#include <libkfacebook/notejob.h>
-#include <libkfacebook/noteaddjob.h>
+#include <libkfbapi/allnoteslistjob.h>
+#include <libkfbapi/notejob.h>
+#include <libkfbapi/noteaddjob.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
@@ -35,76 +34,81 @@
 
 using namespace Akonadi;
 
-void FacebookResource::noteListFetched( KJob* job )
+void FacebookResource::noteListFetched( KJob *job )
 {
   Q_ASSERT( !mIdle );
-  KFacebook::AllNotesListJob * const listJob = dynamic_cast<KFacebook::AllNotesListJob*>( job );
+  KFbAPI::AllNotesListJob * const listJob = dynamic_cast<KFbAPI::AllNotesListJob*>( job );
   Q_ASSERT( listJob );
-  mCurrentJobs.removeAll(job);
+  mCurrentJobs.removeAll( job );
 
   if ( listJob->error() ) {
     abortWithError( i18n( "Unable to get notes from server: %1", listJob->errorString() ),
-                    listJob->error() == KFacebook::FacebookJob::AuthenticationProblem );
+                    listJob->error() == KFbAPI::FacebookJob::AuthenticationProblem );
   } else {
     setItemStreamingEnabled( true );
 
     Item::List noteItems;
-    foreach( const KFacebook::NoteInfoPtr &noteInfo, listJob->allNotes() ) {
+    foreach( const KFbAPI::NoteInfo &noteInfo, listJob->allNotes() ) {
       Item note;
-      note.setRemoteId( noteInfo->id() );
-      note.setPayload<KMime::Message::Ptr>( noteInfo->asNote() );
-      note.setSize( noteInfo->asNote()->size() );
+      note.setRemoteId( noteInfo.id() );
+      note.setPayload<KMime::Message::Ptr>( noteInfo.asNote() );
+      note.setSize( noteInfo.asNote()->size() );
       note.setMimeType( "text/x-vnd.akonadi.note" );
-      noteItems.append(note);
+      noteItems.append( note );
     }
 
     itemsRetrieved( noteItems );
     itemsRetrievalDone();
     finishNotesFetching();
   }
+
+  listJob->deleteLater();
 }
 
 void FacebookResource::finishNotesFetching()
 {
-  emit percent(100);
+  emit percent( 100 );
   emit status( Idle, i18n( "All notes fetched from server." ) );
   resetState();
 }
 
-void FacebookResource::noteJobFinished(KJob* job)
+void FacebookResource::noteJobFinished( KJob *job )
 {
-  Q_ASSERT(!mIdle);
-  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  KFacebook::NoteJob * const noteJob = dynamic_cast<KFacebook::NoteJob*>( job );
+  Q_ASSERT( !mIdle );
+  Q_ASSERT( mCurrentJobs.indexOf( job ) != -1 );
+  KFbAPI::NoteJob * const noteJob = dynamic_cast<KFbAPI::NoteJob*>( job );
   Q_ASSERT( noteJob );
   Q_ASSERT( noteJob->noteInfo().size() == 1 );
-  mCurrentJobs.removeAll(job);
+  mCurrentJobs.removeAll( job );
 
   if ( noteJob->error() ) {
     abortWithError( i18n( "Unable to get information about note from server: %1", noteJob->errorText() ) );
   } else {
     Item note = noteJob->property( "Item" ).value<Item>();
-    note.setPayload( noteJob->noteInfo().first()->asNote() );
+    note.setPayload( noteJob->noteInfo().first().asNote() );
     itemRetrieved( note );
     resetState();
   }
+
+  noteJob->deleteLater();
 }
 
-void FacebookResource::noteAddJobFinished(KJob *job)
+void FacebookResource::noteAddJobFinished( KJob *job )
 {
   Q_ASSERT( !mIdle );
-  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  KFacebook::NoteAddJob * const addJob = dynamic_cast<KFacebook::NoteAddJob*>( job );
+  Q_ASSERT( mCurrentJobs.indexOf( job ) != -1 );
+  KFbAPI::NoteAddJob * const addJob = dynamic_cast<KFbAPI::NoteAddJob*>( job );
   Q_ASSERT( addJob );
-  mCurrentJobs.removeAll(job);
+  mCurrentJobs.removeAll( job );
 
-  if (job->error()) {
+  if ( job->error() ) {
     abortWithError( i18n( "Unable to get upload note to server: %1", job->errorText() ) );
   } else {
     Item note = addJob->property( "Item" ).value<Item>();
-    note.setRemoteId(addJob->property( "id" ).value<QString>());
+    note.setRemoteId( addJob->property( "id" ).value<QString>() );
     changeCommitted( note );
     resetState();
   }
-}
 
+  addJob->deleteLater();
+}

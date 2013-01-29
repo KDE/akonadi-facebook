@@ -19,14 +19,13 @@
 
 #include "akonadi_serializer_socialnotification.h"
 
-#include "akonadi_serializer_statusitem.h"
-#include "libkfacebook/postinfo.h"
-#include <libkfacebook/notificationinfo.h>
-#include <libkfacebook/userinfo.h>
+#include <libkfbapi/postinfo.h>
+#include <libkfbapi/notificationinfo.h>
+#include <libkfbapi/userinfo.h>
 
 #include <QtCore/qplugin.h>
 
-#include <akonadi/item.h>
+#include <Akonadi/Item>
 #include <qjson/serializer.h>
 #include <qjson/parser.h>
 
@@ -34,83 +33,85 @@
 
 using namespace Akonadi;
 
-bool SerializerPluginSocialNotification::deserialize(Item& item, const QByteArray& label, QIODevice& data, int version)
+bool SerializerPluginSocialNotification::deserialize( Item &item, const QByteArray &label, QIODevice &data, int version )
 {
-    Q_UNUSED(version)
+  Q_UNUSED( version )
 
-    if (label != Item::FullPayload)
-        return false;
+  if ( label != Item::FullPayload ) {
+    return false;
+  }
 
-    KFacebook::NotificationInfo *object = new KFacebook::NotificationInfo();
+  KFbAPI::NotificationInfo object;
 
-    //FIXME: Use   QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
-    QJson::Parser parser;
-    QVariantMap map = parser.parse(data.readAll()).toMap();
+  //FIXME: Use   QJson::QObjectHelper::qvariant2qobject( item.toMap(), postInfo.data() );
+  QJson::Parser parser;
+  QVariantMap map = parser.parse( data.readAll() ).toMap();
 
-    object->setId(map["id"].toString());
-    object->setFrom(map["from"].toMap());
-    object->setTo(map["to"].toMap());
-    object->setCreatedTimeString(map["created_time"].toString());
-    object->setUpdatedTimeString(map["updated_time"].toString());
-    object->setTitle(map["title"].toString());
-    object->setLink(map["link"].toString());
-    object->setApplication(map["application"].toMap());
-    object->setUnread(map["unread"].toBool());
+  object.setId( map["id"].toString() );
+  object.setFrom( map["from"].toMap() );
+  object.setTo( map["to"].toMap() );
+  object.setCreatedTimeString( map["created_time"].toString() );
+  object.setUpdatedTimeString( map["updated_time"].toString() );
+  object.setTitle( map["title"].toString() );
+  object.setMessage( map["message"].toString() );
+  object.setLink( map["link"].toUrl() );
+  object.setApplication( map["application"].toMap() );
+  object.setUnread( map["unread"].toBool() );
 
-    KFacebook::NotificationInfoPtr notificationItem(object);
-    item.setMimeType( "text/x-vnd.akonadi.socialnotification" );
-    item.setPayload< KFacebook::NotificationInfoPtr >(notificationItem);
+  item.setMimeType( "text/x-vnd.akonadi.socialnotification" );
+  item.setPayload< KFbAPI::NotificationInfo >( object );
 
-    return true;
+  return true;
 }
 
-void SerializerPluginSocialNotification::serialize(const Item& item, const QByteArray& label, QIODevice& data, int& version)
+void SerializerPluginSocialNotification::serialize( const Item &item, const QByteArray &label, QIODevice &data, int &version )
 {
-    Q_UNUSED(label)
-    Q_UNUSED(version)
+  Q_UNUSED( label )
+  Q_UNUSED( version )
 
-    if (!item.hasPayload< KFacebook::NotificationInfoPtr >())
-        return;
+  if ( !item.hasPayload< KFbAPI::NotificationInfo >() ) {
+    return;
+  }
 
-    KFacebook::NotificationInfoPtr notificationInfo = item.payload< KFacebook::NotificationInfoPtr >();
+  KFbAPI::NotificationInfo notificationInfo = item.payload< KFbAPI::NotificationInfo >();
 
-    QVariantMap map;
+  QVariantMap map;
 
-    map["id"] = notificationInfo.data()->id();
+  map["id"] = notificationInfo.id();
 
-    QVariantMap fromMap;
-    if (!notificationInfo.data()->from().isNull()) {
-        fromMap["name"] = notificationInfo.data()->from().data()->name();
-        fromMap["id"] = notificationInfo.data()->from().data()->id();
-    }
+  QVariantMap fromMap;
+  if ( !notificationInfo.from().id().isEmpty() ) {
+    fromMap["name"] = notificationInfo.from().name();
+    fromMap["id"] = notificationInfo.from().id();
+  }
 
-    map["from"] = fromMap;
+  map["from"] = fromMap;
 
-    QVariantMap toMap;
-    if (!notificationInfo.data()->to().isNull()) {
-        toMap["name"] = notificationInfo.data()->to().data()->name();
-        toMap["id"] = notificationInfo.data()->to().data()->id();
-    }
+  QVariantMap toMap;
+  if ( !notificationInfo.to().id().isEmpty() ) {
+    toMap["name"] = notificationInfo.to().name();
+    toMap["id"] = notificationInfo.to().id();
+  }
 
-    map["to"] = toMap;
-    map["created_time"] = notificationInfo.data()->createdTimeString();
-    map["update_time"] = notificationInfo.data()->updatedTimeString();
-    map["title"] = notificationInfo.data()->title();
-    map["link"] = notificationInfo.data()->link();
+  map["to"] = toMap;
+  map["created_time"] = notificationInfo.createdTimeString();
+  map["update_time"] = notificationInfo.updatedTimeString();
+  map["title"] = notificationInfo.title();
+  map["message"] = notificationInfo.message();
+  map["link"] = notificationInfo.link();
 
-    QVariantMap appMap;
-    if (!notificationInfo.data()->application().isNull()) {
-        appMap["name"] = notificationInfo.data()->application().data()->name();
-        appMap["id"] = notificationInfo.data()->application().data()->id();
-    }
+  QVariantMap appMap;
+  if ( !notificationInfo.application().id().isEmpty() ) {
+    appMap["name"] = notificationInfo.application().name();
+    appMap["id"] = notificationInfo.application().id();
+  }
 
-    map["app"] = appMap;
-    map["unread"] = notificationInfo.data()->unread();
+  map["app"] = appMap;
+  map["unread"] = notificationInfo.unread();
 
-    QJson::Serializer serializer;
+  QJson::Serializer serializer;
 
-    data.write(serializer.serialize(map));
+  data.write( serializer.serialize( map ) );
 }
 
 Q_EXPORT_PLUGIN2( akonadi_serializer_socialnotification, Akonadi::SerializerPluginSocialNotification )
-

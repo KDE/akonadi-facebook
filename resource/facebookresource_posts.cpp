@@ -18,16 +18,15 @@
 */
 
 #include "facebookresource.h"
-#include <config.h>
 #include "settings.h"
 #include "settingsdialog.h"
 #include "timestampattribute.h"
 
-#include <libkfacebook/allpostslistjob.h>
-#include <libkfacebook/postslistjob.h>
-#include <libkfacebook/noteaddjob.h>
-#include <libkfacebook/postjob.h>
-#include <libkfacebook/postaddjob.h>
+#include <libkfbapi/allpostslistjob.h>
+#include <libkfbapi/postslistjob.h>
+#include <libkfbapi/noteaddjob.h>
+#include <libkfbapi/postjob.h>
+#include <libkfbapi/postaddjob.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
@@ -37,144 +36,162 @@
 
 using namespace Akonadi;
 
-void FacebookResource::postsListFetched( KJob* job )
+void FacebookResource::postsListFetched( KJob *job )
 {
-    Q_ASSERT( !mIdle );
-    KFacebook::AllPostsListJob * const listJob = dynamic_cast<KFacebook::AllPostsListJob*>( job );
-    Q_ASSERT( listJob );
-    mCurrentJobs.removeAll(job);
+  Q_ASSERT( !mIdle );
+  KFbAPI::AllPostsListJob * const listJob = dynamic_cast<KFbAPI::AllPostsListJob*>( job );
+  Q_ASSERT( listJob );
+  mCurrentJobs.removeAll( job );
 
-    if ( listJob->error() ) {
-        abortWithError( i18n( "Unable to get posts from server: %1", listJob->errorString() ),
-                        listJob->error() == KFacebook::FacebookJob::AuthenticationProblem );
-    } else {
-        setItemStreamingEnabled( true );
+  if ( listJob->error() ) {
+    abortWithError( i18n( "Unable to get posts from server: %1", listJob->errorString() ),
+                    listJob->error() == KFbAPI::FacebookJob::AuthenticationProblem );
+  } else {
+    setItemStreamingEnabled( true );
 
-        Item::List postItems;
-        kDebug() << "Going into foreach";
-        foreach( const KFacebook::PostInfoPtr &postInfo, listJob->allPosts() ) {
-            Item post;
-            post.setRemoteId( postInfo->id() );
-            post.setMimeType( "text/x-vnd.akonadi.socialfeeditem" );
-            post.setPayload<Akonadi::SocialFeedItem>( convertToSocialFeedItem(postInfo) );
-            postItems.append(post);
-        }
-
-        itemsRetrieved( postItems );
-        itemsRetrievalDone();
-        finishPostsFetching();
+    Item::List postItems;
+    kDebug() << "Going into foreach";
+    Q_FOREACH ( const KFbAPI::PostInfo &postInfo, listJob->allPosts() ) {
+      Item post;
+      post.setRemoteId( postInfo.id() );
+      post.setMimeType( "text/x-vnd.akonadi.socialfeeditem" );
+      post.setPayload<Akonadi::SocialFeedItem>( convertToSocialFeedItem( postInfo ) );
+      postItems.append( post );
     }
+
+    itemsRetrieved( postItems );
+    itemsRetrievalDone();
+    finishPostsFetching();
+  }
+
+  listJob->deleteLater();
 }
 
 void FacebookResource::finishPostsFetching()
 {
-    emit percent(100);
-    emit status( Idle, i18n( "All posts fetched from server." ) );
+  emit percent( 100 );
+  emit status( Idle, i18n( "All posts fetched from server." ) );
+  resetState();
+}
+
+void FacebookResource::postJobFinished( KJob *job )
+{
+  Q_ASSERT( !mIdle );
+  Q_ASSERT( mCurrentJobs.indexOf( job ) != -1 );
+  KFbAPI::PostJob * const postJob = dynamic_cast<KFbAPI::PostJob*>( job );
+  Q_ASSERT( postJob );
+  Q_ASSERT( postJob->postInfo().size() == 1 );
+  mCurrentJobs.removeAll( job );
+
+  if ( postJob->error() ) {
+    abortWithError( i18n( "Unable to get information about post from server: %1", postJob->errorText() ) );
+  } else {
+    Item post = postJob->property( "Item" ).value<Item>();
+    post.setPayload( convertToSocialFeedItem( postJob->postInfo().first() ) );
+    itemRetrieved( post );
     resetState();
+  }
+
+  postJob->deleteLater();
 }
 
-void FacebookResource::postJobFinished(KJob *job)
+SocialFeedItem FacebookResource::convertToSocialFeedItem( const KFbAPI::PostInfo &postinfo )
 {
-    Q_ASSERT(!mIdle);
-    Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-    KFacebook::PostJob * const postJob = dynamic_cast<KFacebook::PostJob*>( job );
-    Q_ASSERT( postJob );
-    Q_ASSERT( postJob->postInfo().size() == 1 );
-    mCurrentJobs.removeAll(job);
+  SocialFeedItem item;
+  item.setPostId( postinfo.id() );
+  item.setPostText( postinfo.message().isEmpty() ? postinfo.story() : postinfo.message() );
+  item.setPostLink( postinfo.link() );
+  item.setPostLinkTitle( postinfo.name() );
+  item.setPostImageUrl( postinfo.pictureUrl() );
+  item.setPostTime( postinfo.createdTimeString(), QLatin1String( "%Y-%m-%dT%H:%M:%S%z" ) );
 
-    if ( postJob->error() ) {
-        abortWithError( i18n( "Unable to get information about post from server: %1", postJob->errorText() ) );
-    } else {
-        Item post = postJob->property( "Item" ).value<Item>();
-        post.setPayload( convertToSocialFeedItem( postJob->postInfo().first() ) );
-        itemRetrieved( post );
-        resetState();
-    }
-}
+  QString infoString;
+
+  qlonglong commentsCount = postinfo.commentsMap().value( "count" ).toLongLong();
+  qlonglong likesCount = postinfo.likesMap().value( "count" ).toLongLong();
+
+  if ( commentsCount > 0 && likesCount > 0 ) {
+      infoString = i18nc( "This is a string putting together two previously translated strings, resulting form is eg '1 comment, 3 likes'. "
+                          "Main purpose of this is to give the ability to change the comma delimiter to something more appropriate for some languages.",
+                          "%1, %2",
+                          formatI18nString( FacebookResource::FacebookComment, commentsCount ),
+                          formatI18nString( FacebookResource::FacebookLike, likesCount ) );
+  } else if ( commentsCount > 0 && likesCount == 0 ) {
+      infoString = formatI18nString( FacebookResource::FacebookComment, commentsCount );
+  } else if ( commentsCount == 0 && likesCount > 0 ) {
+      infoString = formatI18nString( FacebookResource::FacebookLike, likesCount );
+  }
+
+//     QList<PostReply> replies;
+//
+//     Q_FOREACH ( const QVariant &listItem, postinfo.commentsMap().value( "data" ).toList() ) {
+//       QVariantMap listItemMap = listItem.toMap();
+//       Akonadi::PostReply postReply;
+//       postReply.replyText = listItemMap.value( "message" ).toString();
+//       postReply.replyId = listItemMap.value( "id" ).toString();
+//       postReply.postId = postinfo.id();
+//       postReply.userId = listItemMap.value( "from" ).toMap().value( "id" ).toString();
+//       postReply.userName = listItemMap.value( "from" ).toMap().value( "name" ).toString();
+//
+//       replies.append( postReply );
+//     }
+//
+//     item.setPostReplies( replies );
+
+  item.setPostInfo( infoString );
+
+  KFbAPI::UserInfo user = postinfo.from();
+
+  item.setUserId( user.id() );
+  if ( user.username().isEmpty() ) {
+    item.setUserName( user.id() );
+  } else {
+    item.setUserName( user.username() );
+  }
+  item.setUserDisplayName( user.name() );
+  item.setNetworkString( i18nc( "This string is used in a sentence 'Some Name on Facebook: Just had lunch.', so should be translated in such form."
+                                "This string is defined by the resource and the whole sentence is composed in the UI." ,
+                                "on Facebook" ) );
+  item.setAvatarUrl( QString( "https://graph.facebook.com/%1/picture?type=square" ).arg( user.id() ) );
 
 
-SocialFeedItem FacebookResource::convertToSocialFeedItem(const KFacebook::PostInfoPtr &postinfo)
-{
-    SocialFeedItem item;
-    item.setPostId(postinfo.data()->id());
-    item.setPostText(postinfo.data()->message().isEmpty() ? postinfo.data()->story() : postinfo.data()->message());
-    item.setPostLink(postinfo.data()->link());
-    item.setPostLinkTitle(postinfo.data()->name());
-    item.setPostImageUrl(postinfo.data()->pictureUrl());
-    item.setPostTime(postinfo.data()->createdTimeString(), QLatin1String("%Y-%m-%dT%H:%M:%S%z"));
+//  item.setItemSourceMap( QJson::QObjectHelper::qobject2qvariant( postinfo.data() ) );
 
-    QString infoString;
-
-    qlonglong commentsCount = postinfo.data()->commentsMap().value("count").toLongLong();
-    qlonglong likesCount = postinfo.data()->likesMap().value("count").toLongLong();
-
-    if (commentsCount > 0) {
-        infoString.append(i18n("Comments: %1", commentsCount));
-        if (likesCount > 0) {
-            infoString.append(", ");
-        }
-
-
-        QList<PostReply> replies;
-
-        Q_FOREACH(const QVariant &listItem, postinfo.data()->commentsMap().value("data").toList()) {
-            QVariantMap listItemMap = listItem.toMap();
-            Akonadi::PostReply postReply;
-            postReply.replyText = listItemMap.value("message").toString();
-            postReply.replyId = listItemMap.value("id").toString();
-            postReply.postId = postinfo.data()->id();
-            postReply.userId = listItemMap.value("from").toMap().value("id").toString();
-            postReply.userName = listItemMap.value("from").toMap().value("name").toString();
-
-            replies.append(postReply);
-        }
-
-        item.setPostReplies(replies);
-    }
-
-    if (likesCount > 0) {
-        infoString.append(i18n("Likes: %1", likesCount));
-    }
-
-    item.setPostInfo(infoString);
-
-    KFacebook::UserInfoPtr user = postinfo.data()->from();
-
-    item.setUserId(user.data()->id());
-    if (user.data()->username().isEmpty()) {
-        item.setUserName(user.data()->id());
-    } else {
-        item.setUserName(user.data()->username());
-    }
-    item.setUserDisplayName(user.data()->name());
-    item.setNetworkString(i18nc("This string is used in a sentence 'Someone on Facebook: Just had lunch.', so should be translated in such form."
-                                 "This string is defined by the resource and the whole sentence is composed in the UI." ,
-                                 "on Facebook"));
-    item.setAvatarUrl(QString("https://graph.facebook.com/%1/picture?type=square").arg(user.data()->id()));
-
-    item.setItemSourceMap(QJson::QObjectHelper::qobject2qvariant(postinfo.data()));
-
-    return item;
+  return item;
 }
 
 void FacebookResource::postAddJobFinished( KJob *job )
 {
   Q_ASSERT( !mIdle );
-  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  KFacebook::PostAddJob * const addJob = dynamic_cast<KFacebook::PostAddJob*>( job );
+  Q_ASSERT( mCurrentJobs.indexOf( job ) != -1 );
+  KFbAPI::PostAddJob * const addJob = dynamic_cast<KFbAPI::PostAddJob*>( job );
   Q_ASSERT( addJob );
-  mCurrentJobs.removeAll(job);
+  mCurrentJobs.removeAll( job );
 
-  if (job->error()) {
+  if ( job->error() ) {
     abortWithError( i18n( "Unable to post the status to server: %1", job->errorText() ) );
   } else {
     Item post = addJob->property( "Item" ).value<Item>();
     //we fill in a random fake id to prevent duplicates - this post would be in the collection twice
     //once the resource syncs again, filling a random id guarantees that this Item will be removed
     //with the next sync and will be replaced by the real item from the server
-    post.setRemoteId("non-existing-id");
+    post.setRemoteId( "non-existing-id" );
     changeCommitted( post );
     resetState();
     kDebug() << "Status posted to server";
   }
+
+  addJob->deleteLater();
+}
+
+QString FacebookResource::formatI18nString( FormattingStringType type, int n )
+{
+  switch ( type ) {
+    case FacebookResource::FacebookComment:
+      return i18ncp( "Text denoting how many comments given post have", "1 comment", "%1 comments", n );
+    case FacebookResource::FacebookLike:
+      return i18ncp( "Text denoting how many 'facebook likes' given post have", "1 like", "%1 likes", n );
+  }
+
+  return QString();
 }

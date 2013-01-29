@@ -18,13 +18,12 @@
    Boston, MA 02110-1301, USA.
 */
 #include "facebookresource.h"
-#include <config.h>
 #include "settings.h"
 #include "settingsdialog.h"
 #include "timestampattribute.h"
 
-#include <libkfacebook/alleventslistjob.h>
-#include <libkfacebook/eventjob.h>
+#include <libkfbapi/alleventslistjob.h>
+#include <libkfbapi/eventjob.h>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/EntityDisplayAttribute>
@@ -36,41 +35,43 @@ using namespace Akonadi;
 
 static const char * eventMimeType = "application/x-vnd.akonadi.calendar.event";
 
-void FacebookResource::eventListFetched( KJob* job )
+void FacebookResource::eventListFetched( KJob *job )
 {
   Q_ASSERT( !mIdle );
-  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  KFacebook::AllEventsListJob * const listJob = dynamic_cast<KFacebook::AllEventsListJob*>( job );
+  Q_ASSERT( mCurrentJobs.indexOf( job ) != -1 );
+  KFbAPI::AllEventsListJob * const listJob = qobject_cast<KFbAPI::AllEventsListJob*>( job );
   Q_ASSERT( listJob );
-  mCurrentJobs.removeAll(job);
+  mCurrentJobs.removeAll( job );
 
   if ( listJob->error() ) {
     abortWithError( i18n( "Unable to get events from server: %1", listJob->errorString() ),
-                    listJob->error() == KFacebook::FacebookJob::AuthenticationProblem );
+                    listJob->error() == KFbAPI::FacebookJob::AuthenticationProblem );
   } else {
     QStringList eventIds;
-    foreach( const KFacebook::EventInfoPtr &event, listJob->allEvents() ) {
-      eventIds.append( event->id() );
+    foreach( const KFbAPI::EventInfo &event, listJob->allEvents() ) {
+      eventIds.append( event.id() );
     }
     if ( eventIds.isEmpty() ) {
       itemsRetrievalDone();
       finishEventsFetching();
       return;
     }
-    KFacebook::EventJob * const eventJob = new KFacebook::EventJob( eventIds, Settings::self()->accessToken() );
+    KFbAPI::EventJob * const eventJob = new KFbAPI::EventJob( eventIds, Settings::self()->accessToken(), this );
     mCurrentJobs << eventJob;
     connect( eventJob, SIGNAL(result(KJob*)), this, SLOT(detailedEventListJobFinished(KJob*)) );
     eventJob->start();
   }
+
+  listJob->deleteLater();
 }
 
-void FacebookResource::detailedEventListJobFinished( KJob* job )
+void FacebookResource::detailedEventListJobFinished( KJob *job )
 {
   Q_ASSERT( !mIdle );
-  Q_ASSERT( mCurrentJobs.indexOf(job) != -1 );
-  KFacebook::EventJob * const eventJob = dynamic_cast<KFacebook::EventJob*>( job );
+  Q_ASSERT( mCurrentJobs.indexOf( job ) != -1 );
+  KFbAPI::EventJob * const eventJob = qobject_cast<KFbAPI::EventJob*>( job );
   Q_ASSERT( eventJob );
-  mCurrentJobs.removeAll(job);
+  mCurrentJobs.removeAll( job );
 
   if ( job->error() ) {
     abortWithError( i18n( "Unable to get list of events from server: %1", eventJob->errorText() ) );
@@ -78,10 +79,10 @@ void FacebookResource::detailedEventListJobFinished( KJob* job )
     setItemStreamingEnabled( true );
 
     Item::List eventItems;
-    foreach ( const KFacebook::EventInfoPtr &eventInfo, eventJob->eventInfo() ) {
+    foreach ( const KFbAPI::EventInfo &eventInfo, eventJob->eventInfo() ) {
       Item event;
-      event.setRemoteId( eventInfo->id() );
-      event.setPayload<IncidencePtr>( eventInfo->asEvent() );
+      event.setRemoteId( eventInfo.id() );
+      event.setPayload<KFbAPI::IncidencePtr>( eventInfo.asEvent() );
       event.setMimeType( eventMimeType );
       eventItems.append( event );
     }
@@ -89,13 +90,14 @@ void FacebookResource::detailedEventListJobFinished( KJob* job )
     itemsRetrievalDone();
     finishEventsFetching();
   }
+
+  eventJob->deleteLater();
 }
 
 void FacebookResource::finishEventsFetching()
 {
-  emit percent(100);
+  emit percent( 100 );
   // TODO: Use an actual number here
   emit status( Idle, i18n( "All events fetched from server." ) );
   resetState();
 }
-

@@ -1,20 +1,12 @@
-project(kfacebook)
+project(akonadi-facebook-standalone)
 
 set(RESOURCE_VERSION "0.1")
-set(LIB_VERSION "1.0")
-set(LIB_SOVERSION "1")
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
-
-# Turn this off by default when KDEPIM 4.4 is not in use anymore
-option(KDEPIM_44_COMPAT "Don't crash when using KDEPIM runtime 4.4.x, at the cost of using deprecated KCal API" TRUE)
-if(KDEPIM_44_COMPAT)
-  add_definitions(-DWANT_DEPRECATED_KCAL_API)
-endif(KDEPIM_44_COMPAT)
 
 find_package(KdepimLibs 4.9.58)
 set_package_properties(KdepimLibs PROPERTIES DESCRIPTION "The KDEPIM libraries" URL "http://www.kde.org" TYPE REQUIRED)
@@ -25,7 +17,8 @@ set_package_properties(Xsltproc PROPERTIES DESCRIPTION "XSLT processor from libx
 find_package(QJSON 0.7)
 set_package_properties(QJSON PROPERTIES DESCRIPTION "Qt library for handling JSON data" URL "http://qjson.sourceforge.net/" TYPE REQUIRED)
 
-configure_file(config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/config.h")
+find_package(LibKFbAPI 1.0 QUIET CONFIG)
+set_package_properties(LibKFbAPI PROPERTIES DESCRIPTION "A library to access Facebook services" URL "http://projects.kde.org/libkfbapi" TYPE OPTIONAL PURPOSE "LibKFbAPI is required to build Akonadi resources to access Facebook's contacts, events, notes and posts" )
 
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
@@ -39,7 +32,6 @@ include_directories(
   ${Boost_INCLUDE_DIR}
 )
 
-add_subdirectory(libkfacebook)
 add_subdirectory(serializer)
 add_subdirectory(resource)
 

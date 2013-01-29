@@ -28,13 +28,12 @@ namespace Akonadi {
 
 class SerializerPluginSocialNotification : public QObject, public ItemSerializerPlugin
 {
-    Q_OBJECT
-    Q_INTERFACES( Akonadi::ItemSerializerPlugin )
+  Q_OBJECT
+  Q_INTERFACES( Akonadi::ItemSerializerPlugin )
 
 public:
-    bool deserialize( Item& item, const QByteArray& label, QIODevice& data, int version );
-    void serialize( const Item& item, const QByteArray& label, QIODevice& data, int &version );
-
+  bool deserialize( Item &item, const QByteArray &label, QIODevice &data, int version );
+  void serialize( const Item &item, const QByteArray &label, QIODevice &data, int &version );
 };
 
 }
