@@ -1,5 +1,6 @@
 [Misc]
 Name=Facebook Notification Serializer
+Name[cs]=Seřazovač upomínek Facebooku
 Name[da]=Serialisering af Facebook-notifikationer
 Name[de]=Facebook-Benachrichtigungs-Serialisierung
 Name[es]=Serializador de notificaciones de Facebook
@@ -16,6 +17,7 @@ Name[tr]=Facebook Bildirim Sıralandırıcısı
 Name[uk]=Серіалізатор сповіщень Facebook
 Name[x-test]=xxFacebook Notification Serializerxx
 Comment=An Akonadi serializer plugin for Facebook notifications
+Comment[cs]=Modul Akonadi pro seřazování upomínek Facebooku
 Comment[da]=Et Akonadi serialiseringsplugin til Facebook-notifikationer
 Comment[de]=Akonadi-Modul zur Serialisierung von Facebook-Benachrichtigungen
 Comment[es]=Un complemento serializador de Akonadi para las notificaciones de Facebook
